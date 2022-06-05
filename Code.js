@@ -210,6 +210,7 @@ function readTableIntoArr(sheet) {
                         age: values[i][ageCol],
                         grouping: values[i][groupingCol],
                         height: values[i][feetCol] + "\'" + values[i][inchesCol] + "\"",
+                        heightDec: parseInt(values[i][feetCol]) + (parseInt(values[i][inchesCol]) / 12.0),
                         school: values[i][schoolCol],
                         form: values[i][formCol],
                         sparring: values[i][sparringCol],

@@ -85,7 +85,8 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
-    var inFormOrder = applyFormOrder(vRingPeopleArr);
+    var formPeople = vRingPeopleArr.filter(person => person.form != "no")
+    var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank");
     for (var index = 0; index < inFormOrder.length; index++) {
       sourceSheet
         .getRange(
@@ -96,7 +97,32 @@ function assignVRings(sourceSheetName = "Beginner") {
     }
   }
 
+  // Figure out and assign the order for sparring.
+  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+    var sparPeople = vRingPeopleArr.filter(person => person.sparring != "no")
+    var inSparOrder = applySortOrder(sparPeople, sortByHeight, "sparRank");
+    for (var index = 0; index < inSparOrder.length; index++) {
+      sourceSheet
+        .getRange(
+          inSparOrder[index]["originalRow"],
+          inSparOrder[index]["sparringOrderCol"] + 1
+        )
+        .setValue(index + 1);
+    }
+  }
+
+
   return vRingHash;
+}
+
+// Sort function for hashcodes.
+function sortByNameHashcode(a, b) {
+  return hashCode(a.sfn + a.sln) - hashCode(b.sfn + b.sln);
+}
+
+// sort function for height.
+function sortByHeight(a, b) {
+  return a.heightDec - b.heightDec
 }
 
 // Input: peopleArr, which is everyone in one grouping
@@ -288,6 +314,50 @@ function putPeopleInRings(sortedPeopleArr, numRings, startRing = 1) {
 
   return sortedPeopleArr;
 }
+
+// Input: peopleArr
+//        A sort function to use to sort them
+//        A key to put in the output array
+// Output: A peopleArr sorted by the sort function
+
+function applySortOrder(peopleArr, sortFunction, sortKey, divideBySchoolFirst) {
+
+  var unsortedPeopleWithRank = []
+  var sortedPeopleWithRank = []
+
+  // Divide by school if necessary
+  if (divideBySchoolFirst) {
+
+    // Divide by school
+    var dividedBySchool = divideBySchool(peopleArr);
+
+    // For each school, apply the sort function
+    for (const [school, schoolArr] of Object.entries(dividedBySchool)) {
+
+      var sortedSchoolArr = schoolArr.sort(sortFunction)
+      
+      for (var i = 0; i < sortedSchoolArr.length; i++) {
+        sortedSchoolArr[i][sortKey] = i / sortedSchoolArr.length;
+      }
+  
+      unsortedPeopleWithRank = unsortedPeopleWithRank.concat(sortedSchoolArr);
+    }
+    sortedPeopleWithRank = unsortedPeopleWithRank.sort(function (a, b) {
+      return a[sortKey] - b[sortKey]
+    });
+  }
+  else {
+    // Don't sort by school first, just sort the input arr based on the sort function
+    sortedPeopleWithRank = peopleArr.sort(sortFunction)
+
+    // Put the rank in the given sortkey for each person in the array
+    for (var i in sortedPeopleWithRank) {
+      sortedPeopleWithRank[sortKey] = i / sortedPeopleWithRank.length
+    }
+   }
+
+   return sortedPeopleWithRank
+  }
 
 // Input: peopleArr for people all in a virtual ring
 // Output: another people array, with the 'Form Order' key filled in with the form order
