@@ -51,18 +51,6 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
   // Get the target doc.
 }
 
-// Organize the peopleArr into virtual rings.
-function getVirtualRings(peopleArr) {
-  var virtualRings = {}
-
-  for (var i = 0; i < peopleArr.length; i++) {
-    virtualRing = peopleArr[i].virtualRing
-    virtualRings[virtualRing].push(peopleArr)
-  }
-
-  return virtualRings
-}
-
 // sort function for form order.
 function sortByFormOrder(a, b) {
   return a.formOrder - b.formOrder
