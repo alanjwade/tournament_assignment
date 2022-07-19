@@ -97,7 +97,10 @@ function placePeopleInBracket(peopleArr, startRow=0, startCol=0, rounds = 5) {
   var startRound = 0
   var start2Round = 0
 
+  // This is the number playing in the 'play-in' round,
+  // or the first round if there are a power of 2 number of people.
   var numStartRound = 0
+  // This is the number playing in the next round.
   var numStart2Round = 0
 
   for (var round = 1; round <= rounds; round++) {
@@ -115,8 +118,8 @@ function placePeopleInBracket(peopleArr, startRow=0, startCol=0, rounds = 5) {
       start2Round = round + 1
 
       // need an even number to fight in the start round
-      numStartRound = 2 * Math.round(totalPeople - numNextRound / 2);
-      numStart2Round = totalPeople = numStartRound
+      numStartRound = 2 * (totalPeople - numNextRound)
+      numStart2Round = totalPeople - numStartRound
       break
     }
   }
