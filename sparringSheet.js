@@ -26,8 +26,9 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
 
         // Generate one bracket
         generateOneSparringBracket(targetSheet, virtRingPeople, 3, 0, 5)
-        // Highlight Semifinal A
-  
+        // Highlight Semifinal A and B
+        highlightOneMatch(targetSheet, 3, 0, 3, 0, "#b7e1cd", 'Semifinal Match A')
+        highlightOneMatch(targetSheet, 3, 0, 3, 2, "#f9cb9c", 'Semifinal Match B')
         // Generate the 3rd place bracket
         generateOneSparringBracket(targetSheet, virtRingPeople, 32, 3, 2)
         // Place header
@@ -44,8 +45,27 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
     targetDoc.saveAndClose()
   
     // Get the target doc.
-  }
+}
 
+function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
+  // Highlight one match. round is starting at 1, startPosition is the first fighter.
+
+  var [topRow, col] = getCoordinatesFromRoundPosition(round, startPosition)
+
+  // topRow doesn't include the startRow offset
+
+  var absTopRow = topRow + startRow
+  var absCol = col + startCol
+
+  targetSheet.getRange(absTopRow + 1, absCol + 1, Math.pow(2, round)+1, 1).setBackground(color)
+
+  var middleRow = absTopRow + (Math.pow(2, round) / 2)
+
+  targetSheet.getRange(middleRow + 1, absCol + 1).setValue(text)
+
+  return true
+
+}
 
 function generateSparringHeader(targetSheet, startRow, startCol, text, pRing, vRing) {
   targetSheet.getRange(startRow + 1, startCol + 1).setValue(text + ' Sparring Bracket Ring ' + pRing)
