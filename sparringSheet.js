@@ -25,13 +25,19 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
         .sort(sortBySparringOrder)
 
         // Generate one bracket
-        generateOneSparringBracket(targetSheet, virtRingPeople, 0, 0, 5)
+        generateOneSparringBracket(targetSheet, virtRingPeople, 3, 0, 5)
+        // Highlight Semifinal A
+  
         // Generate the 3rd place bracket
-        generateOneSparringBracket(targetSheet, virtRingPeople, 29, 3, 2)
+        generateOneSparringBracket(targetSheet, virtRingPeople, 32, 3, 2)
+        // Place header
+        generateSparringHeader(targetSheet, 2, 0, sourceSheetName, physRingStr, virtRing)
   
       // Now, virtRingPeople has all the people in one virt ring AND is doing forms
       var body = targetDoc.getBody()
       var style = {}
+
+      throw new Error()
     }
     // Figure out what virtual rings there are.
   
@@ -40,6 +46,10 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
     // Get the target doc.
   }
 
+
+function generateSparringHeader(targetSheet, startRow, startCol, text, pRing, vRing) {
+  targetSheet.getRange(startRow + 1, startCol + 1).setValue(text + ' Sparring Bracket Ring ' + pRing)
+}
 
 function borderOneCell(sheet, row, col, side) {
 
