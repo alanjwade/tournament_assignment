@@ -26,6 +26,7 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
 
         // Generate one bracket
         generateOneSparringBracket(targetSheet, virtRingPeople, 3, 0, 5)
+        placePeopleInBracket(targetSheet, virtRingPeople, 3, 0, 5)
         // Highlight Semifinal A and B
         highlightOneMatch(targetSheet, 3, 0, 3, 0, "#b7e1cd", 'Semifinal Match A')
         highlightOneMatch(targetSheet, 3, 0, 3, 2, "#f9cb9c", 'Semifinal Match B')
@@ -119,7 +120,7 @@ function getCoordinatesFromRoundPosition(round, position) {
   return [thisRow, col]
 }
 
-function placePeopleInBracket(peopleArr, startRow=0, startCol=0, rounds = 5) {
+function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, rounds = 5) {
   var totalPeople = peopleArr.length
 
   // Find which round we're going to start in
@@ -156,9 +157,25 @@ function placePeopleInBracket(peopleArr, startRow=0, startCol=0, rounds = 5) {
 
   // we put numStartRound in round 'startRound' and numStart2Round in 'start2Round'
 
-  var position = 0
+  for (var personIndex = 0; personIndex < totalPeople; personIndex++) {
+    var thisRound
+    var thisPosition
+    if (personIndex < numStartRound) {
+      thisRound = startRound
+      thisPosition = personIndex
+    }
+    else {
+      thisRound = start2Round
+      thisPosition = personIndex - numStart2Round
+    }
 
-  //for (var r1 = )
+
+
+    var [row, col] = getCoordinatesFromRoundPosition(thisRound, thisPosition)
+
+    targetSheet.getRange(startRow + row+1, startCol + col+1).setValue(peopleArr[personIndex]['sln'])
+
+  }
 
 }
   
