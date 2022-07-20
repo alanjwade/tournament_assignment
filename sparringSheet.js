@@ -81,6 +81,9 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
 
     // Place header
     generateSparringHeader(targetSheet, startRow + 2, startCol + 0, level, physRingStr, virtRing)
+
+    // place table
+    finalPlaces(targetSheet, 2, 3)
 }
 
 function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
@@ -231,17 +234,28 @@ function generateOneSparringBracket(targetSheet, peopleArr, startRow = 0, startC
       for (var position=0; position < maxPositions; position++) {
         [row, col] = getCoordinatesFromRoundPosition(round, position)
 
-        targetSheet.getRange(startRow + row + 1, startCol + col + 1).setBorder(null, null, true, null, null, null)
+        targetSheet.getRange(startRow + row + 1, startCol + col + 1).setBorder(null, null, true, null, null, null, 'black', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 
         // Make the right borders
         // If we're an odd position, make a right border between this and the last position
         if (position % 2 != 0) {
           for (var borderRows = lastRow+1; borderRows <= row; borderRows++) {
-            targetSheet.getRange(startRow + borderRows + 1, startCol + col + 1).setBorder(null, null, null, true, null, null)
+            targetSheet.getRange(startRow + borderRows + 1, startCol + col + 1).setBorder(null, null, null, true, null, null, 'black', SpreadsheetApp.BorderStyle.SOLID_THICK)
           }
         }
 
         lastRow = row
       }
     }
+}
+
+function finalPlaces(targetSheet, startRow, startCol) {
+  var buffer = []
+  buffer.push(['Final Places', ''])
+  buffer.push(['1st', ''])
+  buffer.push(['2nd', ''])
+  buffer.push(['3rd', ''])
+
+  targetSheet.getRange(startRow+1, startCol+1, 4, 2).setValues(buffer)
+  targetSheet.getRange(startRow+2, startCol+1, 3, 2).setBorder(true, true, true, true, true, true, 'black', SpreadsheetApp.BorderStyle.SOLID_MEDIUM)
 }
