@@ -24,16 +24,7 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
         .filter((person) => person.vRing == virtRing && person.sparring != "no")
         .sort(sortBySparringOrder)
 
-        // Generate one bracket
-        generateOneSparringBracket(targetSheet, virtRingPeople, 3, 0, 5)
-        placePeopleInBracket(targetSheet, virtRingPeople, 3, 0, 5)
-        // Highlight Semifinal A and B
-        highlightOneMatch(targetSheet, 3, 0, 3, 0, "#b7e1cd", 'Semifinal Match A')
-        highlightOneMatch(targetSheet, 3, 0, 3, 2, "#f9cb9c", 'Semifinal Match B')
-        // Generate the 3rd place bracket
-        generateOneSparringBracket(targetSheet, virtRingPeople, 32, 3, 2)
-        // Place header
-        generateSparringHeader(targetSheet, 2, 0, sourceSheetName, physRingStr, virtRing)
+        generateOneSparringBracketSheet(targetSheet, virtRingPeople, 0, 0, physRingStr, virtRing, sourceSheetName)
   
       // Now, virtRingPeople has all the people in one virt ring AND is doing forms
       var body = targetDoc.getBody()
@@ -46,6 +37,50 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
     targetDoc.saveAndClose()
   
     // Get the target doc.
+}
+
+function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, startCol, physRingStr, virtRing, level) {
+    // Given a list of people in fighting order, print it to the given sheet.
+
+    // Generate one bracket
+    generateOneSparringBracket(targetSheet, virtRingPeople, startRow + 3, startCol + 0, 5)
+    placePeopleInBracket(targetSheet, virtRingPeople, startRow + 3, startCol + 0, 5)
+    // Highlight Semifinal A and B
+    highlightOneMatch(targetSheet, startRow + 3, startCol + 0, 3, 0, "#b7e1cd", 'Semifinal Match A')
+    highlightOneMatch(targetSheet, startRow + 3, startCol + 0, 3, 2, "#f9cb9c", 'Semifinal Match B')
+    
+    // Highlight semi winners
+    var [rowA, colA] = getCoordinatesFromRoundPosition(4, 0)
+    var [rowB, colB] = getCoordinatesFromRoundPosition(4, 1)
+
+    targetSheet.getRange(startRow + 3 + rowA + 1, startCol + colA + 1).setBackground("#b7e1cd")
+    targetSheet.getRange(startRow + 3 + rowB + 1, startCol + colB + 1).setBackground("#f9cb9c")
+
+    targetSheet.getRange(startRow + 3 + rowA + 2, startCol + colA + 1).setValue("Semifinal Match A Winner")
+    targetSheet.getRange(startRow + 3 + rowB + 2, startCol + colB + 1).setValue("Semifinal Match B Winner")
+
+    var [row, col] = getCoordinatesFromRoundPosition(5, 0)
+    targetSheet.getRange(startRow + 3 + row + 2, startCol + col + 1).setValue("1st")
+
+
+
+    // Generate the 3rd place bracket
+    generateOneSparringBracket(targetSheet, virtRingPeople, startRow + 32, startCol + 3, 2)
+
+    // Add highlights
+    var [rowA, colA] = getCoordinatesFromRoundPosition(1, 0)
+    var [rowB, colB] = getCoordinatesFromRoundPosition(1, 1)
+
+    targetSheet.getRange(startRow + 32 + rowA + 1, startCol + 3 + colA + 1).setBackground("#b7e1cd")
+    targetSheet.getRange(startRow + 32 + rowB + 1, startCol + 3 + colB + 1).setBackground("#f9cb9c")
+
+    targetSheet.getRange(startRow + 32 + rowA + 2, startCol + 3 + colA + 1).setValue("Semifinal Match A Loser")
+    targetSheet.getRange(startRow + 32 + rowB + 2, startCol + 3 + colB + 1).setValue("Semifinal Match B Loser")
+    var [row, col] = getCoordinatesFromRoundPosition(2, 0)
+    targetSheet.getRange(startRow + 32 + row + 2, startCol + 3 + col + 1).setValue("3rd")
+
+    // Place header
+    generateSparringHeader(targetSheet, startRow + 2, startCol + 0, level, physRingStr, virtRing)
 }
 
 function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
