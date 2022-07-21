@@ -1,5 +1,6 @@
 // Create a doc with all the forms sheets
 
+
 function generateFormsSheet(sourceSheetName = "Beginner") {
   var targetDocName = sourceSheetName + " Forms Rings"
 
@@ -23,7 +24,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     var style = {}
     style[DocumentApp.Attribute.FONT_SIZE] = 8
     var buffer = [
-      ["First Name", "Last Name", "School", "Virtual Ring", "Score"],
+      ["First Name", "Last Name", "School", "Virtual Ring", "Score 1", "Score 2", "Score 3", "Final Score"],
     ]
     for (var i = 0; i < virtRingPeople.length; i++) {
       buffer.push([
@@ -31,7 +32,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
         virtRingPeople[i]["sln"],
         virtRingPeople[i]["school"],
         virtRingPeople[i]["vRing"],
-        "",
+        "", "", "", ""
       ])
     }
     var formTitle =
@@ -49,6 +50,10 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
   targetDoc.saveAndClose()
 
   // Get the target doc.
+}
+
+function appendOneFormsScoresheet(body, ringPeople, virtRing, physring) {
+  // Given a Body object, append one ring worth of forms scoresheet
 }
 
 // sort function for form order.

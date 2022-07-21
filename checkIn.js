@@ -8,14 +8,14 @@ function printCheckinSheet(levelName = "Beginner") {
   peopleArr.sort(sortLastFirst)
 
   // 2-d array to store text in before printing it to the sheet
-  var buffer = [["First Name", "Last Name", "School", "Virtual Ring"]]
+  var buffer = [["First Name", "Last Name", "School", "Physical Ring"]]
 
   peopleArr.forEach((person) => {
     buffer.push([
       person.sfn,
       person.sln,
       person.school.toString(),
-      person.vRing.toString(),
+      virtToPhysMap[person.vRing].toString(),
     ])
   })
 

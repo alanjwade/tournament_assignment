@@ -39,6 +39,10 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
     // Get the target doc.
 }
 
+function appendOneSparringScoresheet(body, ringPeople, virtRing, physring) {
+  // Given a Body object, append one ring worth of sparring scoresheet
+}
+
 function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, startCol, physRingStr, virtRing, level) {
     // Given a list of people in fighting order, print it to the given sheet.
 
