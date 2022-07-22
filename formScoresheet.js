@@ -52,8 +52,32 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
   // Get the target doc.
 }
 
-function appendOneFormsScoresheet(body, ringPeople, virtRing, physring) {
+function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   // Given a Body object, append one ring worth of forms scoresheet
+
+  var style = {}
+  style[DocumentApp.Attribute.FONT_SIZE] = 8
+  var buffer = [
+    ["First Name", "Last Name", "School", "Ring", "Score 1", "Score 2", "Score 3", "Final Score"]]
+
+  for (var i = 0; i < ringPeople.length; i++) {
+    buffer.push([
+      ringPeople[i]["sfn"],
+      ringPeople[i]["sln"],
+      ringPeople[i]["school"],
+      physRing,
+      "", "", "", ""
+    ])
+  }
+  var formTitle =
+    level +
+    " Virtual Ring " +
+    virtRing +
+    " Physical Ring " +
+    physRing
+  body.appendParagraph(formTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
+  body.appendTable(buffer)
+  body.appendParagraph("").appendPageBreak()
 }
 
 // sort function for form order.

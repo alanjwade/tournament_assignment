@@ -38,12 +38,47 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
   
     // Get the target doc.
 }
+function appendSheetRangeToDocBody(sheet, startRow, startCol, numRows, numCols, targetBody) {
+  // Get Google Sheet data
+  var range = sheet.getRange(startRow + 1, startCol + 1, numRows, numCols).getDataRegion(SpreadsheetApp.Dimension.ROWS);
+  var values = range.getValues();
+  var backgroundColors = range.getBackgrounds();
+  var styles = range.getTextStyles();
 
-function appendOneSparringScoresheet(body, ringPeople, virtRing, physring) {
+  // Position to paste data in Google Docs
+  var body = targetBody
+  var table = body.appendTable(values);
+  table.setBorderWidth(0);
+  for (var i = 0; i < table.getNumRows(); i++) {
+    for (var j = 0; j < table.getRow(i).getNumCells(); j++) {
+      var obj = {};
+      obj[DocumentApp.Attribute.BACKGROUND_COLOR] = backgroundColors[i][j];
+      obj[DocumentApp.Attribute.FONT_SIZE] = styles[i][j].getFontSize();
+      if (styles[i][j].isBold()) {
+        obj[DocumentApp.Attribute.BOLD] = true;
+      }
+      table.getRow(i).getCell(j).setAttributes(obj);
+    }
+  }
+}
+function appendOneSparringScoresheet(body, ringPeople, virtRing, physRing, level) {
   // Given a Body object, append one ring worth of sparring scoresheet
+
+  // need a tmp sheet to work on
+  var tempSheet = SpreadsheetApp.getActive().getSheetByName('temp')
+  tempSheet.clear()
+
+  generateOneSparringBracketSheet(tempSheet, ringPeople, 0, 0, virtRing, physRing, level)
+  console.log('ajw 1')
+
+  // now tempSheet has the bracket
+  appendSheetRangeToDocBody(tempSheet, 0, 0, 40, 6, body)
+  body.appendParagraph("").appendPageBreak()
+  console.log('ajw 2')
+
 }
 
-function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, startCol, physRingStr, virtRing, level) {
+function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, startCol, virtRing, physRingStr, level) {
     // Given a list of people in fighting order, print it to the given sheet.
 
     // Generate one bracket
@@ -66,8 +101,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     var [row, col] = getCoordinatesFromRoundPosition(5, 0)
     targetSheet.getRange(startRow + 3 + row + 2, startCol + col + 1).setValue("1st")
 
-
-
+ 
     // Generate the 3rd place bracket
     generateOneSparringBracket(targetSheet, virtRingPeople, startRow + 32, startCol + 3, 2)
 
@@ -75,6 +109,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     var [rowA, colA] = getCoordinatesFromRoundPosition(1, 0)
     var [rowB, colB] = getCoordinatesFromRoundPosition(1, 1)
 
+ 
     targetSheet.getRange(startRow + 32 + rowA + 1, startCol + 3 + colA + 1).setBackground("#b7e1cd")
     targetSheet.getRange(startRow + 32 + rowB + 1, startCol + 3 + colB + 1).setBackground("#f9cb9c")
 
@@ -86,7 +121,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     // Place header
     generateSparringHeader(targetSheet, startRow + 2, startCol + 0, level, physRingStr, virtRing)
 
-    // place table
+   // place table
     finalPlaces(targetSheet, 2, 3)
 }
 
@@ -176,9 +211,11 @@ function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, ro
   // This is the number playing in the next round.
   var numStart2Round = 0
 
+  var numNextRound
+
   for (var round = 1; round <= rounds; round++) {
     var numThisRound = Math.pow(2, rounds-round)
-    var numNextRound = Math.pow(2, rounds - (round + 1))
+    numNextRound = Math.pow(2, rounds - (round + 1))
     if (totalPeople == numThisRound) {
       startRound = round
       start2Round = round
@@ -190,9 +227,11 @@ function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, ro
       startRound = round
       start2Round = round + 1
 
+ 
       // need an even number to fight in the start round
       numStartRound = 2 * (totalPeople - numNextRound)
       numStart2Round = totalPeople - numStartRound
+
       break
     }
   }
@@ -208,14 +247,15 @@ function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, ro
     }
     else {
       thisRound = start2Round
-      thisPosition = personIndex - numStart2Round
+      // try to make this person Inex - (#spots - # actually starting in next round)
+      thisPosition = personIndex - (numNextRound - numStart2Round)
     }
 
-
-
+    console.log('TP: ' + totalPeople)
     var [row, col] = getCoordinatesFromRoundPosition(thisRound, thisPosition)
 
-    targetSheet.getRange(startRow + row+1, startCol + col+1).setValue(peopleArr[personIndex]['sln'])
+ 
+    targetSheet.getRange(startRow + row + 1, startCol + col + 1).setValue(peopleArr[personIndex]['sln'])
 
   }
 
