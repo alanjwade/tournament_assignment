@@ -206,6 +206,9 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
 
     // Set row heights
     targetSheet.setRowHeights(1, 40, 35)
+
+    // Hide gridlines
+    targetSheet.setHiddenGridlines(true)
 }
 
 function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
