@@ -61,20 +61,97 @@ function appendSheetRangeToDocBody(sheet, startRow, startCol, numRows, numCols, 
     }
   }
 }
-function appendOneSparringScoresheet(body, ringPeople, virtRing, physRing, level) {
-  // Given a Body object, append one ring worth of sparring scoresheet
+/**
+ * Creates a PDF for the customer given sheet.
+ * @param {string} ssId - Id of the Google Spreadsheet
+ * @param {object} sheet - Sheet to be converted as PDF
+ * @param {string} pdfName - File name of the PDF being created
+ * @return {file object} PDF file as a blob
+ */
+ function createPDF(ssId, sheet, pdfName) {
+  const fr = 0, fc = 0, lc = 9, lr = 27;
+  const url = "https://docs.google.com/spreadsheets/d/" + ssId + "/export" +
+    "?format=pdf&" +
+    "size=7&" +
+    "fzr=true&" +
+    "portrait=true&" +
+    "fitw=true&" +
+    "gridlines=false&" +
+    "printtitle=false&" +
+    "top_margin=0.5&" +
+    "bottom_margin=0.25&" +
+    "left_margin=0.5&" +
+    "right_margin=0.5&" +
+    "sheetnames=false&" +
+    "pagenum=UNDEFINED&" +
+    "attachment=true&" +
+    "gid=" + sheet.getSheetId() + '&' +
+    "r1=" + fr + "&c1=" + fc + "&r2=" + lr + "&c2=" + lc;
 
-  // need a tmp sheet to work on
-  var tempSheet = SpreadsheetApp.getActive().getSheetByName('temp')
-  tempSheet.clear()
+  const params = { method: "GET", headers: { "authorization": "Bearer " + ScriptApp.getOAuthToken() } };
+  const blob = UrlFetchApp.fetch(url, params).getBlob().setName(pdfName + '.pdf');
+
+  // Gets the folder in Drive where the PDFs are stored.
+  const folder = getFolderByName_('CMAA');
+
+  const pdfFile = folder.createFile(blob);
+//   const pdfFile = DriveApp.createFile(blob);
+  
+ return pdfFile;
+}
+/**
+ * Test function to run getFolderByName_.
+ * @prints a Google Drive FolderId.
+ */
+ function test_getFolderByName() {
+
+  // Gets the PDF folder in Drive.
+  const folder = getFolderByName_(OUTPUT_FOLDER_NAME);
+
+  console.log(`Name: ${folder.getName()}\rID: ${folder.getId()}\rDescription: ${folder.getDescription()}`)
+  // To automatically delete test folder, uncomment the following code:
+  // folder.setTrashed(true);
+}
+function getFolderByName_(folderName) {
+
+  // Gets the Drive Folder of where the current spreadsheet is located.
+  const ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
+  const parentFolder = DriveApp.getFileById(ssId).getParents().next();
+
+  // Iterates the subfolders to check if the PDF folder already exists.
+  const subFolders = parentFolder.getFolders();
+  while (subFolders.hasNext()) {
+    let folder = subFolders.next();
+
+    // Returns the existing folder if found.
+    if (folder.getName() === folderName) {
+      return folder;
+    }
+  }
+  // Creates a new folder if one does not already exist.
+  return parentFolder.createFolder(folderName)
+    .setDescription(`Created by cmaa application to store PDF output files`);
+}
+
+function appendOneSparringScoresheet(targetSpreadsheet, ringPeople, virtRing, physRing, level) {
+  // make a new sheet in targetSpreadsheet and populate
+
+  // new sheet
+  var tempSheet = targetSpreadsheet.insertSheet('Ring ' + physRing)
 
   generateOneSparringBracketSheet(tempSheet, ringPeople, 0, 0, virtRing, physRing, level)
-  console.log('ajw 1')
 
+  // Save as pdf
+
+//  var tempId = tempSpreadsheet.getId()
+//  console.log(tempId)
+//  createPDF(tempId, tempSheet, level + ' bracket')
+
+
+//  throw new Error('stop')
   // now tempSheet has the bracket
-  appendSheetRangeToDocBody(tempSheet, 0, 0, 40, 6, body)
-  body.appendParagraph("").appendPageBreak()
-  console.log('ajw 2')
+//  appendSheetRangeToDocBody(tempSheet, 0, 0, 40, 6, body)
+//  body.appendParagraph("").appendPageBreak()
 
 }
 

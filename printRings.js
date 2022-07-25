@@ -2,7 +2,7 @@ function printScoresheets(level = "Beginner") {
   // Print the combined forms/sparring scoresheet for particular level
 
   // 
-  var targetDocName = level + " Score Sheets"
+  var targetDocName = level + " Forms Score Sheets"
 
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level)
 
@@ -15,6 +15,12 @@ function printScoresheets(level = "Beginner") {
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 
   // Iterate through the list of sorted physical rings
+  // For now, use a new spreadsheet.
+
+  var targetSheetName = level + " Sparring Score Sheets"
+  var targetSpreadsheet = createSpreadsheetFile(targetSheetName)
+
+
   for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
     var virtRing = physToVirtMap[physRingStr]
 
@@ -36,7 +42,7 @@ function printScoresheets(level = "Beginner") {
     var sparringPeople = virtRingPeople.filter((person) => person.sparring != "no")
     .sort(sortBySparringOrder)
 
-    appendOneSparringScoresheet(targetBody, sparringPeople, virtRing, physRingStr, level)
+    appendOneSparringScoresheet(targetSpreadsheet, sparringPeople, virtRing, physRingStr, level)
 
     console.log('Finished with sparring ring ' + physRingStr)
   }

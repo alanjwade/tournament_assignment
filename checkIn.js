@@ -123,6 +123,21 @@ function createSpreadsheetFile(fileName) {
   let newDoc = SpreadsheetApp.create(fileName)
   return newDoc
 }
+function createPDFFile(fileName) {
+  //This query parameter will search for an exact match of the filename with Doc file type
+  
+  let files = DriveApp.getFilesByName(fileName)
+  while (files.hasNext()) {
+    //Filename exist
+    var file = files.next()
+    ///Delete file
+    file.setTrashed(true)
+  }
+
+  //Create a new file
+  let newDoc = DriveApp.createFile(fileName)
+  return newDoc
+}
 
 // Returns a list of people in a particular virtual ring
 // Optionally also filter on forms or sparring
