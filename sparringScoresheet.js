@@ -196,10 +196,16 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     targetSheet.getRange(startRow + 32 + row + 2, startCol + 3 + col + 1).setValue("3rd")
 
     // Place header
-    generateSparringHeader(targetSheet, startRow + 2, startCol + 0, level, physRingStr, virtRing)
+    generateSparringHeader(targetSheet, startRow, startCol + 0, level, physRingStr, virtRing)
 
    // place table
-    finalPlaces(targetSheet, 2, 3)
+    finalPlaces(targetSheet, 1, 3)
+
+    // Set column widths
+    targetSheet.setColumnWidths(1, 5, 200)
+
+    // Set row heights
+    targetSheet.setRowHeights(1, 40, 35)
 }
 
 function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
@@ -223,7 +229,19 @@ function highlightOneMatch (targetSheet, startRow, startCol, round, startPositio
 }
 
 function generateSparringHeader(targetSheet, startRow, startCol, text, pRing, vRing) {
-  targetSheet.getRange(startRow + 1, startCol + 1).setValue(text + ' Sparring Bracket Ring ' + pRing)
+  var gv = globalVariables()
+  var physRingNumber = getPhysRingNumber(pRing)
+  var phyRingColor = gv.phyRingColorMap[physRingNumber]
+  var targetRange = targetSheet.getRange(startRow + 1, startCol + 1, 1, 5)
+  targetRange.setValues([[text + ' Sparring Bracket Ring ' + pRing, '', '', '', '']])
+  .setFontSize(16)
+  .setFontWeight("bold")
+  .setBackgroundColor(phyRingColor)
+
+  if (["black", "#0000ff"].includes(phyRingColor)) {
+    targetRange.setFontColor("white");
+  }
+
 }
 
 function borderOneCell(sheet, row, col, side) {
@@ -328,11 +346,11 @@ function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, ro
       thisPosition = personIndex - (numNextRound - numStart2Round)
     }
 
-    console.log('TP: ' + totalPeople)
     var [row, col] = getCoordinatesFromRoundPosition(thisRound, thisPosition)
 
  
-    targetSheet.getRange(startRow + row + 1, startCol + col + 1).setValue(peopleArr[personIndex]['sln'])
+    targetSheet.getRange(startRow + row + 1, startCol + col + 1)
+    .setValue(peopleArr[personIndex]['sfn'] + ' ' + peopleArr[personIndex]['sln'])
 
   }
 

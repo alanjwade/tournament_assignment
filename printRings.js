@@ -57,6 +57,16 @@ function printScoresheets(level = "Beginner") {
 
 }
 
+function getPhysRingNumber(physRingStr) {
+  var physArr = physRingStr.match(/\d+|\D+/g);
+
+  var x = parseInt(physArr[0]) - 1;
+  var physRingNumber = x + 1;
+
+  return physRingNumber
+
+}
+
 // Create the ring sheet for one level.
 function printRingsOneLevel(
   sourceSheetName,
