@@ -46,6 +46,11 @@ function printScoresheets(level = "Beginner") {
 
     console.log('Finished with sparring ring ' + physRingStr)
   }
+  // Remove the original sheet. Can't do that before if it's the only one,
+  // so wait until the others are made.
+  var origSheet = targetSpreadsheet.getSheetByName('Sheet1')
+  targetSpreadsheet.deleteSheet(origSheet)
+
 
   targetDoc.saveAndClose()
 
