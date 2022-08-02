@@ -63,6 +63,15 @@ function globalVariables() {
   return variables
 }
 
+function createTimeStamp() {
+  // Create a text timestamp
+  var thisTimeStr = new Date().toLocaleString('en-US', {
+    dateStyle: 'long',
+    timeStyle: 'long'
+  })
+  return thisTimeStr
+}
+
 function assignVRingsAll() {
   var levels = globalVariables().levels
   levels.forEach(level => assignVRings(level))

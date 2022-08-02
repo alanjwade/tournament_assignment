@@ -198,7 +198,10 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     // Place header
     generateSparringHeader(targetSheet, startRow, startCol + 0, level, physRingStr, virtRing)
 
-   // place table
+    // place timestamp
+    targetSheet.getRange(37, 1).setValue(createTimeStamp())
+
+    // place table
     finalPlaces(targetSheet, 1, 3)
 
     // Set column widths
@@ -210,6 +213,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     // Hide gridlines
     targetSheet.setHiddenGridlines(true)
 }
+
 
 function highlightOneMatch (targetSheet, startRow, startCol, round, startPosition, color, text) {
   // Highlight one match. round is starting at 1, startPosition is the first fighter.
