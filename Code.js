@@ -65,9 +65,11 @@ function globalVariables() {
 
 function createTimeStamp() {
   // Create a text timestamp
+  var userTimeZone = CalendarApp.getDefaultCalendar().getTimeZone()
   var thisTimeStr = new Date().toLocaleString('en-US', {
     dateStyle: 'long',
-    timeStyle: 'long'
+    timeStyle: 'long',
+    timeZone: userTimeZone
   })
   return thisTimeStr
 }
