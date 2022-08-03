@@ -63,6 +63,17 @@ function globalVariables() {
   return variables
 }
 
+function createTimeStamp() {
+  // Create a text timestamp
+  var userTimeZone = CalendarApp.getDefaultCalendar().getTimeZone()
+  var thisTimeStr = new Date().toLocaleString('en-US', {
+    dateStyle: 'long',
+    timeStyle: 'long',
+    timeZone: userTimeZone
+  })
+  return thisTimeStr
+}
+
 function assignVRingsAll() {
   var levels = globalVariables().levels
   levels.forEach(level => assignVRings(level))
