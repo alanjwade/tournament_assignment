@@ -133,13 +133,14 @@ function getFolderByName_(folderName) {
     .setDescription(`Created by cmaa application to store PDF output files`);
 }
 
-function appendOneSparringScoresheet(targetSpreadsheet, ringPeople, virtRing, physRing, level) {
+function appendOneSparringScoresheet(targetSpreadsheet, templateSheet, ringPeople, virtRing, physRing, level) {
   // make a new sheet in targetSpreadsheet and populate
 
   // new sheet
-  var tempSheet = targetSpreadsheet.insertSheet('Ring ' + physRing)
+  var targetSheet = templateSheet.copyTo(targetSpreadsheet).setName('Ring ' + physRing)
 
-  generateOneSparringBracketSheet(tempSheet, ringPeople, 0, 0, virtRing, physRing, level)
+  // assumes the template is already made
+  finishOneSparringBracketSheet(targetSheet, ringPeople, 0, 0, virtRing, physRing, level)
 
   // Save as pdf
 
@@ -155,13 +156,25 @@ function appendOneSparringScoresheet(targetSpreadsheet, ringPeople, virtRing, ph
 
 }
 
-function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, startCol, virtRing, physRingStr, level) {
+function finishOneSparringBracketSheet(targetSheet, ringPeople, startRow, startCol, virtRing, physRing, level) {
+  // Put people in a sheet that already had a template applied.
+  placePeopleInBracket(targetSheet, ringPeople, startRow + 3, startCol + 0, 5)
+ 
+  // Place header
+  generateSparringHeader(targetSheet, startRow, startCol + 0, level, physRing, virtRing)
+
+  // place timestamp
+  targetSheet.getRange(37, 1).setValue(createTimeStamp())
+
+
+}
+
+function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
     // Given a list of people in fighting order, print it to the given sheet.
 
     // Generate one bracket
-    generateOneSparringBracket(targetSheet, virtRingPeople, startRow + 3, startCol + 0, 5)
-    placePeopleInBracket(targetSheet, virtRingPeople, startRow + 3, startCol + 0, 5)
-    // Highlight Semifinal A and B
+    generateOneSparringBracket(targetSheet, startRow + 3, startCol + 0, 5)
+   // Highlight Semifinal A and B
     highlightOneMatch(targetSheet, startRow + 3, startCol + 0, 3, 0, "#b7e1cd", 'Semifinal Match A')
     highlightOneMatch(targetSheet, startRow + 3, startCol + 0, 3, 2, "#f9cb9c", 'Semifinal Match B')
     
@@ -180,7 +193,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
 
  
     // Generate the 3rd place bracket
-    generateOneSparringBracket(targetSheet, virtRingPeople, startRow + 32, startCol + 3, 2)
+    generateOneSparringBracket(targetSheet, startRow + 32, startCol + 3, 2)
 
     // Add highlights
     var [rowA, colA] = getCoordinatesFromRoundPosition(1, 0)
@@ -195,12 +208,7 @@ function generateOneSparringBracketSheet(targetSheet, virtRingPeople, startRow, 
     var [row, col] = getCoordinatesFromRoundPosition(2, 0)
     targetSheet.getRange(startRow + 32 + row + 2, startCol + 3 + col + 1).setValue("3rd")
 
-    // Place header
-    generateSparringHeader(targetSheet, startRow, startCol + 0, level, physRingStr, virtRing)
-
-    // place timestamp
-    targetSheet.getRange(37, 1).setValue(createTimeStamp())
-
+    
     // place table
     finalPlaces(targetSheet, 1, 3)
 
@@ -363,13 +371,9 @@ function placePeopleInBracket(targetSheet, peopleArr, startRow=0, startCol=0, ro
 
 }
   
-function generateOneSparringBracket(targetSheet, peopleArr, startRow = 0, startCol = 0, rounds = 5) {
+function generateOneSparringBracket(targetSheet, startRow = 0, startCol = 0, rounds = 5) {
     // Generate a single sparring bracket
 
-    var totalPeople = peopleArr.length
-    // Determine the number of rounds
-
-    //var rounds = Math.ceil(Math.log2(totalPeople))
 
     var curCol = 0;
 

@@ -31,13 +31,13 @@ function onOpen() {
       .addItem('Auto Assign level 3 rings', 'assignVRingsL3')
       .addItem('Auto Assign black belt rings', 'assignVRingsBB')
       .addToUi();
-  ui.createMenu('Print Rings')
-      .addItem('populate all rings', 'makeRings')
-      .addItem('populate beginner rings', 'makeBRings')
-      .addItem('populate level 1 rings', 'makeL1Rings')
-      .addItem('populate level 2 rings', 'makeL2Rings')
-      .addItem('populate level 3 rings', 'makeL3Rings')
-      .addItem('populate black belt rings', 'makeBBRings')
+  ui.createMenu('Generate Overview')
+      .addItem('generate overview for all rings', 'generateOverview')
+      .addItem('generate overview for beginner rings', 'generateOverviewBRings')
+      .addItem('generate overview for level 1 rings', 'generateOverviewL1Rings')
+      .addItem('generate overview for level 2 rings', 'generateOverviewL2Rings')
+      .addItem('generate overview for level 3 rings', 'generateOverviewL3Rings')
+      .addItem('generate overview for black belt rings', 'generateOverviewBBRings')
       .addSeparator()
       .addToUi();
 }
@@ -71,7 +71,7 @@ function createTimeStamp() {
     timeStyle: 'long',
     timeZone: userTimeZone
   })
-  return thisTimeStr
+  return 'Created ' + thisTimeStr
 }
 
 function assignVRingsAll() {
@@ -95,58 +95,58 @@ function assignVRingsBB() {
 }
 
 function printRemappedAllRings() {
-    makeRings(false, false, useRemapping = true);
+    generateOverview(false, false, useRemapping = true);
 }
 function printRemappedBRings() {
-    makeRings('Beginner', false, useRemapping = true);
+    generateOverview('Beginner', false, useRemapping = true);
 }
 function printRemappedL1Rings() {
-    makeRings('Level 1', false, useRemapping = true);
+    generateOverview('Level 1', false, useRemapping = true);
 }
 function printRemappedL2Rings() {
-    makeRings('Level 2', false, useRemapping = true);
+    generateOverview('Level 2', false, useRemapping = true);
 }
 function printRemappedL3Rings() {
-    makeRings('Level 3', false, useRemapping = true);
+    generateOverview('Level 3', false, useRemapping = true);
 }
 function printRemappedBBRings() {
-    makeRings('Black Belt', false, useRemapping = true);
+    generateOverview('Black Belt', false, useRemapping = true);
 }
 
-function makeBRings() {
-    makeRings('Beginner');
+function generateOverviewBRings() {
+    generateOverview('Beginner');
 }
-function makeL1Rings() {
-    makeRings('Level 1');
+function generateOverviewL1Rings() {
+    generateOverview('Level 1');
 }
-function makeL2Rings() {
-    makeRings('Level 2');
+function generateOverviewL2Rings() {
+    generateOverview('Level 2');
 }
-function makeL3Rings() {
-    makeRings('Level 3');
+function generateOverviewL3Rings() {
+    generateOverview('Level 3');
 }
-function makeBBRings() {
-    makeRings('Black Belt');
+function generateOverviewBBRings() {
+    generateOverview('Black Belt');
 }
 
 function makeAllRingsCalculated() {
-  makeRings(false, true);
+  generateOverview(false, true);
 }
 
 function makeBRingsCalculated() {
-  makeRings('Beginner', true);
+  generateOverview('Beginner', true);
 }
 function makeL1Calculated() {
-  makeRings('Level 1', true);
+  generateOverview('Level 1', true);
 }
 function makeL2Calculated() {
-  makeRings('Level 2', true);
+  generateOverview('Level 2', true);
 }
 function makeL3Calculated() {
-  makeRings('Level 3', true);
+  generateOverview('Level 3', true);
 }
 function makeBBRingsCalculated() {
-  makeRings('Black Belt', true);
+  generateOverview('Black Belt', true);
 }
 
 function genAgeSchoolBeginner() {

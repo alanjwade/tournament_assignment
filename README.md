@@ -20,6 +20,12 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
       * In here, put the same number for every person that are at the same ability level. For example, maybe you want 9 and 10 year olds together, so you'd give them all a grouping of 4 (assuming you had groupings 1-3 already assigned for younger kids). Technically the actual number itself isn't significant, but it may help to keep the rings in ascending age order.
     * "Virtual Ring"
       * Leave this blank. The script will fill in this column, although you will be able to tweak it later.
-3. Run the 'Calculate' step from the menu.
-4. Adjust the 'Virtual Ring' column to make changes.
-5. repeat steps 3 and 4.
+    * "Form Order"
+    * "Sparring Order"
+3. Run the 'Assign Virtual Rings' step from the menu.
+    * This will fill in the "Virtual Rings", "Form Order", and "Sparring Order" columns. It will use an algorithm to try to not have 3 people from the same school first for forms, and it will try to keep the first round of sparring heights 'close' and not have people from the same school spar as much as possible (in the first round).
+4. Fill in the 'Virtual to Physical Mapping' table on the registration sheet.
+5. Adjust the 'Virtual Ring', 'Form Order", and "Sparring Order" columns to make changes.
+6. repeat steps 3 through 5 until satisfied. Run 'Generate overview' to get the sheet that has all the ring assignments on it.
+7. Run the 'Generate forms scoresheet', 'Generate sparring scoresheet', 'Generate checkin sheet' to get the final deliverables.
+8. Print hard copies of the sheets.

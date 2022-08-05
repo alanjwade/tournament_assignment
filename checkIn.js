@@ -123,6 +123,27 @@ function createSpreadsheetFile(fileName) {
   let newDoc = SpreadsheetApp.create(fileName)
   return newDoc
 }
+
+function getSpreadsheetByName(filename) {
+  var files = DriveApp.getFilesByName(filename);
+  while (files.hasNext()) {
+    var file = files.next()
+    var ss = SpreadsheetApp.open(file)
+    return ss
+  }
+  return null
+}
+function getDocByName(filename) {
+  var files = DriveApp.getFilesByName(filename);
+  while (files.hasNext()) {
+    var file = files.next()
+    var doc = DocumentApp.openById(file.getId())
+    return doc
+  }
+  return null
+}
+
+
 function createPDFFile(fileName) {
   //This query parameter will search for an exact match of the filename with Doc file type
   

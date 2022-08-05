@@ -6,8 +6,8 @@ function printScoresheets(level = "Beginner") {
 
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level)
 
-  var targetDoc = createDocFile(targetDocName)
-  targetDoc.setText('')
+  var targetDoc = getDocByName(targetDocName)
+  targetDoc.getBody().clear()
 
   var targetBody = targetDoc.getBody()
   var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
@@ -18,7 +18,29 @@ function printScoresheets(level = "Beginner") {
   // For now, use a new spreadsheet.
 
   var targetSheetName = level + " Sparring Score Sheets"
-  var targetSpreadsheet = createSpreadsheetFile(targetSheetName)
+  //var targetSpreadsheet = createSpreadsheetFile(targetSheetName)
+
+  var targetSpreadsheet = getSpreadsheetByName(targetSheetName)
+  if (targetSpreadsheet == null) {
+    throw new Error
+  }
+
+  // Add one dummy one here
+  var tmp = targetSpreadsheet.getSheetByName('template')
+  if (tmp != null) {
+    targetSpreadsheet.deleteSheet(tmp)
+  }
+
+  // delete all the sheets to start over, except one called 'template'
+  var allSheets = targetSpreadsheet.getSheets()
+
+  templateSheet = targetSpreadsheet.insertSheet('template')
+  makeOneSparringBracketSheetTemplate(templateSheet, 0, 0)
+
+  for (var i = 0; i < allSheets.length; i++) {
+    targetSpreadsheet.deleteSheet(allSheets[i])
+  }
+
 
 
   for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
@@ -42,14 +64,13 @@ function printScoresheets(level = "Beginner") {
     var sparringPeople = virtRingPeople.filter((person) => person.sparring != "no")
     .sort(sortBySparringOrder)
 
-    appendOneSparringScoresheet(targetSpreadsheet, sparringPeople, virtRing, physRingStr, level)
+    appendOneSparringScoresheet(targetSpreadsheet, templateSheet, sparringPeople, virtRing, physRingStr, level)
 
     console.log('Finished with sparring ring ' + physRingStr)
   }
-  // Remove the original sheet. Can't do that before if it's the only one,
+  // Remove the dummy sheet. Can't do that before if it's the only one,
   // so wait until the others are made.
-  var origSheet = targetSpreadsheet.getSheetByName('Sheet1')
-  targetSpreadsheet.deleteSheet(origSheet)
+  targetSpreadsheet.deleteSheet(templateSheet)
 
 
   targetDoc.saveAndClose()

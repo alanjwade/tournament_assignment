@@ -431,7 +431,7 @@ function applyAgeSchoolRank(sortedAgeBySchool) {
 }
 
 // Entry point. Do all the levels, or pick one to do.
-function makeRings(
+function generateOverview(
   level = false,
   readFromCalcRings = false,
   useRemapping = false
