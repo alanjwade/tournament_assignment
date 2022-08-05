@@ -29,3 +29,16 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
 6. repeat steps 3 through 5 until satisfied. Run 'Generate overview' to get the sheet that has all the ring assignments on it.
 7. Run the 'Generate forms scoresheet', 'Generate sparring scoresheet', 'Generate checkin sheet' to get the final deliverables.
 8. Print hard copies of the sheets.
+
+
+## How ring assignment is determined
+  * Students are divided up be school. Within the school, they are ordered by age.
+  * They are then given a fractional number based on their order with their school
+    * if 3 people in the school, the numbers would be 0, .333, and .666
+    * if 4 people, 0, .25, .5, .75
+  * Then, all the students are put back into a single list
+  * This list is then divided up into how many rings are needed for the particular grouping.
+## How form order is determined
+  * Inside a particular ring, the names are hashed and sorted.
+## How sparring order is determined
+  * Inside a particular ring, the people are ordered by height.

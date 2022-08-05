@@ -167,10 +167,12 @@ function printRing(
   // Get an array of formers
   var formerArr = [];
   for (var i = 0; i < peopleArr.length; i++) {
-    if (peopleArr[i].form != "No") {
+    if (peopleArr[i].form.toLowerCase() != "no") {
       formerArr.push(peopleArr[i]);
     }
   }
+  formerArr = formerArr.sort(sortByFormOrder)
+
   var formHeaderRows = printFormsHeader(
     targetSheet,
     startRow,
@@ -184,10 +186,11 @@ function printRing(
   // Get an array of sparrers
   var sparrerArr = [];
   for (var i = 0; i < peopleArr.length; i++) {
-    if (peopleArr[i].sparring != "No") {
+    if (peopleArr[i].sparring.toLowerCase != "no") {
       sparrerArr.push(peopleArr[i]);
     }
   }
+  sparrerArr = sparrerArr.sort(sortBySparringOrder)
   var numSparrers = sparrerArr.length;
 
   var sparHeaderRows = printSparHeader(
@@ -286,7 +289,7 @@ function printMainHeader(
 
   // set background color
   cells = targetSheet.getRange(startRow, startCol, 1, 7);
-  cells.setBackgroundColor(phyRingColor);
+  cells.setBackgroundColor(phyRingColor).mergeAcross();
   // change font color if black
   if (["black", "#0000ff"].includes(phyRingColor)) {
     cells.setFontColor("white");
@@ -295,8 +298,8 @@ function printMainHeader(
   cells
     .setValue("(virtual ring " + ring + ")")
     .setFontSize(16)
-    .setFontWeight("bold");
-
+    .setFontWeight("bold")
+  targetSheet.getRange(startRow + 1, startCol, 1, 7).mergeAcross()
   return 2; // the number of rows printed
 }
 

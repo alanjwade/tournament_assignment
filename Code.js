@@ -4,7 +4,6 @@
 // Check-in sheet: Alphabetical sheet with all names in a division along with physical ring
 // Ring sheet: Ordered list (by criteria included separating people from same schools) of people doing forms
 // Sparring bracket: Filled-out bracket of all sparrers in a ring (with 3rd place bracket available and place to fill in 1st through 4th)
-
 // Operations (all per division)
 // Assign virtual rings
 // Assign physical rings based on map
@@ -20,7 +19,7 @@
 
 
 function onOpen() {
-  var ui = SpreadsheetApp.getUi();
+  var ui = SpreadsheetApp.getUi()
   // Or DocumentApp or FormApp.
   ui.createMenu('Assign Virtual Rings')
       .addItem('Auto Assign all rings', 'assignVRingsAll')
@@ -30,7 +29,7 @@ function onOpen() {
       .addItem('Auto Assign level 2 rings', 'assignVRingsL2')
       .addItem('Auto Assign level 3 rings', 'assignVRingsL3')
       .addItem('Auto Assign black belt rings', 'assignVRingsBB')
-      .addToUi();
+      .addToUi()
   ui.createMenu('Generate Overview')
       .addItem('generate overview for all rings', 'generateOverview')
       .addItem('generate overview for beginner rings', 'generateOverviewBRings')
@@ -39,8 +38,27 @@ function onOpen() {
       .addItem('generate overview for level 3 rings', 'generateOverviewL3Rings')
       .addItem('generate overview for black belt rings', 'generateOverviewBBRings')
       .addSeparator()
-      .addToUi();
+      .addToUi()
+  ui.createMenu('Generate Checkin Sheets')
+      .addItem('generate checkin sheet for all rings', 'generateCheckinAll')
+      .addItem('generate checkin sheet for beginner rings', 'generateCheckinBRings')
+      .addItem('generate checkin sheet for level 1 rings', 'generateCheckinL1Rings')
+      .addItem('generate checkin sheet for level 2 rings', 'generateCheckinL2Rings')
+      .addItem('generate checkin sheet for level 3 rings', 'generateCheckinL3Rings')
+      .addItem('generate checkin sheet for black belt rings', 'generateCheckinBBRings')
+      .addSeparator()
+      .addToUi()
+  ui.createMenu('Generate Score Sheets')
+      .addItem('generate score sheet for all rings',        'generateScoreAll')
+      .addItem('generate score sheet for beginner rings',   'generateScoreBRings')
+      .addItem('generate score sheet for level 1 rings',    'generateScoreL1Rings')
+      .addItem('generate score sheet for level 2 rings',    'generateScoreL2Rings')
+      .addItem('generate score sheet for level 3 rings',    'generateScoreL3Rings')
+      .addItem('generate score sheet for black belt rings', 'generateScoreBBRings')
+      .addSeparator()
+      .addToUi()
 }
+
 
 function globalVariables() {
   var variables = {
@@ -61,6 +79,46 @@ function globalVariables() {
                       14: "#b4a7d6"}
   }
   return variables
+}
+
+function generateCheckinAll () {
+  var levels = globalVariables().levels
+  levels.forEach(level => printCheckinSheet(level))
+}
+function generateCheckinBRings() {
+  printCheckinSheet('Beginner')
+}
+function generateCheckinL1Rings() {
+  printCheckinSheet('Level 1')
+}
+function generateCheckinL2Rings() {
+  printCheckinSheet('Level 2')
+}
+function generateCheckinL3Rings() {
+  printCheckinSheet('Level 3')
+}
+function generateCheckinBBRings() {
+  printCheckinSheet('Black Belt')
+}
+
+function generateScoreAll () {
+  var levels = globalVariables().levels
+  levels.forEach(level => printScoresheets(level))
+}
+function generateScoreBRings() {
+  printScoresheets('Beginner')
+}
+function generateScoreL1Rings() {
+  printScoresheets('Level 1')
+}
+function generateScoreL2Rings() {
+  printScoresheets('Level 2')
+}
+function generateScoreL3Rings() {
+  printScoresheets('Level 3')
+}
+function generateScoreBBRings() {
+  printScoresheets('Black Belt')
 }
 
 function createTimeStamp() {
