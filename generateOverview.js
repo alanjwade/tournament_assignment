@@ -53,7 +53,7 @@ function printScoresheets(level = "Beginner") {
 
     // Make the forms scoresheet
     // filter on doing forms and then sort
-    var formsPeople = virtRingPeople.filter((person) => person.forms != "no")
+    var formsPeople = virtRingPeople.filter((person) => person.forms.toLowerCase() != "no")
     .sort(sortByFormOrder)
 
     appendOneFormsScoresheet(targetBody, formsPeople, virtRing, physRingStr, level)
@@ -61,7 +61,7 @@ function printScoresheets(level = "Beginner") {
   
     // Make the sparring scoresheet
     // filter on doing forms and then sort
-    var sparringPeople = virtRingPeople.filter((person) => person.sparring != "no")
+    var sparringPeople = virtRingPeople.filter((person) => person.sparring.toLowerCase() != "no")
     .sort(sortBySparringOrder)
 
     appendOneSparringScoresheet(targetSpreadsheet, templateSheet, sparringPeople, virtRing, physRingStr, level)
@@ -89,7 +89,7 @@ function getPhysRingNumber(physRingStr) {
 }
 
 // Create the ring sheet for one level.
-function printRingsOneLevel(
+function generateOverviewOneLevel(
   sourceSheetName,
   readFromCalcRings = false,
   useRemapping = false
@@ -134,7 +134,7 @@ function printRingsOneLevel(
     var startRow = 1 + 25 * y;
 
     var peopleInThisVRing = peopleArr.filter((person) => person.vRing == vRing);
-    printRing(
+    generateOverviewOneRing(
       targetSheet,
       startCol,
       startRow,
@@ -143,10 +143,13 @@ function printRingsOneLevel(
       physRingStr,
       phyRingColorMap[physRingNumber]
     );
+
+    // Generate a timestamp
+    targetSheet.getRange(51, 1).setValue(createTimeStamp())
   }
 }
 
-function printRing(
+function generateOverviewOneRing(
   targetSheet,
   startCol,
   startRow,
@@ -186,7 +189,7 @@ function printRing(
   // Get an array of sparrers
   var sparrerArr = [];
   for (var i = 0; i < peopleArr.length; i++) {
-    if (peopleArr[i].sparring.toLowerCase != "no") {
+    if (peopleArr[i].sparring.toLowerCase() != "no") {
       sparrerArr.push(peopleArr[i]);
     }
   }

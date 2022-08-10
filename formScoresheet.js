@@ -16,7 +16,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     var virtRing = physToVirtMap[physRingStr]
 
     var virtRingPeople = peopleArr
-      .filter((person) => person.vRing == virtRing && person.form != "no")
+      .filter((person) => person.vRing == virtRing && person.form.toLowerCase() != "no")
       .sort(sortByFormOrder)
 
     // Now, virtRingPeople has all the people in one virt ring AND is doing forms

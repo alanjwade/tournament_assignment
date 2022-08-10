@@ -50,7 +50,7 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
-    var formPeople = vRingPeopleArr.filter((person) => person.form != "no")
+    var formPeople = vRingPeopleArr.filter((person) => person.form.toLowerCase() != "no")
     var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
     for (var index = 0; index < inFormOrder.length; index++) {
       sourceSheet
@@ -64,7 +64,7 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Figure out and assign the order for sparring.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
-    var sparPeople = vRingPeopleArr.filter((person) => person.sparring != "no")
+    var sparPeople = vRingPeopleArr.filter((person) => person.sparring.toLowerCase() != "no")
     var inSparOrder = applySortOrder(sparPeople, sortByHeight, "sparRank")
     for (var index = 0; index < inSparOrder.length; index++) {
       sourceSheet
@@ -440,10 +440,10 @@ function generateOverview(
   const catArr = globalVariables().levels
 
   if (level) {
-    printRingsOneLevel(level, readFromCalcRings, (useRemapping = useRemapping))
+    generateOverviewOneLevel(level, readFromCalcRings, (useRemapping = useRemapping))
   } else {
     for (var i = 0; i < catArr.length; i++) {
-      printRingsOneLevel(
+      generateOverviewOneLevel(
         catArr[i],
         readFromCalcRings,
         (useRemapping = useRemapping)

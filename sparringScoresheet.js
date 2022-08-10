@@ -21,7 +21,7 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
       var virtRing = physToVirtMap[physRingStr]
   
       var virtRingPeople = peopleArr
-        .filter((person) => person.vRing == virtRing && person.sparring != "no")
+        .filter((person) => person.vRing == virtRing && person.sparring.toLowerCase() != "no")
         .sort(sortBySparringOrder)
 
         generateOneSparringBracketSheet(targetSheet, virtRingPeople, 0, 0, physRingStr, virtRing, sourceSheetName)
