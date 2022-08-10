@@ -20,7 +20,10 @@ function printScoresheets(level = "Beginner") {
   var targetSheetName = level + " Sparring Score Sheets"
   //var targetSpreadsheet = createSpreadsheetFile(targetSheetName)
 
-  var targetSpreadsheet = getSpreadsheetByName(targetSheetName)
+  //var targetSpreadsheet = getSpreadsheetByName(targetSheetName)
+
+  var targetSpreadsheet = openOrCreateSpreadsheetInFolder(targetSheetName)
+
   if (targetSpreadsheet == null) {
     throw new Error
   }
@@ -53,7 +56,7 @@ function printScoresheets(level = "Beginner") {
 
     // Make the forms scoresheet
     // filter on doing forms and then sort
-    var formsPeople = virtRingPeople.filter((person) => person.forms.toLowerCase() != "no")
+    var formsPeople = virtRingPeople.filter((person) => person.form.toLowerCase() != "no")
     .sort(sortByFormOrder)
 
     appendOneFormsScoresheet(targetBody, formsPeople, virtRing, physRingStr, level)

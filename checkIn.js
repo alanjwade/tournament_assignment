@@ -124,6 +124,44 @@ function createSpreadsheetFile(fileName) {
   return newDoc
 }
 
+function fileExistsInFolder(filename,folder){
+  // from   https://stackoverflow.com/questions/39685232/google-script-test-for-file-existance
+    
+      var file   = folder.getFilesByName(filename)
+      if(!file.hasNext()){
+         return false
+      }
+      else{
+         return file[0]
+      }
+  }
+  
+  
+  function openOrCreateSpreadsheetInFolder(filename) {
+    // Get this spreadsheet
+    var ss = SpreadsheetApp.getActive()
+  
+  
+    // Get the folder. Hopefully there's just one. Pick it
+    var directParent = DriveApp.getFileById(ss.getId()).getParents().next()
+  
+    // See if there's the 'filename' in this directory.
+    file = fileExistsInFolder(filename, directParent)
+    if (file) {
+     return file
+    }
+    else {
+        // Create the file
+      
+      var ssNew = SpreadsheetApp.create(filename)
+
+      // Move it to the folder
+      var ssFileId = ssNew.getId()
+
+      return ssNew
+    }
+  }
+
 function getSpreadsheetByName(filename) {
   var files = DriveApp.getFilesByName(filename);
   while (files.hasNext()) {
