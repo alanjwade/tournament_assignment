@@ -430,27 +430,6 @@ function applyAgeSchoolRank(sortedAgeBySchool) {
   return tmpSchoolAgeSorted
 }
 
-// Entry point. Do all the levels, or pick one to do.
-function generateOverview(
-  level = false,
-  readFromCalcRings = false,
-  useRemapping = false
-) {
-  var thisSpreadSheet = currentSpreadsheet()
-  const catArr = globalVariables().levels
-
-  if (level) {
-    generateOverviewOneLevel(level, readFromCalcRings, (useRemapping = useRemapping))
-  } else {
-    for (var i = 0; i < catArr.length; i++) {
-      generateOverviewOneLevel(
-        catArr[i],
-        readFromCalcRings,
-        (useRemapping = useRemapping)
-      )
-    }
-  }
-}
 
 // Translates a ring number into a physical ring location
 // return: string ring, x, and y (x and y are 1-based)
