@@ -22,7 +22,7 @@ function printScoresheets(level = "Beginner") {
 
   //var targetSpreadsheet = getSpreadsheetByName(targetSheetName)
 
-  var targetSpreadsheet = openOrCreateSpreadsheetInFolder(targetSheetName)
+  var targetSpreadsheet = openOrCreateFileInFolder(targetSheetName, isSpreadsheet = true)
 
   if (targetSpreadsheet == null) {
     throw new Error

@@ -124,43 +124,59 @@ function createSpreadsheetFile(fileName) {
   return newDoc
 }
 
-function fileExistsInFolder(filename,folder){
+function fileExistsInFolder(filename, folder) {
   // from   https://stackoverflow.com/questions/39685232/google-script-test-for-file-existance
-    
-      var file   = folder.getFilesByName(filename)
-      if(!file.hasNext()){
-         return false
-      }
-      else{
-         return file[0]
-      }
+
+  console.log('looking in ' + folder.getName() + ' for ' + filename)
+  var file = folder.getFilesByName(filename)
+  console.log('hasNext: ' + file.hasNext())
+  if (file.hasNext()) {
+    return file.next()
   }
-  
-  
-  function openOrCreateSpreadsheetInFolder(filename) {
-    // Get this spreadsheet
-    var ss = SpreadsheetApp.getActive()
-  
-  
-    // Get the folder. Hopefully there's just one. Pick it
-    var directParent = DriveApp.getFileById(ss.getId()).getParents().next()
-  
-    // See if there's the 'filename' in this directory.
-    file = fileExistsInFolder(filename, directParent)
-    if (file) {
-     return file
+  else {
+    return false
+  }
+}
+
+
+function openOrCreateFileInFolder(filename, isSpreadsheet) {
+  // Get this spreadsheet
+  var ss = SpreadsheetApp.getActive()
+
+
+  // Get the folder. Hopefully there's just one. Pick it
+  var parentFolder = DriveApp.getFileById(ss.getId()).getParents().next()
+  console.log('looking for ' + filename + ' in ' + parentFolder.getName())
+
+  // See if there's the 'filename' in this directory.
+  var file = fileExistsInFolder(filename, parentFolder)
+  if (file) {
+    console.log('Found ' + filename + ', returning it')
+    if (isSpreadsheet) {
+      return SpreadsheetApp.open(file)
     }
     else {
-        // Create the file
-      
-      var ssNew = SpreadsheetApp.create(filename)
-
-      // Move it to the folder
-      var ssFileId = ssNew.getId()
-
-      return ssNew
+      return Document.open(file)
     }
   }
+  else {
+    // Create the file
+    console.log('Did not find ' + filename)
+    if (isSpreadsheet) {
+      var newDoc = SpreadsheetApp.create(filename)
+    }
+    else {
+      var newDoc = Document.create(filename)
+    }
+
+    // Move it to the folder
+    var newFile = DriveApp.getFileById(newDoc.getId())
+
+    newFile.moveTo(parentFolder)
+
+    return newDoc
+  }
+}
 
 function getSpreadsheetByName(filename) {
   var files = DriveApp.getFilesByName(filename);
@@ -184,7 +200,7 @@ function getDocByName(filename) {
 
 function createPDFFile(fileName) {
   //This query parameter will search for an exact match of the filename with Doc file type
-  
+
   let files = DriveApp.getFilesByName(fileName)
   while (files.hasNext()) {
     //Filename exist
