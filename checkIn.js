@@ -1,6 +1,5 @@
 function printCheckinSheet(levelName = "Beginner") {
-  var targetSheetName = levelName + " checkin"
-  var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
+  var targetDocName = levelName + " checkin"
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
   var [peopleArr, virtToPhysMap, groupingTable] = readTableIntoArr(sourceSheet)
@@ -19,14 +18,10 @@ function printCheckinSheet(levelName = "Beginner") {
     ])
   })
 
-  targetSheet
-    .getRange(1, 1, buffer.length, 4)
-    .setValues(buffer)
-    .setNumberFormat("@")
-
   targetDocName = levelName + " docs"
 
-  targetDoc = createDocFile(targetSheetName)
+//  targetDoc = createDocFile(targetSheetName)
+  var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false)
   var body = targetDoc.getBody()
   var style = {}
   style[DocumentApp.Attribute.FONT_SIZE] = 8
@@ -156,7 +151,7 @@ function openOrCreateFileInFolder(filename, isSpreadsheet) {
       return SpreadsheetApp.open(file)
     }
     else {
-      return Document.open(file)
+      return DocumentApp.openById(file.getId())
     }
   }
   else {
@@ -166,7 +161,7 @@ function openOrCreateFileInFolder(filename, isSpreadsheet) {
       var newDoc = SpreadsheetApp.create(filename)
     }
     else {
-      var newDoc = Document.create(filename)
+      var newDoc = DocumentApp.create(filename)
     }
 
     // Move it to the folder

@@ -6,7 +6,8 @@ function printScoresheets(level = "Beginner") {
 
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level)
 
-  var targetDoc = getDocByName(targetDocName)
+  //var targetDoc = getDocByName(targetDocName)
+  var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false   )
   targetDoc.getBody().clear()
 
   var targetBody = targetDoc.getBody()
