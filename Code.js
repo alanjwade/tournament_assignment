@@ -30,6 +30,14 @@ function onOpen() {
       .addItem('Auto Assign level 3 rings', 'assignVRingsL3')
       .addItem('Auto Assign black belt rings', 'assignVRingsBB')
       .addToUi()
+  ui.createMenu('Generate Collateral')
+      .addItem('generate collateral for all rings', 'generateCollateral')
+      .addItem('generate collateral for beginner rings', 'generateCollateralB')
+      .addItem('generate collateral for level 1 rings', 'generateCollateralL1')
+      .addItem('generate collateral for level 2 rings', 'generateCollateralL2')
+      .addItem('generate collateral for level 3 rings', 'generateCollateralL3')
+      .addItem('generate collateral for black belt rings', 'generateCollateralBB')
+      .addToUi()
   ui.createMenu('Generate Overview')
       .addItem('generate overview for all rings', 'generateOverview')
       .addItem('generate overview for beginner rings', 'generateOverviewBRings')
@@ -79,6 +87,34 @@ function globalVariables() {
                       14: "#b4a7d6"}
   }
   return variables
+}
+
+function generateCollateral() {
+  generateCollateralB()
+  generateCollateralL1()
+  generateCollateralL2()
+  generateCollateralL3()
+  generateCollateralBB()
+}
+function generateCollateralB() {
+  generateCollateral('Beginner')
+}
+function generateCollateralL1() {
+  generateCollateral('Level 1')
+}
+function generateCollateralL2() {
+  generateCollateral('Level 2')
+}
+function generateCollateralL3() {
+  generateCollateral('Level 3')
+}
+function generateCollateralBB() {
+  generateCollateral('Black Belt')
+}
+function generateCollateral(level) {
+  generateOverview(level);
+  printCheckinSheet(level)
+  printScoresheets(level)
 }
 
 function generateCheckinAll () {

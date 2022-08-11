@@ -18,7 +18,6 @@ function printCheckinSheet(levelName = "Beginner") {
     ])
   })
 
-  targetDocName = levelName + " docs"
 
 //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false)
