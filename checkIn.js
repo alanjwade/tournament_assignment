@@ -11,8 +11,6 @@ function printCheckinSheet(levelName = "Beginner") {
 
   //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false)
-  var body = targetDoc.getBody()
-  body.clear()
   var tableSize = {}
   tableSize[DocumentApp.Attribute.FONT_SIZE] = 8
   var headerSize = {}
@@ -31,6 +29,8 @@ function printCheckinSheet(levelName = "Beginner") {
   var timeStamp = createTimeStamp()
   var buffer = []
   // initial paragraph
+  var body = targetDoc.getBody()
+  body.clear()
   var paragraph = body.getParagraphs()[0]
   for (var i = 0; i < peopleArr.length; i++) {
     // After 25 or the end, put in a new page
@@ -53,9 +53,12 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable.setColumnWidth(3, 100)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
-      body.appendParagraph('Page ' + curPage++ + '/' + totalPages + ' ' + timeStamp)
-      paragraph = body.appendParagraph("")
-      paragraph.appendPageBreak()
+      var bottomParagraph = body.appendParagraph('Page ' + curPage++ + '/' + totalPages + ' ' + timeStamp)
+      bottomParagraph.appendPageBreak()
+
+      if (i < peopleArr.length-1) {
+         paragraph = body.appendParagraph("")
+      }
       buffer = []
     }
   }
