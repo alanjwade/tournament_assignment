@@ -7,35 +7,59 @@ function printCheckinSheet(levelName = "Beginner") {
   peopleArr.sort(sortLastFirst)
 
   // 2-d array to store text in before printing it to the sheet
-  var buffer = [["First Name", "Last Name", "School", "Physical Ring"]]
+  var headBuffer = ["First Name", "Last Name", "School", "Physical Ring"]
 
-  peopleArr.forEach((person) => {
-    buffer.push([
-      person.sfn,
-      person.sln,
-      person.school.toString(),
-      virtToPhysMap[person.vRing].toString(),
-    ])
-  })
-
-
-//  targetDoc = createDocFile(targetSheetName)
+  //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false)
   var body = targetDoc.getBody()
-  var style = {}
-  style[DocumentApp.Attribute.FONT_SIZE] = 8
-  checkinTable = body.clear().appendTable(buffer)
-  checkinTable.setAttributes(style)
-  checkinTable.setColumnWidth(0, 80)
-  checkinTable.setColumnWidth(1, 80)
-  checkinTable.setColumnWidth(2, 150)
-  checkinTable.setColumnWidth(3, 50)
-  style = {}
-  style[DocumentApp.Attribute.BOLD] = true
-  checkinTable.getRow(0).setAttributes(style)
-  targetDoc.saveAndClose()
+  body.clear()
+  var tableSize = {}
+  tableSize[DocumentApp.Attribute.FONT_SIZE] = 8
+  var headerSize = {}
+  headerSize[DocumentApp.Attribute.FONT_SIZE] = 12
+  var checkTitle = levelName + ' Checkin Sheet'
+  
+  var boldAttr = {}
+  boldAttr[DocumentApp.Attribute.BOLD] = true
+  var unboldAttr = {}
+  unboldAttr[DocumentApp.Attribute.BOLD] = false
 
-  console.log("hi")
+  // Put 25 people on a page
+  const numPeoplePerPage = 20
+  const totalPages = Math.ceil(peopleArr.length / numPeoplePerPage)
+  var curPage = 1
+  var timeStamp = createTimeStamp()
+  var buffer = []
+  // initial paragraph
+  var paragraph = body.getParagraphs()[0]
+  for (var i = 0; i < peopleArr.length; i++) {
+    // After 25 or the end, put in a new page
+    buffer.push([peopleArr[i].sfn,
+    peopleArr[i].sln,
+    peopleArr[i].school.toString(),
+    virtToPhysMap[peopleArr[i].vRing].toString()])
+    if ((i % numPeoplePerPage == (numPeoplePerPage - 1)) || (i == peopleArr.length - 1)) {
+      buffer.unshift(headBuffer)
+
+      //body.appendParagraph(checkTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
+      paragraph.appendText(checkTitle)
+      paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+      checkinTable = body.appendTable(buffer)
+      checkinTable.setAttributes(unboldAttr)
+      checkinTable.setAttributes(tableSize)
+      checkinTable.setColumnWidth(0, 80)
+      checkinTable.setColumnWidth(1, 80)
+      checkinTable.setColumnWidth(2, 150)
+      checkinTable.setColumnWidth(3, 100)
+      checkinTable.getRow(0).setAttributes(boldAttr)
+      checkinTable.getRow(0).setAttributes(headerSize)
+      body.appendParagraph('Page ' + curPage++ + '/' + totalPages + ' ' + timeStamp)
+      paragraph = body.appendParagraph("")
+      paragraph.appendPageBreak()
+      buffer = []
+    }
+  }
+  targetDoc.saveAndClose()
 }
 
 function printFormsSheets(levelName = "Beginner") {
