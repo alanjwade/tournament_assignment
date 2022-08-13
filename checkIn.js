@@ -23,7 +23,7 @@ function printCheckinSheet(levelName = "Beginner") {
   unboldAttr[DocumentApp.Attribute.BOLD] = false
 
   // Put 25 people on a page
-  const numPeoplePerPage = 20
+  const numPeoplePerPage = 25
   const totalPages = Math.ceil(peopleArr.length / numPeoplePerPage)
   var curPage = 1
   var timeStamp = createTimeStamp()
@@ -42,8 +42,9 @@ function printCheckinSheet(levelName = "Beginner") {
       buffer.unshift(headBuffer)
 
       //body.appendParagraph(checkTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
-      paragraph.appendText(checkTitle)
+      paragraph.appendText(checkTitle + ' Page ' + curPage++ + '/' + totalPages)
       paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+      paragraph.setSpacingBefore(0)
       checkinTable = body.appendTable(buffer)
       checkinTable.setAttributes(unboldAttr)
       checkinTable.setAttributes(tableSize)
@@ -53,7 +54,7 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable.setColumnWidth(3, 100)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
-      var bottomParagraph = body.appendParagraph('Page ' + curPage++ + '/' + totalPages + ' ' + timeStamp)
+      var bottomParagraph = body.appendParagraph(timeStamp)
       bottomParagraph.appendPageBreak()
 
       if (i < peopleArr.length-1) {
