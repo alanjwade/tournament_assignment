@@ -1,5 +1,5 @@
 function printCheckinSheet(levelName = "Beginner") {
-  var targetDocName = levelName + " checkin"
+  var targetDocName = levelName + " Checkin"
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
   var [peopleArr, virtToPhysMap, groupingTable] = readTableIntoArr(sourceSheet)

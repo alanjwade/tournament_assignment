@@ -53,7 +53,8 @@ function assignVRings(sourceSheetName = "Beginner") {
     var formPeople = vRingPeopleArr.filter(
       (person) => person.form.toLowerCase() != "no"
     )
-    var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
+    //var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
+    var inFormOrder = applyFormOrder(formPeople)
     for (var index = 0; index < inFormOrder.length; index++) {
       sourceSheet
         .getRange(
