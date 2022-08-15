@@ -4,7 +4,6 @@ function generateOverview(
   readFromCalcRings = false,
   useRemapping = false
 ) {
-  var thisSpreadSheet = currentSpreadsheet()
   const catArr = globalVariables().levels
 
   if (level) {
@@ -35,16 +34,37 @@ function getPhysRingNumber(physRingStr) {
 
 // Create the ring sheet for one level.
 function generateOverviewOneLevel(
-  sourceSheetName,
+  level,
   readFromCalcRings = false,
   useRemapping = false
 ) {
-  // sourceSheetName must be the sheet name for one of the levels.
-  // "sourceSheetName Rings" must be another existing sheet. The target will be cleared each time.
+  // level must be the sheet name for one of the levels.
+  // "level Rings" must be another existing sheet. The target will be cleared each time.
 
-  var targetSheetName = sourceSheetName + " Rings"
-  var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
+  var targetSheetName = level + " Rings"
+
+  // Open or create a separate spreadsheet
+  var targetSpreadsheet = openOrCreateFileInFolder(
+    level + ' Overview', (isSpreadSheet = true)
+  )
+
+  // If the sheet doesn't exist make it
+  if (targetSpreadsheet.getSheetByName(targetSheetName) == null) {
+    targetSpreadsheet.insertSheet(targetSheetName)
+  }
+  var targetSheet = targetSpreadsheet.getSheetByName(targetSheetName)
+
+
+  // Remove all other sheets
+  var allTargetSheets = targetSpreadsheet.getSheets()
+  for (var i=0; i<allTargetSheets.length - 1; i++) {
+    if (allTargetSheets[i].getName() != targetSheetName) {
+      targetSpreadsheet.deleteSheet(allTargetSheets[i])
+    }
+  }
+
+  //var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
+  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level)
 
   // Clear the target to redo form
   targetSheet.clear()
