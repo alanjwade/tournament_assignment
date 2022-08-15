@@ -91,6 +91,9 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 
   targetDoc = createDocFile(targetDocName)
+  var body = targetDoc.getBody()
+  body.clear()
+  var paragraph = body.getParagraphs()[0]
 
   // Iterate through the list of sorted physical rings
   for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
@@ -101,7 +104,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
       .sort(sortByFormOrder)
 
     // Now, virtRingPeople has all the people in one virt ring AND is doing forms
-    var body = targetDoc.getBody()
+    var timeStamp = createTimeStamp()
     var style = {}
     style[DocumentApp.Attribute.FONT_SIZE] = 8
     var buffer = [
@@ -122,15 +125,25 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
       virtRing +
       " Physical Ring " +
       physRingStr
-    body.appendParagraph(formTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
-    body.appendTable(buffer)
-    body.appendParagraph("").appendPageBreak()
+    paragraph.appendText(formTitle)
+    paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+    paragraph.setSpacingBefore(0)
+    formTable = body.appendTable(buffer)
+    formTable.setColumnWidth(0, 80)
+    formTable.setColumnWidth(1,80)
+    formTable.setColumnWidth(2,150)
+    formTable.setColumnWidth(3, 50)
+    formTable.setColumnWidth(4, 50)
+    formTable.setColumnWidth(5, 50)
+    formTable.setColumnWidth(5, 50)
+    formTable.setColumnWidth(5, 50)
+    var bottomParagraph = body.appendParagraph(timestamp)
+
+    bottomParagraph.appendPageBreak()
+    paragraph = body.appendParagraph('')
   }
-  // Figure out what virtual rings there are.
 
   targetDoc.saveAndClose()
-
-  // Get the target doc.
 }
 
 function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
@@ -141,6 +154,9 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var buffer = [
     ["First Name", "Last Name", "School", "Ring", "Score 1", "Score 2", "Score 3", "Final Score"]]
 
+  var paragraphs = body.getParagraphs()
+  var paragraph = paragraphs[paragraphs.length - 1]
+  var timeStamp = createTimeStamp()
   for (var i = 0; i < ringPeople.length; i++) {
     buffer.push([
       ringPeople[i]["sfn"],
@@ -156,9 +172,23 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     virtRing +
     " Physical Ring " +
     physRing
-  body.appendParagraph(formTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
-  body.appendTable(buffer)
-  body.appendParagraph("").appendPageBreak()
+  paragraph.appendText(formTitle)
+  paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+  paragraph.setSpacingBefore(0)
+  formTable = body.appendTable(buffer)
+  formTable.setColumnWidth(0, 80)
+  formTable.setColumnWidth(1,80)
+  formTable.setColumnWidth(2,120)
+  formTable.setColumnWidth(3, 50)
+  formTable.setColumnWidth(4, 40)
+  formTable.setColumnWidth(5, 40)
+  formTable.setColumnWidth(5, 40)
+  formTable.setColumnWidth(5, 40)
+  var bottomParagraph = body.appendParagraph(timeStamp)
+
+  bottomParagraph.appendPageBreak()
+  paragraph = body.appendParagraph('')
+
 }
 
 // sort function for form order.
