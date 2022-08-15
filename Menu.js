@@ -30,7 +30,7 @@ function onOpen() {
     .addItem("Auto Assign black belt rings", "assignVRingsBB")
     .addToUi()
   ui.createMenu("Generate Collateral")
-    .addItem("generate collateral for all rings", "generateCollateral")
+    .addItem("generate collateral for all rings", "generateCollateralAll")
     .addItem("generate collateral for beginner rings", "generateCollateralB")
     .addItem("generate collateral for level 1 rings", "generateCollateralL1")
     .addItem("generate collateral for level 2 rings", "generateCollateralL2")
@@ -110,7 +110,7 @@ function globalVariables() {
   return variables
 }
 
-function generateCollateral() {
+function generateCollateralAll() {
   generateCollateralB()
   generateCollateralL1()
   generateCollateralL2()

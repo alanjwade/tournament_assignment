@@ -196,6 +196,18 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     ],
   ]
 
+  body.setMarginLeft(40)
+  body.setMarginRight(25)
+  var boldAttr = {}
+  boldAttr[DocumentApp.Attribute.BOLD] = true
+  var unboldAttr = {}
+  unboldAttr[DocumentApp.Attribute.BOLD] = false
+  var tableStyle = {};
+  tableStyle[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT] = DocumentApp.HorizontalAlignment.CENTER;
+  var cellStyle = {};
+  cellStyle[DocumentApp.Attribute.BORDER_WIDTH] = 2.25; 
+  cellStyle[DocumentApp.Attribute.BORDER_COLOR] = '#ffffff';
+
   // Get the last paragraph, so we don't end up with a space before the first form
   var paragraphs = body.getParagraphs()
   var paragraph = paragraphs[paragraphs.length - 1]
@@ -218,14 +230,32 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
   paragraph.setSpacingBefore(0)
   formTable = body.appendTable(buffer)
+  formTable.setAttributes(unboldAttr)
   formTable.setColumnWidth(0, 80)
   formTable.setColumnWidth(1, 80)
-  formTable.setColumnWidth(2, 120)
-  formTable.setColumnWidth(3, 50)
-  formTable.setColumnWidth(4, 40)
-  formTable.setColumnWidth(5, 40)
-  formTable.setColumnWidth(5, 40)
-  formTable.setColumnWidth(5, 40)
+  formTable.setColumnWidth(2, 100)
+  formTable.setColumnWidth(3, 35)
+  formTable.setColumnWidth(4, 50)
+  formTable.setColumnWidth(5, 50)
+  formTable.setColumnWidth(6, 50)
+  formTable.setColumnWidth(7, 50)
+  formTable.getRow(0).setAttributes(boldAttr)
+
+  // supposed to center, but the API doesn't do it yet
+  formTable.setAttributes(tableStyle)
+
+  var numRows = formTable.getNumRows()
+  for (var i=1; i<numRows; i++) {
+    var cell = formTable.getCell(i, 7)
+    cell.setAttributes(cellStyle)
+    // Final cell color
+    cell.setBackgroundColor('#efefef')
+    // Score cell color
+    formTable.getCell(i, 4).setBackgroundColor('#cccccc')
+    formTable.getCell(i, 5).setBackgroundColor('#cccccc')
+    formTable.getCell(i, 6).setBackgroundColor('#cccccc')
+  }
+
   var bottomParagraph = body.appendParagraph(timeStamp)
 
   bottomParagraph.appendPageBreak()
