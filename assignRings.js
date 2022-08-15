@@ -50,7 +50,9 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
-    var formPeople = vRingPeopleArr.filter((person) => person.form.toLowerCase() != "no")
+    var formPeople = vRingPeopleArr.filter(
+      (person) => person.form.toLowerCase() != "no"
+    )
     var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
     for (var index = 0; index < inFormOrder.length; index++) {
       sourceSheet
@@ -64,7 +66,9 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Figure out and assign the order for sparring.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
-    var sparPeople = vRingPeopleArr.filter((person) => person.sparring.toLowerCase() != "no")
+    var sparPeople = vRingPeopleArr.filter(
+      (person) => person.sparring.toLowerCase() != "no"
+    )
     var inSparOrder = applySortOrder(sparPeople, sortByHeight, "sparRank")
     for (var index = 0; index < inSparOrder.length; index++) {
       sourceSheet
@@ -429,7 +433,6 @@ function applyAgeSchoolRank(sortedAgeBySchool) {
 
   return tmpSchoolAgeSorted
 }
-
 
 // Translates a ring number into a physical ring location
 // return: string ring, x, and y (x and y are 1-based)

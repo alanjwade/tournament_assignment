@@ -1,86 +1,103 @@
 function printScoresheets(level = "Beginner") {
   // Print the combined forms/sparring scoresheet for particular level
-  // 
-  var targetDocName = level + " Forms Score Sheets";
+  //
+  var targetDocName = level + " Forms Score Sheets"
 
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level);
+  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(level)
 
   //var targetDoc = getDocByName(targetDocName)
-  var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false);
-  targetDoc.getBody().clear();
+  var targetDoc = openOrCreateFileInFolder(
+    targetDocName,
+    (isSpreadsheet = false)
+  )
+  targetDoc.getBody().clear()
 
-  var targetBody = targetDoc.getBody();
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet);
+  var targetBody = targetDoc.getBody()
+  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
 
-  var physToVirtMap = physToVirtMapInv(virtToPhysMap);
+  var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 
   // Iterate through the list of sorted physical rings
   // For now, use a new spreadsheet.
-  var targetSheetName = level + " Sparring Score Sheets";
+  var targetSheetName = level + " Sparring Score Sheets"
   //var targetSpreadsheet = createSpreadsheetFile(targetSheetName)
   //var targetSpreadsheet = getSpreadsheetByName(targetSheetName)
-  var targetSpreadsheet = openOrCreateFileInFolder(targetSheetName, isSpreadsheet = true);
+  var targetSpreadsheet = openOrCreateFileInFolder(
+    targetSheetName,
+    (isSpreadsheet = true)
+  )
 
   if (targetSpreadsheet == null) {
-    throw new Error;
+    throw new Error()
   }
 
   // Add one dummy one here
-  var tmp = targetSpreadsheet.getSheetByName('template');
+  var tmp = targetSpreadsheet.getSheetByName("dummy")
+  if (tmp == null) {
+    targetSpreadsheet.insertSheet("dummy")
+  }
+
+  var tmp = targetSpreadsheet.getSheetByName("template")
   if (tmp != null) {
-    targetSpreadsheet.deleteSheet(tmp);
+    targetSpreadsheet.deleteSheet(tmp)
   }
 
   // delete all the sheets to start over, except one called 'template'
-  var allSheets = targetSpreadsheet.getSheets();
+  var allSheets = targetSpreadsheet.getSheets()
 
-  templateSheet = targetSpreadsheet.insertSheet('template');
-  makeOneSparringBracketSheetTemplate(templateSheet, 0, 0);
+  templateSheet = targetSpreadsheet.insertSheet("template")
+  makeOneSparringBracketSheetTemplate(templateSheet, 0, 0)
 
   for (var i = 0; i < allSheets.length; i++) {
-    targetSpreadsheet.deleteSheet(allSheets[i]);
+    targetSpreadsheet.deleteSheet(allSheets[i])
   }
 
-
-
   for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
-    var virtRing = physToVirtMap[physRingStr];
-
+    var virtRing = physToVirtMap[physRingStr]
 
     // Get all the people in one virtRing, whether forms, sparring, or both
-    var virtRingPeople = peopleArr
-      .filter((person) => person.vRing == virtRing);
+    var virtRingPeople = peopleArr.filter((person) => person.vRing == virtRing)
 
     // Make the forms scoresheet
     // filter on doing forms and then sort
-    var formsPeople = virtRingPeople.filter((person) => person.form.toLowerCase() != "no")
-      .sort(sortByFormOrder);
+    var formsPeople = virtRingPeople
+      .filter((person) => person.form.toLowerCase() != "no")
+      .sort(sortByFormOrder)
 
-    appendOneFormsScoresheet(targetBody, formsPeople, virtRing, physRingStr, level);
-    console.log('Finished with forms ring ' + physRingStr);
+    appendOneFormsScoresheet(
+      targetBody,
+      formsPeople,
+      virtRing,
+      physRingStr,
+      level
+    )
+    console.log("Finished with forms ring " + physRingStr)
 
     // Make the sparring scoresheet
     // filter on doing forms and then sort
-    var sparringPeople = virtRingPeople.filter((person) => person.sparring.toLowerCase() != "no")
-      .sort(sortBySparringOrder);
+    var sparringPeople = virtRingPeople
+      .filter((person) => person.sparring.toLowerCase() != "no")
+      .sort(sortBySparringOrder)
 
-    appendOneSparringScoresheet(targetSpreadsheet, templateSheet, sparringPeople, virtRing, physRingStr, level);
+    appendOneSparringScoresheet(
+      targetSpreadsheet,
+      templateSheet,
+      sparringPeople,
+      virtRing,
+      physRingStr,
+      level
+    )
 
-    console.log('Finished with sparring ring ' + physRingStr);
+    console.log("Finished with sparring ring " + physRingStr)
   }
   // Remove the dummy sheet. Can't do that before if it's the only one,
   // so wait until the others are made.
-  targetSpreadsheet.deleteSheet(templateSheet);
+  targetSpreadsheet.deleteSheet(templateSheet)
 
-
-  targetDoc.saveAndClose();
-
-
+  targetDoc.saveAndClose()
 }
 
-
 // Create a doc with all the forms sheets
-
 
 function generateFormsSheet(sourceSheetName = "Beginner") {
   var targetDocName = sourceSheetName + " Forms Rings"
@@ -100,7 +117,10 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     var virtRing = physToVirtMap[physRingStr]
 
     var virtRingPeople = peopleArr
-      .filter((person) => person.vRing == virtRing && person.form.toLowerCase() != "no")
+      .filter(
+        (person) =>
+          person.vRing == virtRing && person.form.toLowerCase() != "no"
+      )
       .sort(sortByFormOrder)
 
     // Now, virtRingPeople has all the people in one virt ring AND is doing forms
@@ -108,7 +128,16 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     var style = {}
     style[DocumentApp.Attribute.FONT_SIZE] = 8
     var buffer = [
-      ["First Name", "Last Name", "School", "Virtual Ring", "Score 1", "Score 2", "Score 3", "Final Score"],
+      [
+        "First Name",
+        "Last Name",
+        "School",
+        "Virtual Ring",
+        "Score 1",
+        "Score 2",
+        "Score 3",
+        "Final Score",
+      ],
     ]
     for (var i = 0; i < virtRingPeople.length; i++) {
       buffer.push([
@@ -116,7 +145,10 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
         virtRingPeople[i]["sln"],
         virtRingPeople[i]["school"],
         virtRingPeople[i]["vRing"],
-        "", "", "", ""
+        "",
+        "",
+        "",
+        "",
       ])
     }
     var formTitle =
@@ -130,8 +162,8 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     paragraph.setSpacingBefore(0)
     formTable = body.appendTable(buffer)
     formTable.setColumnWidth(0, 80)
-    formTable.setColumnWidth(1,80)
-    formTable.setColumnWidth(2,150)
+    formTable.setColumnWidth(1, 80)
+    formTable.setColumnWidth(2, 150)
     formTable.setColumnWidth(3, 50)
     formTable.setColumnWidth(4, 50)
     formTable.setColumnWidth(5, 50)
@@ -140,7 +172,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     var bottomParagraph = body.appendParagraph(timestamp)
 
     bottomParagraph.appendPageBreak()
-    paragraph = body.appendParagraph('')
+    paragraph = body.appendParagraph("")
   }
 
   targetDoc.saveAndClose()
@@ -152,8 +184,19 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var style = {}
   style[DocumentApp.Attribute.FONT_SIZE] = 8
   var buffer = [
-    ["First Name", "Last Name", "School", "Ring", "Score 1", "Score 2", "Score 3", "Final Score"]]
+    [
+      "First Name",
+      "Last Name",
+      "School",
+      "Ring",
+      "Score 1",
+      "Score 2",
+      "Score 3",
+      "Final Score",
+    ],
+  ]
 
+  // Get the last paragraph, so we don't end up with a space before the first form
   var paragraphs = body.getParagraphs()
   var paragraph = paragraphs[paragraphs.length - 1]
   var timeStamp = createTimeStamp()
@@ -163,22 +206,21 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
       ringPeople[i]["sln"],
       ringPeople[i]["school"],
       physRing,
-      "", "", "", ""
+      "",
+      "",
+      "",
+      "",
     ])
   }
   var formTitle =
-    level +
-    " Virtual Ring " +
-    virtRing +
-    " Physical Ring " +
-    physRing
+    level + " Virtual Ring " + virtRing + " Physical Ring " + physRing
   paragraph.appendText(formTitle)
   paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
   paragraph.setSpacingBefore(0)
   formTable = body.appendTable(buffer)
   formTable.setColumnWidth(0, 80)
-  formTable.setColumnWidth(1,80)
-  formTable.setColumnWidth(2,120)
+  formTable.setColumnWidth(1, 80)
+  formTable.setColumnWidth(2, 120)
   formTable.setColumnWidth(3, 50)
   formTable.setColumnWidth(4, 40)
   formTable.setColumnWidth(5, 40)
@@ -187,8 +229,7 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var bottomParagraph = body.appendParagraph(timeStamp)
 
   bottomParagraph.appendPageBreak()
-  paragraph = body.appendParagraph('')
-
+  paragraph = body.appendParagraph("")
 }
 
 // sort function for form order.

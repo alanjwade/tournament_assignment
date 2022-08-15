@@ -10,13 +10,16 @@ function printCheckinSheet(levelName = "Beginner") {
   var headBuffer = ["First Name", "Last Name", "School", "Physical Ring"]
 
   //  targetDoc = createDocFile(targetSheetName)
-  var targetDoc = openOrCreateFileInFolder(targetDocName, isSpreadsheet = false)
+  var targetDoc = openOrCreateFileInFolder(
+    targetDocName,
+    (isSpreadsheet = false)
+  )
   var tableSize = {}
   tableSize[DocumentApp.Attribute.FONT_SIZE] = 8
   var headerSize = {}
   headerSize[DocumentApp.Attribute.FONT_SIZE] = 12
-  var checkTitle = levelName + ' Checkin Sheet'
-  
+  var checkTitle = levelName + " Checkin Sheet"
+
   var boldAttr = {}
   boldAttr[DocumentApp.Attribute.BOLD] = true
   var unboldAttr = {}
@@ -34,15 +37,20 @@ function printCheckinSheet(levelName = "Beginner") {
   var paragraph = body.getParagraphs()[0]
   for (var i = 0; i < peopleArr.length; i++) {
     // After 25 or the end, put in a new page
-    buffer.push([peopleArr[i].sfn,
-    peopleArr[i].sln,
-    peopleArr[i].school.toString(),
-    virtToPhysMap[peopleArr[i].vRing].toString()])
-    if ((i % numPeoplePerPage == (numPeoplePerPage - 1)) || (i == peopleArr.length - 1)) {
+    buffer.push([
+      peopleArr[i].sfn,
+      peopleArr[i].sln,
+      peopleArr[i].school.toString(),
+      virtToPhysMap[peopleArr[i].vRing].toString(),
+    ])
+    if (
+      i % numPeoplePerPage == numPeoplePerPage - 1 ||
+      i == peopleArr.length - 1
+    ) {
       buffer.unshift(headBuffer)
 
       //body.appendParagraph(checkTitle).setHeading(DocumentApp.ParagraphHeading.HEADING1)
-      paragraph.appendText(checkTitle + ' Page ' + curPage++ + '/' + totalPages)
+      paragraph.appendText(checkTitle + " Page " + curPage++ + "/" + totalPages)
       paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
       paragraph.setSpacingBefore(0)
       checkinTable = body.appendTable(buffer)
@@ -57,8 +65,8 @@ function printCheckinSheet(levelName = "Beginner") {
       var bottomParagraph = body.appendParagraph(timeStamp)
       bottomParagraph.appendPageBreak()
 
-      if (i < peopleArr.length-1) {
-         paragraph = body.appendParagraph("")
+      if (i < peopleArr.length - 1) {
+        paragraph = body.appendParagraph("")
       }
       buffer = []
     }
@@ -149,45 +157,39 @@ function createSpreadsheetFile(fileName) {
 function fileExistsInFolder(filename, folder) {
   // from   https://stackoverflow.com/questions/39685232/google-script-test-for-file-existance
 
-  console.log('looking in ' + folder.getName() + ' for ' + filename)
+  console.log("looking in " + folder.getName() + " for " + filename)
   var file = folder.getFilesByName(filename)
-  console.log('hasNext: ' + file.hasNext())
+  console.log("hasNext: " + file.hasNext())
   if (file.hasNext()) {
     return file.next()
-  }
-  else {
+  } else {
     return false
   }
 }
-
 
 function openOrCreateFileInFolder(filename, isSpreadsheet) {
   // Get this spreadsheet
   var ss = SpreadsheetApp.getActive()
 
-
   // Get the folder. Hopefully there's just one. Pick it
   var parentFolder = DriveApp.getFileById(ss.getId()).getParents().next()
-  console.log('looking for ' + filename + ' in ' + parentFolder.getName())
+  console.log("looking for " + filename + " in " + parentFolder.getName())
 
   // See if there's the 'filename' in this directory.
   var file = fileExistsInFolder(filename, parentFolder)
   if (file) {
-    console.log('Found ' + filename + ', returning it')
+    console.log("Found " + filename + ", returning it")
     if (isSpreadsheet) {
       return SpreadsheetApp.open(file)
-    }
-    else {
+    } else {
       return DocumentApp.openById(file.getId())
     }
-  }
-  else {
+  } else {
     // Create the file
-    console.log('Did not find ' + filename)
+    console.log("Did not find " + filename)
     if (isSpreadsheet) {
       var newDoc = SpreadsheetApp.create(filename)
-    }
-    else {
+    } else {
       var newDoc = DocumentApp.create(filename)
     }
 
@@ -201,7 +203,7 @@ function openOrCreateFileInFolder(filename, isSpreadsheet) {
 }
 
 function getSpreadsheetByName(filename) {
-  var files = DriveApp.getFilesByName(filename);
+  var files = DriveApp.getFilesByName(filename)
   while (files.hasNext()) {
     var file = files.next()
     var ss = SpreadsheetApp.open(file)
@@ -210,7 +212,7 @@ function getSpreadsheetByName(filename) {
   return null
 }
 function getDocByName(filename) {
-  var files = DriveApp.getFilesByName(filename);
+  var files = DriveApp.getFilesByName(filename)
   while (files.hasNext()) {
     var file = files.next()
     var doc = DocumentApp.openById(file.getId())
@@ -218,7 +220,6 @@ function getDocByName(filename) {
   }
   return null
 }
-
 
 function createPDFFile(fileName) {
   //This query parameter will search for an exact match of the filename with Doc file type
