@@ -90,7 +90,7 @@ function onOpen() {
 function globalVariables() {
   var variables = {
     levels: ["Beginner", "Level 1", "Level 2", "Level 3", "Black Belt"],
-    phyRingColorMap: {
+    physRingColorMap: {
       1: "#ff0000", // red
       2: "#ffa500", // orange
       3: "#ffff00", // yellow
@@ -105,7 +105,7 @@ function globalVariables() {
       12: "#6fa8dc",
       13: "#b6d7a8",
       14: "#b4a7d6",
-    },
+    }
   }
   return variables
 }
@@ -114,7 +114,7 @@ function getRingBackgroundColors(physRingStr) {
 
   var physArr = physRingStr.match(/\d+|\D+/g)
   var physRingNumber = parseInt(physArr[0])
-  var backgroundColor = globalVariables().phyRingColorMap[physRingNumber]
+  var backgroundColor = globalVariables().physRingColorMap[physRingNumber]
   var foregroundColor
   if (["#000000", "#0000ff", "#8441be"].includes(backgroundColor)) {
     foregroundColor = "#ffffff" // white

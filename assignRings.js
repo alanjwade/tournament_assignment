@@ -450,14 +450,14 @@ function physicalRing(ring, totalRings, numPhysicalRings) {
     y = 1
   } else {
     if (ring <= doubleUps * 2) {
-      var phyRing = Math.floor((ring + 1) / 2)
+      var physRing = Math.floor((ring + 1) / 2)
       if (ring % 2 == 1) {
-        retPhysRing = phyRing + "a"
-        x = phyRing
+        retPhysRing = physRing + "a"
+        x = physRing
         y = 1
       } else {
-        retPhysRing = phyRing + "b"
-        x = phyRing
+        retPhysRing = physRing + "b"
+        x = physRing
         y = 2
       }
     } else {

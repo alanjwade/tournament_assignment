@@ -116,14 +116,14 @@ function generateOverviewOneRing(
   startRow,
   ringId,
   peopleArr,
-  phyRing
+  physRing
 ) {
   var mainHeaderRows = printMainHeader(
     targetSheet,
     startRow,
     startCol,
     ringId,
-    phyRing
+    physRing
   )
 
   // Get an array of formers
@@ -240,16 +240,16 @@ function printMainHeader(
   startRow,
   startCol,
   ring,
-  phyRing
+  physRing
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
   cells
-    .setValue("Ring " + phyRing)
+    .setValue("Ring " + physRing)
     .setFontSize(20)
     .setFontWeight("bold")
 
   // set background color
-  var [foregroundcolor, backgroundColor] = getRingBackgroundColors(phyRing)
+  var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
   cells = targetSheet.getRange(startRow, startCol, 1, 7)
   cells.setBackgroundColor(backgroundColor).setFontColor(foregroundcolor).mergeAcross()
   cells = targetSheet.getRange(startRow + 1, startCol)
