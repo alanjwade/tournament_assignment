@@ -75,8 +75,6 @@ function generateOverviewOneLevel(
     readFromCalcRings
   )
 
-  var phyRingColorMap = globalVariables().phyRingColorMap
-
   // Need to get all the vrings here
 
   var x
@@ -87,7 +85,6 @@ function generateOverviewOneLevel(
     var physArr = physRingStr.match(/\d+|\D+/g)
 
     x = parseInt(physArr[0]) - 1
-    var physRingNumber = x + 1
     if (physArr[1] == "b") {
       y = 1
     } else {
@@ -105,8 +102,7 @@ function generateOverviewOneLevel(
       startRow,
       vRing,
       peopleInThisVRing,
-      physRingStr,
-      phyRingColorMap[physRingNumber]
+      physRingStr
     )
 
     // Generate a timestamp
@@ -120,16 +116,14 @@ function generateOverviewOneRing(
   startRow,
   ringId,
   peopleArr,
-  phyRing,
-  phyRingColor = null
+  phyRing
 ) {
   var mainHeaderRows = printMainHeader(
     targetSheet,
     startRow,
     startCol,
     ringId,
-    phyRing,
-    phyRingColor
+    phyRing
   )
 
   // Get an array of formers
@@ -246,8 +240,7 @@ function printMainHeader(
   startRow,
   startCol,
   ring,
-  phyRing,
-  phyRingColor
+  phyRing
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
   cells
@@ -256,12 +249,9 @@ function printMainHeader(
     .setFontWeight("bold")
 
   // set background color
+  var [foregroundcolor, backgroundColor] = getRingBackgroundColors(phyRing)
   cells = targetSheet.getRange(startRow, startCol, 1, 7)
-  cells.setBackgroundColor(phyRingColor).mergeAcross()
-  // change font color if black
-  if (["black", "#0000ff"].includes(phyRingColor)) {
-    cells.setFontColor("white")
-  }
+  cells.setBackgroundColor(backgroundColor).setFontColor(foregroundcolor).mergeAcross()
   cells = targetSheet.getRange(startRow + 1, startCol)
   cells
     .setValue("(virtual ring " + ring + ")")
