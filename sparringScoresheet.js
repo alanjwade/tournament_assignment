@@ -359,20 +359,17 @@ function generateSparringHeader(
   pRing,
   vRing
 ) {
-  var gv = globalVariables()
-  var physRingNumber = getPhysRingNumber(pRing)
-  var phyRingColor = gv.phyRingColorMap[physRingNumber]
+  var [foregroundcolor, backgroundColor] = getRingBackgroundColors(pRing)
   targetSheet.getRange(startRow + 1, startCol + 1, 1, 5).mergeAcross()
+
+  // Set the header and the colors
   targetSheet
     .getRange(startRow + 1, startCol + 1)
     .setValue(text + " Sparring Bracket Ring " + pRing)
     .setFontSize(16)
     .setFontWeight("bold")
-    .setBackgroundColor(phyRingColor)
-
-  if (["black", "#0000ff"].includes(phyRingColor)) {
-    targetSheet.getRange(startRow + 1, startCol + 1).setFontColor("white")
-  }
+    .setBackgroundColor(backgroundColor)
+    .setFontColor(foregroundcolor)
 }
 
 function borderOneCell(sheet, row, col, side) {

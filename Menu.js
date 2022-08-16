@@ -91,15 +91,15 @@ function globalVariables() {
   var variables = {
     levels: ["Beginner", "Level 1", "Level 2", "Level 3", "Black Belt"],
     phyRingColorMap: {
-      1: "red",
-      2: "orange",
-      3: "yellow",
+      1: "#ff0000", // red
+      2: "#ffa500", // orange
+      3: "#ffff00", // yellow
       4: "#34a853",
       5: "#0000ff",
       6: "#fd2670",
-      7: "#8441be",
+      7: "#8441be", // purpleish
       8: "#999999",
-      9: "black",
+      9: "#000000", // black
       10: "#b68a46",
       11: "#f78db3",
       12: "#6fa8dc",
@@ -109,6 +109,22 @@ function globalVariables() {
   }
   return variables
 }
+function getRingBackgroundColors(physRingStr) {
+  // Given a string line 4a, return the foreground and background colors to use.
+
+  var physArr = physRingStr.match(/\d+|\D+/g)
+  var physRingNumber = parseInt(physArr[0])
+  var backgroundColor = globalVariables().phyRingColorMap[physRingNumber]
+  var foregroundColor
+  if (["#000000", "#0000ff", "#8441be"].includes(backgroundColor)) {
+    foregroundColor = "#ffffff" // white
+  }
+  else {
+    foregroundColor = "#000000" // black
+  }
+  return [foregroundColor, backgroundColor]
+}
+
 
 function generateCollateralAll() {
   generateCollateralB()

@@ -7,7 +7,7 @@ function printCheckinSheet(levelName = "Beginner") {
   peopleArr.sort(sortLastFirst)
 
   // 2-d array to store text in before printing it to the sheet
-  var headBuffer = ["First Name", "Last Name", "School", "Physical Ring"]
+  var headBuffer = ["First Name", "Last Name", "School", "Ring"]
 
   //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(
@@ -15,9 +15,9 @@ function printCheckinSheet(levelName = "Beginner") {
     (isSpreadsheet = false)
   )
   var tableSize = {}
-  tableSize[DocumentApp.Attribute.FONT_SIZE] = 8
+  tableSize[DocumentApp.Attribute.FONT_SIZE] = 12
   var headerSize = {}
-  headerSize[DocumentApp.Attribute.FONT_SIZE] = 12
+  headerSize[DocumentApp.Attribute.FONT_SIZE] = 14
   var checkTitle = levelName + " Checkin Sheet"
 
   var boldAttr = {}
@@ -57,11 +57,19 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable.setAttributes(unboldAttr)
       checkinTable.setAttributes(tableSize)
       checkinTable.setColumnWidth(0, 80)
-      checkinTable.setColumnWidth(1, 80)
+      checkinTable.setColumnWidth(1, 100)
       checkinTable.setColumnWidth(2, 150)
-      checkinTable.setColumnWidth(3, 100)
+      checkinTable.setColumnWidth(3, 50)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
+
+      // set the padding to 0 all around for all the cells
+      for (var r=0; r<checkinTable.getNumRows(); r++) {
+        for (var c=0; c<4; c++) {
+          checkinTable.getCell(r,c).setPaddingTop(0).setPaddingBottom(0)
+        }
+      }
+
       var bottomParagraph = body.appendParagraph(timeStamp)
       bottomParagraph.appendPageBreak()
 

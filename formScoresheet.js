@@ -153,9 +153,7 @@ function generateFormsSheet(sourceSheetName = "Beginner") {
     }
     var formTitle =
       sourceSheetName +
-      " Virt Ring " +
-      virtRing +
-      " Physical Ring " +
+      "  Ring " +
       physRingStr
     paragraph.appendText(formTitle)
     paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
@@ -225,9 +223,13 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     ])
   }
   var formTitle =
-    level + " Virtual Ring " + virtRing + " Physical Ring " + physRing
-  paragraph.appendText(formTitle)
+    level +  "  Ring " + physRing
+  var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
+  var titleText = paragraph.appendText(formTitle)
   paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+  titleText.setBackgroundColor(backgroundColor)
+  titleText.setForegroundColor(foregroundcolor)
+ 
   paragraph.setSpacingBefore(0)
   formTable = body.appendTable(buffer)
   formTable.setAttributes(unboldAttr)
