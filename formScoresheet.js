@@ -223,7 +223,7 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     ])
   }
   var formTitle =
-    level +  "  Ring " + physRing
+    level +  " Ring " + physRing
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
   var titleText = paragraph.appendText(formTitle)
   paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)

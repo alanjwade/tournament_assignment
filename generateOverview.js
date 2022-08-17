@@ -250,25 +250,42 @@ function printMainHeader(
 
   // set background color
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
-  cells = targetSheet.getRange(startRow, startCol, 1, 7)
+  cells = targetSheet.getRange(startRow, startCol, 1, 9)
   cells.setBackgroundColor(backgroundColor).setFontColor(foregroundcolor).mergeAcross()
   cells = targetSheet.getRange(startRow + 1, startCol)
   cells
     .setValue("(virtual ring " + ring + ")")
     .setFontSize(16)
     .setFontWeight("bold")
-  targetSheet.getRange(startRow + 1, startCol, 1, 7).mergeAcross()
+  targetSheet.getRange(startRow + 1, startCol, 1, 9).mergeAcross()
   return 2 // the number of rows printed
 }
 
-// Print out the header cells for one ring
-function printFormsHeader(sheet, row, col, numForms) {
+function printGeneralHeader(sheet, row, col) {
   const headers = [
+//    "Order",
     "First",
     "Last",
     "Age",
     "Height",
     "School",
+//    "Forms?"
+    "Sparring?",
+    "gender",
+  ]
+  cells = sheet.getRange(row, col, 1, index).setFontWeight('bold')
+}
+
+// Print out the header cells for one ring
+function printFormsHeader(sheet, row, col, numForms) {
+  const headers = [
+//    "Order",
+    "First",
+    "Last",
+    "Age",
+    "Height",
+    "School",
+//    "Forms?"
     "Sparring?",
     "gender",
   ]
@@ -279,11 +296,7 @@ function printFormsHeader(sheet, row, col, numForms) {
     .setFontSize(16)
     .setFontWeight("bold")
     .setNumberFormat("@")
-  for (let index = 0; index < headers.length; index++) {
-    cells = sheet.getRange(row + 3, index + col)
-    cells.setValue(headers[index]).setFontWeight("bold")
-  }
-  //cells.setValue("a");
+  printGeneralHeader(sheet, row+3, col)
 
   return 2 // rows in forms header
 }
