@@ -160,7 +160,7 @@ function generateOverviewOneRing(
 
   curRow += formHeaderRows
 
-  curRow += printGeneralHeader(sheet, curRow, col)
+  curRow += printGeneralHeader(targetSheet, curRow, startCol)
 
 
   // *********************************
@@ -187,12 +187,13 @@ function generateOverviewOneRing(
     targetSheet,
     curRow,
     startCol,
-    numSparrers
+    numSparrers,
+    numCols
   )
 
   var sparHeaderRow = curRow
   curRow += sparHeaderRows
-  curRow += printGeneralHeader(sheet, curRow, col)
+  curRow += printGeneralHeader(targetSheet, curRow, startCol)
 
   // *******************************
   // Sparring array
@@ -224,9 +225,33 @@ function generateOverviewOneRing(
     SpreadsheetApp.BorderStyle.SOLID_THICK
   )
 
-  // After the Ring heading
-  cells = targetSheet.getRange(startRow + 1, startCol, 1, numCols)
-  cells.setBorder(
+  // Before the 'Forms' or 'Sparring' header
+  targetSheet.getRange(formHeaderRow, startCol, 1, numCols)
+  .setBorder(
+    true,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID_THICK
+  )
+  targetSheet.getRange(sparHeaderRow, startCol, 1, numCols)
+  .setBorder(
+    true,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID_THICK
+  )
+  
+  // After the 'Name' row
+  targetSheet.getRange(formHeaderRow + 1, startCol, 1, numCols)
+  .setBorder(
     null,
     null,
     true,
@@ -234,42 +259,24 @@ function generateOverviewOneRing(
     null,
     null,
     null,
-    SpreadsheetApp.BorderStyle.DOUBLE
+    SpreadsheetApp.BorderStyle.SOLID
   )
-
-  // Border after the main heading
-  cells = targetSheet.getRange(startRow + 2, startCol, 1, numCols)
-  cells.setBorder(null, null, true, null, null, null)
-
-  // Border after spar header
-  var cells = targetSheet.getRange(sparHeaderRow, startCol, 1, numCols)
-  cells.setBorder(null, null, true, null, null, null)
+  targetSheet.getRange(sparHeaderRow + 1, startCol, 1, numCols)
+  .setBorder(
+    null,
+    null,
+    true,
+    null,
+    null,
+    null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID
+  )
+ 
 
   targetSheet.autoResizeColumns(startCol, numCols)
 }
 
-function printSparHeader(targetSheet, startRow, startCol, numSparrers) {
-  targetSheet.getRange(startRow, startCol, 1, 2).setNumberFormat("@")
-  targetSheet
-    .getRange(startRow, startCol, 1, 2)
-    .setValues([["Sparring", "(" + numSparrers + ")"]])
-    .setFontSize(16)
-    .setFontWeight("bold")
-  return 1
-}
-
-//  for (var k = 0; k<peopleArr.length; k++) {
-//    if (peopleArr[k].sparring == "Yes") {
-//      cell = targetSheet.getRange(startRow +1 + sparrerNum, startCol, 1, 7);
-//      cell.setValues([[peopleArr[k].sfn, peopleArr[k].sln]]);
-//      printPeopleArr(targetSheet, peopleArr, startRow+1+sparrerNum, startCol);
-//     sparrerNum++;
-//    }
-//  }
-// targetSheet.getRange(startRow, startCol + 1).setNumberFormat("@")
-// targetSheet.getRange(startRow, startCol,1,2).setValues([["Sparring", "\(" + sparrerNum + "\)"]]).setFontSize(16).setFontWeight('bold');
-//  return sparrerNum;
-//}
 
 function printMainHeader(
   targetSheet,
@@ -308,24 +315,42 @@ function printGeneralHeader(sheet, row, col) {
   cells = sheet.getRange(row, col, 1, headers.length)
     .setValues([headers])
     .setFontWeight('bold')
+    .setFontSize(12)
     .setBackgroundColor('#f3f3f3')
 
   return 1
 }
 
 // Print out the header cells for one ring
-function printFormsHeader(sheet, row, col, numForms, numCols) {
+function printFormsHeader(sheet, row, col, numForms, mergeCols) {
   
   sheet
     .getRange(row, col)
-    .setValues("Forms (" + numForms + ")")
-    
+    .setValue("Forms (" + numForms + ")")
     .mergeAcross()
     .setFontSize(16)
     .setFontWeight("bold")
     .setNumberFormat("@")
+    .setBackgroundColor("#d9d9d9")
+
+  sheet.getRange(row, col, 1, mergeCols).mergeAcross()
 
   return 1 // rows in forms header
+}
+
+function printSparHeader(sheet, row, col, numSparrers, mergeCols) {
+  sheet
+    .getRange(row, col)
+    .setValue("Sparring (" + numSparrers + ")")
+    .mergeAcross()
+    .setFontSize(16)
+    .setFontWeight("bold")
+    .setNumberFormat("@")
+    .setBackgroundColor("#d9d9d9")
+
+    sheet.getRange(row, col, 1, mergeCols).mergeAcross()
+    return 1
+
 }
 
 // Fill out the info for one ring. Just the data, not the headers.
