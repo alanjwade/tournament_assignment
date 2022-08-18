@@ -107,6 +107,7 @@ function generateOverviewOneLevel(
 
     // Generate a timestamp
     targetSheet.getRange(51, 1).setValue(createTimeStamp())
+    targetSheet.getRange(51, 1, 1, 5).mergeAcross()
   }
 }
 
@@ -118,13 +119,22 @@ function generateOverviewOneRing(
   peopleArr,
   physRing
 ) {
+  
+
+  // ************************************
+  // main header
+  // ************************************
   var mainHeaderRows = printMainHeader(
     targetSheet,
     startRow,
     startCol,
     ringId,
-    physRing
+    physRing,
+    numCols = 7
   )
+
+  var mainHeaderRow = startRow
+  var curRow = startRow + mainHeaderRows
 
   // Get an array of formers
   var formerArr = []
@@ -135,15 +145,30 @@ function generateOverviewOneRing(
   }
   formerArr = formerArr.sort(sortByFormOrder)
 
+  // **********************************
+  // form header
+  // **********************************
   var formHeaderRows = printFormsHeader(
     targetSheet,
-    startRow,
+    curRow,
     startCol,
-    formerArr.length
+    formerArr.length,
+    numCols
   )
-  var formStartRow = startRow + mainHeaderRows + formHeaderRows
 
-  var formRows = printPeopleArr(targetSheet, formerArr, formStartRow, startCol)
+  var formHeaderRow = curRow
+
+  curRow += formHeaderRows
+
+  curRow += printGeneralHeader(sheet, curRow, col)
+
+
+  // *********************************
+  // Array of form people
+  // *********************************
+  var formRows = printPeopleArr(targetSheet, formerArr, curRow, startCol)
+
+  curRow += formRows
 
   // Get an array of sparrers
   var sparrerArr = []
@@ -155,27 +180,38 @@ function generateOverviewOneRing(
   sparrerArr = sparrerArr.sort(sortBySparringOrder)
   var numSparrers = sparrerArr.length
 
+  // *********************************
+  // Sparring header
+  // *********************************
   var sparHeaderRows = printSparHeader(
     targetSheet,
-    startRow + mainHeaderRows + formHeaderRows + formRows,
+    curRow,
     startCol,
     numSparrers
   )
-  var sparStartRow = startRow + mainHeaderRows + formHeaderRows + formRows
 
+  var sparHeaderRow = curRow
+  curRow += sparHeaderRows
+  curRow += printGeneralHeader(sheet, curRow, col)
+
+  // *******************************
+  // Sparring array
+  // *******************************
   var numSparrers = printPeopleArr(
     targetSheet,
     sparrerArr,
-    sparStartRow + sparHeaderRows,
+    curRow,
     startCol
   )
+
+  curRow += numSparrers
 
   // Border all the way around
   var cells = targetSheet.getRange(
     startRow,
     startCol,
     2 + formerArr.length + numSparrers + 3,
-    7
+    numCols
   )
   cells.setBorder(
     true,
@@ -189,7 +225,7 @@ function generateOverviewOneRing(
   )
 
   // After the Ring heading
-  cells = targetSheet.getRange(startRow + 1, startCol, 1, 7)
+  cells = targetSheet.getRange(startRow + 1, startCol, 1, numCols)
   cells.setBorder(
     null,
     null,
@@ -202,14 +238,14 @@ function generateOverviewOneRing(
   )
 
   // Border after the main heading
-  cells = targetSheet.getRange(startRow + 2, startCol, 1, 7)
+  cells = targetSheet.getRange(startRow + 2, startCol, 1, numCols)
   cells.setBorder(null, null, true, null, null, null)
 
-  // Border after forms section
-  var cells = targetSheet.getRange(sparStartRow, startCol, 1, 7)
+  // Border after spar header
+  var cells = targetSheet.getRange(sparHeaderRow, startCol, 1, numCols)
   cells.setBorder(null, null, true, null, null, null)
 
-  targetSheet.autoResizeColumns(startCol, 7)
+  targetSheet.autoResizeColumns(startCol, numCols)
 }
 
 function printSparHeader(targetSheet, startRow, startCol, numSparrers) {
@@ -240,25 +276,21 @@ function printMainHeader(
   startRow,
   startCol,
   ring,
-  physRing
+  physRing,
+  numCols
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
   cells
-    .setValue("Ring " + physRing)
+    .setValue("Ring " + physRing + ' (virtual ring ' + ring + ')')
     .setFontSize(20)
     .setFontWeight("bold")
 
   // set background color
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
-  cells = targetSheet.getRange(startRow, startCol, 1, 9)
+  cells = targetSheet.getRange(startRow, startCol, 1, numCols)
   cells.setBackgroundColor(backgroundColor).setFontColor(foregroundcolor).mergeAcross()
-  cells = targetSheet.getRange(startRow + 1, startCol)
-  cells
-    .setValue("(virtual ring " + ring + ")")
-    .setFontSize(16)
-    .setFontWeight("bold")
-  targetSheet.getRange(startRow + 1, startCol, 1, 9).mergeAcross()
-  return 2 // the number of rows printed
+
+  return 1 // the number of rows printed
 }
 
 function printGeneralHeader(sheet, row, col) {
@@ -273,32 +305,27 @@ function printGeneralHeader(sheet, row, col) {
     "Sparring?",
     "gender",
   ]
-  cells = sheet.getRange(row, col, 1, index).setFontWeight('bold')
+  cells = sheet.getRange(row, col, 1, headers.length)
+    .setValues([headers])
+    .setFontWeight('bold')
+    .setBackgroundColor('#f3f3f3')
+
+  return 1
 }
 
 // Print out the header cells for one ring
-function printFormsHeader(sheet, row, col, numForms) {
-  const headers = [
-//    "Order",
-    "First",
-    "Last",
-    "Age",
-    "Height",
-    "School",
-//    "Forms?"
-    "Sparring?",
-    "gender",
-  ]
-  sheet.getRange(row + 2, col, 1, 2).setNumberFormat("@")
+function printFormsHeader(sheet, row, col, numForms, numCols) {
+  
   sheet
-    .getRange(row + 2, col, 1, 2)
-    .setValues([["Forms", "(" + numForms + ")"]])
+    .getRange(row, col)
+    .setValues("Forms (" + numForms + ")")
+    
+    .mergeAcross()
     .setFontSize(16)
     .setFontWeight("bold")
     .setNumberFormat("@")
-  printGeneralHeader(sheet, row+3, col)
 
-  return 2 // rows in forms header
+  return 1 // rows in forms header
 }
 
 // Fill out the info for one ring. Just the data, not the headers.
