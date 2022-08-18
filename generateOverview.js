@@ -91,8 +91,8 @@ function generateOverviewOneLevel(
       y = 0
     }
     // x and y are 0-based indices into the table
-
-    var startCol = 1 + 7 * x
+    var numCols = 9
+    var startCol = 1 + numCols * x
     var startRow = 1 + 25 * y
 
     var peopleInThisVRing = peopleArr.filter((person) => person.vRing == vRing)
@@ -102,12 +102,13 @@ function generateOverviewOneLevel(
       startRow,
       vRing,
       peopleInThisVRing,
-      physRingStr
+      physRingStr,
+      numCols
     )
 
     // Generate a timestamp
-    targetSheet.getRange(51, 1).setValue(createTimeStamp())
-    targetSheet.getRange(51, 1, 1, 5).mergeAcross()
+    targetSheet.getRange(53, 1).setValue(createTimeStamp())
+    targetSheet.getRange(53, 1, 1, 5).mergeAcross()
   }
 }
 
@@ -117,7 +118,8 @@ function generateOverviewOneRing(
   startRow,
   ringId,
   peopleArr,
-  physRing
+  physRing,
+  numCols
 ) {
   
 
@@ -130,7 +132,7 @@ function generateOverviewOneRing(
     startCol,
     ringId,
     physRing,
-    numCols = 7
+    numCols
   )
 
   var mainHeaderRow = startRow
@@ -166,7 +168,7 @@ function generateOverviewOneRing(
   // *********************************
   // Array of form people
   // *********************************
-  var formRows = printPeopleArr(targetSheet, formerArr, curRow, startCol)
+  var formRows = printPeopleArr(targetSheet, formerArr, curRow, startCol, "formOrder")
 
   curRow += formRows
 
@@ -202,7 +204,8 @@ function generateOverviewOneRing(
     targetSheet,
     sparrerArr,
     curRow,
-    startCol
+    startCol,
+    "sparringOrder"
   )
 
   curRow += numSparrers
@@ -273,8 +276,8 @@ function generateOverviewOneRing(
     SpreadsheetApp.BorderStyle.SOLID
   )
  
-
-  targetSheet.autoResizeColumns(startCol, numCols)
+  targetSheet.setColumnWidth(startCol, 50)
+  targetSheet.autoResizeColumns(startCol+1, numCols-1)
 }
 
 
@@ -302,13 +305,13 @@ function printMainHeader(
 
 function printGeneralHeader(sheet, row, col) {
   const headers = [
-//    "Order",
+    "Order",
     "First",
     "Last",
     "Age",
     "Height",
     "School",
-//    "Forms?"
+    "Forms?",
     "Sparring?",
     "gender",
   ]
@@ -354,13 +357,15 @@ function printSparHeader(sheet, row, col, numSparrers, mergeCols) {
 }
 
 // Fill out the info for one ring. Just the data, not the headers.
-function printPeopleArr(targetSheet, peopleArr, row, col) {
+function printPeopleArr(targetSheet, peopleArr, row, col, orderKey) {
   const ringHeaders = [
+    orderKey,
     "sfn",
     "sln",
     "age",
     "height",
     "school",
+    "form",
     "sparring",
     "gender",
   ]

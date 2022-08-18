@@ -66,8 +66,16 @@ function printCheckinSheet(levelName = "Beginner") {
       // set the padding to 0 all around for all the cells
       for (var r=0; r<checkinTable.getNumRows(); r++) {
         for (var c=0; c<4; c++) {
-          checkinTable.getCell(r,c).setPaddingTop(0).setPaddingBottom(0)
+          var cell = checkinTable.getCell(r,c).setPaddingTop(0).setPaddingBottom(0)
+          if (r==0) {
+            cell.editAsText().setBackgroundColor("#cccccc")
+          }
+          if (r>0 && c==3) {
+              var [fg, bg] = getRingBackgroundColors(cell.getText())
+              cell.editAsText().setForegroundColor(fg).setBackgroundColor(bg)
+          }
         }
+        // Set background for the ring cell
       }
 
       var bottomParagraph = body.appendParagraph(timeStamp)
