@@ -225,25 +225,6 @@ function assignVRingsBB() {
   assignVRings("Black Belt")
 }
 
-function printRemappedAllRings() {
-  generateOverview(false, false, (useRemapping = true))
-}
-function printRemappedBRings() {
-  generateOverview("Beginner", false, (useRemapping = true))
-}
-function printRemappedL1Rings() {
-  generateOverview("Level 1", false, (useRemapping = true))
-}
-function printRemappedL2Rings() {
-  generateOverview("Level 2", false, (useRemapping = true))
-}
-function printRemappedL3Rings() {
-  generateOverview("Level 3", false, (useRemapping = true))
-}
-function printRemappedBBRings() {
-  generateOverview("Black Belt", false, (useRemapping = true))
-}
-
 function generateOverviewBRings() {
   generateOverview("Beginner")
 }
@@ -264,45 +245,6 @@ function makeAllRingsCalculated() {
   generateOverview(false, true)
 }
 
-function makeBRingsCalculated() {
-  generateOverview("Beginner", true)
-}
-function makeL1Calculated() {
-  generateOverview("Level 1", true)
-}
-function makeL2Calculated() {
-  generateOverview("Level 2", true)
-}
-function makeL3Calculated() {
-  generateOverview("Level 3", true)
-}
-function makeBBRingsCalculated() {
-  generateOverview("Black Belt", true)
-}
-
-function genAgeSchoolBeginner() {
-  assignVRingAgeSchool("Beginner")
-}
-function genAgeSchoolL1() {
-  assignVRingAgeSchool("Level 1")
-}
-function genAgeSchoolL2() {
-  assignVRingAgeSchool("Level 2")
-}
-function genAgeSchoolL3() {
-  assignVRingAgeSchool("Level 3")
-}
-function genAgeSchoolBB() {
-  assignVRingAgeSchool("Black Belt")
-}
-
-function genAgeSchoolAll() {
-  assignVRingAgeSchool("Beginner")
-  assignVRingAgeSchool("Level 1")
-  assignVRingAgeSchool("Level 2")
-  assignVRingAgeSchool("Level 3")
-  assignVRingAgeSchool("Black Belt")
-}
 
 function ajwgetname() {
   var sheet = SpreadsheetApp.getActive().getName()
