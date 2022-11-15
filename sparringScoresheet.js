@@ -25,6 +25,11 @@ function generateSparringSheet(sourceSheetName = "Beginner") {
       )
       .sort(sortBySparringOrder)
 
+          // If there's no one in this virtual ring, skip
+    if (virtRingPeople.length == 0) {
+      continue
+    }
+
     generateOneSparringBracketSheet(
       targetSheet,
       virtRingPeople,

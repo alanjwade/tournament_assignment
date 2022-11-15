@@ -42,3 +42,6 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
   * Inside a particular ring, the names are hashed and sorted.
 ## How sparring order is determined
   * Inside a particular ring, the people are ordered by height.
+
+# Oddball notes on development
+To move the script to another spreadsheet, I had to do 'clasp logout', then change the script id in clasp.json, then re-login. Then I could 'clasp push' into the new script.

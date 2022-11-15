@@ -58,6 +58,11 @@ function printScoresheets(level = "Beginner") {
     // Get all the people in one virtRing, whether forms, sparring, or both
     var virtRingPeople = peopleArr.filter((person) => person.vRing == virtRing)
 
+    // If there's no one in this virtual ring, skip
+    if (virtRingPeople.length == 0) {
+      continue
+    }
+
     // Make the forms scoresheet
     // filter on doing forms and then sort
     var formsPeople = virtRingPeople

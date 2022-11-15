@@ -23,7 +23,7 @@ function assignVRings(sourceSheetName = "Beginner") {
   for (var grouping in groupingsSortedByAgeRank) {
     // choose the number of rings to use
     var numRingsThisGroup = Math.ceil(
-      groupingsSortedByAgeRank[grouping].length / 10
+      groupingsSortedByAgeRank[grouping].length / 12
     ) // max 10 per ring
 
     var vRingHashTmp = divideOneGroupingIntoVRings(

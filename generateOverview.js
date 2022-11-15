@@ -68,6 +68,7 @@ function generateOverviewOneLevel(
 
   // Clear the target to redo form
   targetSheet.clear()
+  targetSheet.clearFormats()
 
   // peopleArr is going to be the student data read into an hash of array of hashes.
   var [peopleArr, virtToPhysMap] = readTableIntoArr(
@@ -96,6 +97,11 @@ function generateOverviewOneLevel(
     var startRow = 1 + 25 * y
 
     var peopleInThisVRing = peopleArr.filter((person) => person.vRing == vRing)
+
+    // Maybe we have more rings desclared than people to put in them
+    if (peopleInThisVRing.length == 0) {
+      continue
+    }
     generateOverviewOneRing(
       targetSheet,
       startCol,
