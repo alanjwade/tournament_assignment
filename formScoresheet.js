@@ -11,6 +11,7 @@ function printScoresheets(level = "Beginner") {
     (isSpreadsheet = false)
   )
   targetDoc.getBody().clear()
+  removeImagesFromDoc(targetDoc)
 
   var targetBody = targetDoc.getBody()
   var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
@@ -101,6 +102,15 @@ function printScoresheets(level = "Beginner") {
 
   targetDoc.saveAndClose()
 }
+
+// get image blob
+function getImageBlob() {
+  var image = 'https://drive.google.com/file/d/1HTkFwJWpmlDTLdTRhZZQz4R_NrU0gIj-/view?usp=share_link';
+  var fileID = image.match(/[\w\_\-]{25,}/).toString();
+  var blob = DriveApp.getFileById(fileID).getBlob();
+  return blob
+}
+
 
 // Create a doc with all the forms sheets
 
@@ -230,6 +240,13 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var formTitle =
     level +  " Ring " + physRing
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
+  var blob = getImageBlob()
+  paragraph.addPositionedImage(blob)
+  .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+  .setLeftOffset(0)
+  .setTopOffset(0)
+  .setWidth(600)
+  .setHeight(600)
   var titleText = paragraph.appendText(formTitle)
   paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
   titleText.setBackgroundColor(backgroundColor)
@@ -239,7 +256,7 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   formTable = body.appendTable(buffer)
   formTable.setAttributes(unboldAttr)
   formTable.setColumnWidth(0, 80)
-  formTable.setColumnWidth(1, 80)
+  formTable.setColumnWidth(1, 90)
   formTable.setColumnWidth(2, 100)
   formTable.setColumnWidth(3, 35)
   formTable.setColumnWidth(4, 50)

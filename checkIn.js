@@ -12,7 +12,8 @@ function printCheckinSheet(levelName = "Beginner") {
   //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(
     targetDocName,
-    (isSpreadsheet = false)
+    (isSpreadsheet = false),
+    (removeFile = false)
   )
   var tableSize = {}
   tableSize[DocumentApp.Attribute.FONT_SIZE] = 12
@@ -34,7 +35,11 @@ function printCheckinSheet(levelName = "Beginner") {
   // initial paragraph
   var body = targetDoc.getBody()
   body.clear()
+  removeImagesFromDoc(targetDoc)
   var paragraph = body.getParagraphs()[0]
+  var blob = getImageBlob()
+  console.log('Num paragraphs: '+ body.getParagraphs().length)
+  var headerParagraphs = []
   for (var i = 0; i < peopleArr.length; i++) {
     // After 25 or the end, put in a new page
     buffer.push([
@@ -53,6 +58,9 @@ function printCheckinSheet(levelName = "Beginner") {
       paragraph.appendText(checkTitle + " Page " + curPage++ + "/" + totalPages)
       paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
       paragraph.setSpacingBefore(0)
+
+      headerParagraphs.push(paragraph)
+
       checkinTable = body.appendTable(buffer)
       checkinTable.setAttributes(unboldAttr)
       checkinTable.setAttributes(tableSize)
@@ -87,7 +95,16 @@ function printCheckinSheet(levelName = "Beginner") {
       buffer = []
     }
   }
-  targetDoc.saveAndClose()
+  for (var j=0; j< headerParagraphs.length; j++) {
+    console.log('adding image')
+    headerParagraphs[j].addPositionedImage(blob)
+    .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+    .setLeftOffset(0)
+    .setTopOffset(0)
+    .setWidth(600)
+    .setHeight(600)  
+}
+targetDoc.saveAndClose()
 }
 
 function printFormsSheets(levelName = "Beginner") {
@@ -170,6 +187,30 @@ function createSpreadsheetFile(fileName) {
   return newDoc
 }
 
+function removeImagesFromDoc(doc) {
+
+  console.log('Removing images from ' + doc.getName())
+  var body = doc.getBody();
+  body.clear();
+
+  // Retrieve paragraphs.
+  var paragraphs = body.getParagraphs();
+  console.log('Number of paragraphs in doc: ' + paragraphs.length)
+
+  // Retrieve the object IDs of the positioned images.
+  // Create request body for the method of batchUpdate in Google Docs API using the retrieved object IDs.
+  var requests = paragraphs.reduce(function(ar, e) {
+    return ar.concat(e.getPositionedImages().map(function(f) {
+      return {deletePositionedObject: {objectId: f.getId()}};
+    }));
+  }, []);
+
+  // Delete the positioned images.
+  if (requests.length > 0) {
+    Docs.Documents.batchUpdate({requests: requests}, doc.getId());
+  }
+}
+
 function fileExistsInFolder(filename, folder) {
   // from   https://stackoverflow.com/questions/39685232/google-script-test-for-file-existance
 
@@ -183,7 +224,7 @@ function fileExistsInFolder(filename, folder) {
   }
 }
 
-function openOrCreateFileInFolder(filename, isSpreadsheet) {
+function openOrCreateFileInFolder(filename, isSpreadsheet, removeFile=false) {
   // Get this spreadsheet
   var ss = SpreadsheetApp.getActive()
 
@@ -193,6 +234,10 @@ function openOrCreateFileInFolder(filename, isSpreadsheet) {
 
   // See if there's the 'filename' in this directory.
   var file = fileExistsInFolder(filename, parentFolder)
+  if (file) {
+    file.setTrashed(removeFile)
+  }
+
   if (file) {
     console.log("Found " + filename + ", returning it")
     if (isSpreadsheet) {

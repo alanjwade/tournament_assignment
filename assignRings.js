@@ -1,3 +1,11 @@
+
+// This is here only to avoid user error. When debugging on the App Script page,
+// if you reload and hit 'run', the first function will run. If that happens to be
+// assingVrings, it will make changes that you probably didn't want.
+function dummyDontRun() {
+  pass
+}
+
 function assignVRings(sourceSheetName = "Beginner") {
   var targetSheetName = sourceSheetName + " forms"
   var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)

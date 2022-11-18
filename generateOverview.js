@@ -88,6 +88,8 @@ function generateOverviewOneLevel(
     x = parseInt(physArr[0]) - 1
     if (physArr[1] == "b") {
       y = 1
+    } else if (physArr[1] == "c") {
+      y = 2
     } else {
       y = 0
     }
@@ -382,12 +384,14 @@ function printPeopleArr(targetSheet, peopleArr, row, col, orderKey) {
       cells[i].push(peopleArr[i][ringHeaders[j]])
     }
   }
-  targetSheet
-    .getRange(row, col, peopleArr.length, ringHeaders.length)
-    .setValues(cells)
-    .setHorizontalAlignment("left")
-
+  if (peopleArr.length > 0) {
+    targetSheet
+      .getRange(row, col, peopleArr.length, ringHeaders.length)
+      .setValues(cells)
+      .setHorizontalAlignment("left")
+  }
   return peopleArr.length
+
 }
 // Fill out the info for one ring. Just the data, not the headers.
 function printPeopleArrOld(targetSheet, peopleArr, row, col) {
