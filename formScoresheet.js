@@ -53,6 +53,7 @@ function printScoresheets(level = "Beginner") {
     targetSpreadsheet.deleteSheet(allSheets[i])
   }
 
+  var paragraphsForWatermark = []
   for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
     var virtRing = physToVirtMap[physRingStr]
 
@@ -70,13 +71,14 @@ function printScoresheets(level = "Beginner") {
       .filter((person) => person.form.toLowerCase() != "no")
       .sort(sortByFormOrder)
 
-    appendOneFormsScoresheet(
-      targetBody,
-      formsPeople,
-      virtRing,
-      physRingStr,
-      level
-    )
+    paragraphsForWatermark.push(appendOneFormsScoresheet(
+                                targetBody,
+                                formsPeople,
+                                virtRing,
+                                physRingStr,
+                                level
+                                )
+                               )
     console.log("Finished with forms ring " + physRingStr)
 
     // Make the sparring scoresheet
@@ -100,6 +102,21 @@ function printScoresheets(level = "Beginner") {
   // so wait until the others are made.
   targetSpreadsheet.deleteSheet(templateSheet)
 
+  var paragraphs = targetDoc.getBody().getParagraphs()
+
+  console.log('Num paragraphs: ' + paragraphs.length)
+
+  var blob = getImageBlob()
+
+  for (var i=0; i<paragraphsForWatermark.length; i++) {
+    paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
+      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+      .setLeftOffset(0)
+      .setTopOffset(0)
+      .setWidth(600)
+      .setHeight(600)
+  }
+ 
   targetDoc.saveAndClose()
 }
 
@@ -223,7 +240,7 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
 
   // Get the last paragraph, so we don't end up with a space before the first form
   var paragraphs = body.getParagraphs()
-  var paragraph = paragraphs[paragraphs.length - 1]
+  var topParagraph = paragraphs[paragraphs.length - 1]
   var timeStamp = createTimeStamp()
   for (var i = 0; i < ringPeople.length; i++) {
     buffer.push([
@@ -240,19 +257,14 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var formTitle =
     level +  " Ring " + physRing
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
-  var blob = getImageBlob()
-  paragraph.addPositionedImage(blob)
-  .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-  .setLeftOffset(0)
-  .setTopOffset(0)
-  .setWidth(600)
-  .setHeight(600)
-  var titleText = paragraph.appendText(formTitle)
-  paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
+  
+  var titleText = topParagraph.appendText(formTitle)
+  topParagraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
   titleText.setBackgroundColor(backgroundColor)
   titleText.setForegroundColor(foregroundcolor)
  
-  paragraph.setSpacingBefore(0)
+  topParagraph.setSpacingBefore(0)
+  dummyParagraph = body.appendParagraph("")
   formTable = body.appendTable(buffer)
   formTable.setAttributes(unboldAttr)
   formTable.setColumnWidth(0, 80)
@@ -283,7 +295,9 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   var bottomParagraph = body.appendParagraph(timeStamp)
 
   bottomParagraph.appendPageBreak()
-  paragraph = body.appendParagraph("")
+  //paragraph = body.appendParagraph("")
+
+  return dummyParagraph
 }
 
 // sort function for form order.
