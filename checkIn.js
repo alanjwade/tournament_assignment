@@ -21,6 +21,9 @@ function printCheckinSheet(levelName = "Beginner") {
   headerSize[DocumentApp.Attribute.FONT_SIZE] = 14
   var checkTitle = levelName + " Checkin Sheet"
 
+  var style = {}
+  style[DocumentApp.Attribute.FONT_SIZE] = 8
+
   var boldAttr = {}
   boldAttr[DocumentApp.Attribute.BOLD] = true
   var unboldAttr = {}
@@ -37,7 +40,7 @@ function printCheckinSheet(levelName = "Beginner") {
   body.clear()
   removeImagesFromDoc(targetDoc)
   var paragraph = body.getParagraphs()[0]
-  var blob = getImageBlob()
+  var blob = getWatermarkBlob()
   console.log('Num paragraphs: '+ body.getParagraphs().length)
   var headerParagraphs = []
   for (var i = 0; i < peopleArr.length; i++) {
@@ -86,7 +89,7 @@ function printCheckinSheet(levelName = "Beginner") {
         // Set background for the ring cell
       }
 
-      var bottomParagraph = body.appendParagraph(timeStamp)
+      var bottomParagraph = body.appendParagraph(timeStamp).setAttributes(style)
       bottomParagraph.appendPageBreak()
 
       if (i < peopleArr.length - 1) {

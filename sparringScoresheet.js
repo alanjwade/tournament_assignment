@@ -327,7 +327,7 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   targetSheet.setHiddenGridlines(true)
 
   // insert watermark
-  var blob = getImageBlob()
+  var blob = getWatermarkBlob()
   targetSheet.insertImage(blob, 1, 5, 0, 0)
 }
 

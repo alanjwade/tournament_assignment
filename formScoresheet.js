@@ -106,7 +106,7 @@ function printScoresheets(level = "Beginner") {
 
   console.log('Num paragraphs: ' + paragraphs.length)
 
-  var blob = getImageBlob()
+  var blob = getWatermarkBlob()
 
   for (var i=0; i<paragraphsForWatermark.length; i++) {
     paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
@@ -120,15 +120,22 @@ function printScoresheets(level = "Beginner") {
   targetDoc.saveAndClose()
 }
 
-// get image blob
-function getImageBlob() {
-//  var image = 'https://drive.google.com/file/d/1HTkFwJWpmlDTLdTRhZZQz4R_NrU0gIj-/view?usp=share_link';
-  var image = 'https://drive.google.com/file/d/1B9UHxiLRTd2dqFaKrJ8FylqajE58n9Jz/view?usp=share_link';
-  var fileID = image.match(/[\w\_\-]{25,}/).toString();
-  var blob = DriveApp.getFileById(fileID).getBlob();
-  return blob
-}
+// Get the image file 'watermark.png' in this directory
+function getWatermarkBlob(filename = 'watermark.png') {
+  // Get this spreadsheet
+  var ss = SpreadsheetApp.getActive()
 
+  // Get the folder. Hopefully there's just one. Pick it
+  var parentFolder = DriveApp.getFileById(ss.getId()).getParents().next()
+  console.log("looking for " + filename + " in " + parentFolder.getName())
+
+  // See if there's the 'filename' in this directory. It will be the ID if it's there.
+  var file = fileExistsInFolder(filename, parentFolder)
+
+  var blob = DriveApp.getFileById(file.getId()).getBlob()
+  return blob
+   
+}
 
 // Create a doc with all the forms sheets
 
