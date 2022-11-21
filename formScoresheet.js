@@ -122,7 +122,8 @@ function printScoresheets(level = "Beginner") {
 
 // get image blob
 function getImageBlob() {
-  var image = 'https://drive.google.com/file/d/1HTkFwJWpmlDTLdTRhZZQz4R_NrU0gIj-/view?usp=share_link';
+//  var image = 'https://drive.google.com/file/d/1HTkFwJWpmlDTLdTRhZZQz4R_NrU0gIj-/view?usp=share_link';
+  var image = 'https://drive.google.com/file/d/1B9UHxiLRTd2dqFaKrJ8FylqajE58n9Jz/view?usp=share_link';
   var fileID = image.match(/[\w\_\-]{25,}/).toString();
   var blob = DriveApp.getFileById(fileID).getBlob();
   return blob

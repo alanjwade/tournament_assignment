@@ -325,6 +325,10 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
 
   // Hide gridlines
   targetSheet.setHiddenGridlines(true)
+
+  // insert watermark
+  var blob = getImageBlob()
+  targetSheet.insertImage(blob, 1, 5, 0, 0)
 }
 
 function highlightOneMatch(
