@@ -11,7 +11,20 @@ function printScoresheets(level = "Beginner") {
     (isSpreadsheet = false)
   )
   targetDoc.getBody().clear()
-  removeImagesFromDoc(targetDoc)
+    // This needs the Google Docs API, which might have to be reenabled
+  //  removeImagesFromDoc(targetDoc)
+
+  var footer = targetDoc.getFooter()
+  if (footer) {
+    footer.removeFromParent()
+  }
+  footer = targetDoc.addFooter()
+  var imgs = footer.getImages()
+  for (var i=0; i<imgs.length; i++) {
+    imgs[i].removeFromParent()
+  }
+  footer.appendImage(getImageBlob('logo.png'))
+  footer.appendParagraph(createTimeStamp())
 
   var targetBody = targetDoc.getBody()
   var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
@@ -106,22 +119,23 @@ function printScoresheets(level = "Beginner") {
 
   console.log('Num paragraphs: ' + paragraphs.length)
 
-  var blob = getWatermarkBlob()
 
-  for (var i=0; i<paragraphsForWatermark.length; i++) {
-    paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
-      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-      .setLeftOffset(0)
-      .setTopOffset(0)
-      .setWidth(600)
-      .setHeight(600)
-  }
+// This will put the watermark on every page
+//  var blob = getImageBlob()
+//  for (var i=0; i<paragraphsForWatermark.length; i++) {
+//    paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
+//      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+//      .setLeftOffset(0)
+//      .setTopOffset(0)
+//      .setWidth(600)
+//      .setHeight(600)
+//  }
  
   targetDoc.saveAndClose()
 }
 
 // Get the image file 'watermark.png' in this directory
-function getWatermarkBlob(filename = 'watermark.png') {
+function getImageBlob(filename = 'watermark.png') {
   // Get this spreadsheet
   var ss = SpreadsheetApp.getActive()
 
@@ -137,84 +151,6 @@ function getWatermarkBlob(filename = 'watermark.png') {
    
 }
 
-// Create a doc with all the forms sheets
-
-function generateFormsSheet(sourceSheetName = "Beginner") {
-  var targetDocName = sourceSheetName + " Forms Rings"
-
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
-
-  var physToVirtMap = physToVirtMapInv(virtToPhysMap)
-
-  targetDoc = createDocFile(targetDocName)
-  var body = targetDoc.getBody()
-  body.clear()
-  var paragraph = body.getParagraphs()[0]
-
-  // Iterate through the list of sorted physical rings
-  for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
-    var virtRing = physToVirtMap[physRingStr]
-
-    var virtRingPeople = peopleArr
-      .filter(
-        (person) =>
-          person.vRing == virtRing && person.form.toLowerCase() != "no"
-      )
-      .sort(sortByFormOrder)
-
-    // Now, virtRingPeople has all the people in one virt ring AND is doing forms
-    var timeStamp = createTimeStamp()
-    var style = {}
-    style[DocumentApp.Attribute.FONT_SIZE] = 8
-    var buffer = [
-      [
-        "First Name",
-        "Last Name",
-        "School",
-        "Virtual Ring",
-        "Score 1",
-        "Score 2",
-        "Score 3",
-        "Final Score",
-      ],
-    ]
-    for (var i = 0; i < virtRingPeople.length; i++) {
-      buffer.push([
-        virtRingPeople[i]["sfn"],
-        virtRingPeople[i]["sln"],
-        virtRingPeople[i]["school"],
-        virtRingPeople[i]["vRing"],
-        "",
-        "",
-        "",
-        "",
-      ])
-    }
-    var formTitle =
-      sourceSheetName +
-      "  Ring " +
-      physRingStr
-    paragraph.appendText(formTitle)
-    paragraph.setHeading(DocumentApp.ParagraphHeading.HEADING1)
-    paragraph.setSpacingBefore(0)
-    formTable = body.appendTable(buffer)
-    formTable.setColumnWidth(0, 80)
-    formTable.setColumnWidth(1, 80)
-    formTable.setColumnWidth(2, 150)
-    formTable.setColumnWidth(3, 50)
-    formTable.setColumnWidth(4, 50)
-    formTable.setColumnWidth(5, 50)
-    formTable.setColumnWidth(5, 50)
-    formTable.setColumnWidth(5, 50)
-    var bottomParagraph = body.appendParagraph(timestamp)
-
-    bottomParagraph.appendPageBreak()
-    paragraph = body.appendParagraph("")
-  }
-
-  targetDoc.saveAndClose()
-}
 
 function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   // Given a Body object, append one ring worth of forms scoresheet
@@ -226,11 +162,11 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
       "First Name",
       "Last Name",
       "School",
-      "Ring",
       "Score 1",
       "Score 2",
       "Score 3",
       "Final Score",
+      "Final Place"
     ],
   ]
 
@@ -255,12 +191,16 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
       ringPeople[i]["sfn"],
       ringPeople[i]["sln"],
       ringPeople[i]["school"],
-      physRing,
+      "",
       "",
       "",
       "",
       "",
     ])
+  }
+  // Add in a few extra
+  for (var i=0; i<0; i++) {
+    buffer.push(["","","","","","","",""])
   }
   var formTitle =
     level +  " Ring " + physRing
@@ -276,31 +216,37 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   formTable = body.appendTable(buffer)
   formTable.setAttributes(unboldAttr)
   formTable.setColumnWidth(0, 80)
-  formTable.setColumnWidth(1, 90)
-  formTable.setColumnWidth(2, 100)
-  formTable.setColumnWidth(3, 35)
+  formTable.setColumnWidth(1, 100)
+  formTable.setColumnWidth(2, 90)
+  formTable.setColumnWidth(3, 50)
   formTable.setColumnWidth(4, 50)
   formTable.setColumnWidth(5, 50)
   formTable.setColumnWidth(6, 50)
   formTable.setColumnWidth(7, 50)
   formTable.getRow(0).setAttributes(boldAttr)
 
+  placeBuffer = ([['Place', 'Name'],
+                  ['1', ''],
+                  ['2', ''],
+                  ['3', '']])
+  placeTable = body.appendTable(placeBuffer)
+  placeTable.setColumnWidth(0, 50)
+  placeTable.setColumnWidth(1, 200)
+  placeTable.getRow(0).setAttributes(boldAttr)
+
   // supposed to center, but the API doesn't do it yet
   formTable.setAttributes(tableStyle)
 
   var numRows = formTable.getNumRows()
   for (var i=1; i<numRows; i++) {
-    var cell = formTable.getCell(i, 7)
-    cell.setAttributes(cellStyle)
-    // Final cell color
-    cell.setBackgroundColor('#efefef')
     // Score cell color
+    formTable.getCell(i, 3).setBackgroundColor('#cccccc')
     formTable.getCell(i, 4).setBackgroundColor('#cccccc')
     formTable.getCell(i, 5).setBackgroundColor('#cccccc')
-    formTable.getCell(i, 6).setBackgroundColor('#cccccc')
+    formTable.getCell(i, 6).setBackgroundColor('#efefef')
   }
 
-  var bottomParagraph = body.appendParagraph(timeStamp)
+  var bottomParagraph = body.appendParagraph("")
 
   bottomParagraph.appendPageBreak()
   //paragraph = body.appendParagraph("")

@@ -327,7 +327,7 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   targetSheet.setHiddenGridlines(true)
 
   // insert watermark
-  var blob = getWatermarkBlob()
+  var blob = getImageBlob()
   targetSheet.insertImage(blob, 1, 5, 0, 0)
 }
 
@@ -456,23 +456,23 @@ function placePeopleInBracket(
   // This is the number playing in the next round.
   var numStart2Round = 0
 
-  var numNextRound
+  var slotsInNextRound
 
   for (var round = 1; round <= rounds; round++) {
-    var numThisRound = Math.pow(2, rounds - round)
-    numNextRound = Math.pow(2, rounds - (round + 1))
-    if (totalPeople == numThisRound) {
+    var slotsInStartRound = Math.pow(2, rounds - round)
+    slotsInNextRound = Math.pow(2, rounds - (round + 1))
+    if (totalPeople == slotsInStartRound) {
       startRound = round
       start2Round = round
       numStartRound = totalPeople
       numStart2Round = 0
       break
-    } else if ((totalPeople < numThisRound) & (totalPeople > numNextRound)) {
+    } else if ((totalPeople < slotsInStartRound) & (totalPeople > slotsInNextRound)) {
       startRound = round
       start2Round = round + 1
 
       // need an even number to fight in the start round
-      numStartRound = 2 * (totalPeople - numNextRound)
+      numStartRound = 2 * (totalPeople - slotsInNextRound)
       numStart2Round = totalPeople - numStartRound
 
       break
@@ -484,13 +484,12 @@ function placePeopleInBracket(
   for (var personIndex = 0; personIndex < totalPeople; personIndex++) {
     var thisRound
     var thisPosition
-    if (personIndex < numStartRound) {
-      thisRound = startRound
+    if (personIndex < numStart2Round) {
+      thisRound = start2Round
       thisPosition = personIndex
     } else {
-      thisRound = start2Round
-      // try to make this person Inex - (#spots - # actually starting in next round)
-      thisPosition = personIndex - (numNextRound - numStart2Round)
+      thisRound = startRound
+      thisPosition = (personIndex - numStart2Round) + (slotsInStartRound - numStartRound)
     }
 
     var [row, col] = getCoordinatesFromRoundPosition(thisRound, thisPosition)

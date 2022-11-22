@@ -15,6 +15,19 @@ function printCheckinSheet(levelName = "Beginner") {
     (isSpreadsheet = false),
     (removeFile = false)
   )
+
+  var footer = targetDoc.getFooter()
+  if (footer) {
+    footer.removeFromParent()
+  }
+  footer = targetDoc.addFooter()
+  var imgs = footer.getImages()
+  for (var i=0; i<imgs.length; i++) {
+    imgs[i].removeFromParent()
+  }
+  footer.appendImage(getImageBlob('logo.png'))
+  footer.appendParagraph(createTimeStamp())
+
   var tableSize = {}
   tableSize[DocumentApp.Attribute.FONT_SIZE] = 12
   var headerSize = {}
@@ -38,9 +51,8 @@ function printCheckinSheet(levelName = "Beginner") {
   // initial paragraph
   var body = targetDoc.getBody()
   body.clear()
-  removeImagesFromDoc(targetDoc)
+//  removeImagesFromDoc(targetDoc)
   var paragraph = body.getParagraphs()[0]
-  var blob = getWatermarkBlob()
   console.log('Num paragraphs: '+ body.getParagraphs().length)
   var headerParagraphs = []
   for (var i = 0; i < peopleArr.length; i++) {
@@ -89,7 +101,7 @@ function printCheckinSheet(levelName = "Beginner") {
         // Set background for the ring cell
       }
 
-      var bottomParagraph = body.appendParagraph(timeStamp).setAttributes(style)
+      var bottomParagraph = body.appendParagraph("")
       bottomParagraph.appendPageBreak()
 
       if (i < peopleArr.length - 1) {
@@ -98,15 +110,6 @@ function printCheckinSheet(levelName = "Beginner") {
       buffer = []
     }
   }
-  for (var j=0; j< headerParagraphs.length; j++) {
-    console.log('adding image')
-    headerParagraphs[j].addPositionedImage(blob)
-    .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-    .setLeftOffset(0)
-    .setTopOffset(0)
-    .setWidth(600)
-    .setHeight(600)  
-}
 targetDoc.saveAndClose()
 }
 
