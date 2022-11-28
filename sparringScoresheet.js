@@ -280,14 +280,20 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   targetSheet
     .getRange(startRow + 3 + rowA + 2, startCol + colA + 1)
     .setValue("Semifinal Match A Winner")
+    .setFontWeight('bold')
+    .setFontSize(11)
   targetSheet
     .getRange(startRow + 3 + rowB + 2, startCol + colB + 1)
     .setValue("Semifinal Match B Winner")
+    .setFontWeight('bold')
+    .setFontSize(11)
 
   var [row, col] = getCoordinatesFromRoundPosition(5, 0)
   targetSheet
     .getRange(startRow + 3 + row + 2, startCol + col + 1)
     .setValue("1st")
+    .setFontWeight("bold") 
+    .setFontSize(14)
 
   // Generate the 3rd place bracket
   generateOneSparringBracket(targetSheet, startRow + 32, startCol + 3, 2)
@@ -306,13 +312,19 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   targetSheet
     .getRange(startRow + 32 + rowA + 2, startCol + 3 + colA + 1)
     .setValue("Semifinal Match A Loser")
+    .setFontWeight('bold')
+    .setFontSize(11)
   targetSheet
     .getRange(startRow + 32 + rowB + 2, startCol + 3 + colB + 1)
     .setValue("Semifinal Match B Loser")
+    .setFontWeight('bold')
+    .setFontSize(11)
   var [row, col] = getCoordinatesFromRoundPosition(2, 0)
   targetSheet
     .getRange(startRow + 32 + row + 2, startCol + 3 + col + 1)
     .setValue("3rd")
+    .setFontWeight("bold")
+    .setFontSize(14)
 
   // place table
   finalPlaces(targetSheet, 1, 3)
@@ -356,6 +368,8 @@ function highlightOneMatch(
   var middleRow = absTopRow + Math.pow(2, round) / 2
 
   targetSheet.getRange(middleRow + 1, absCol + 1).setValue(text)
+  .setFontWeight('bold')
+  .setFontSize(14)
 
   return true
 }
@@ -576,4 +590,7 @@ function finalPlaces(targetSheet, startRow, startCol) {
       "black",
       SpreadsheetApp.BorderStyle.SOLID_MEDIUM
     )
+  targetSheet.getRange(startRow + 1, startCol + 1, 1, 1)
+    .setFontSize(18)
+    .setFontWeight('bold')
 }

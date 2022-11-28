@@ -19,10 +19,7 @@ function printScoresheets(level = "Beginner") {
     footer.removeFromParent()
   }
   footer = targetDoc.addFooter()
-  var imgs = footer.getImages()
-  for (var i=0; i<imgs.length; i++) {
-    imgs[i].removeFromParent()
-  }
+  
   footer.appendImage(getImageBlob('logo.png'))
   footer.appendParagraph(createTimeStamp())
 
@@ -225,12 +222,12 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   formTable.setColumnWidth(7, 50)
   formTable.getRow(0).setAttributes(boldAttr)
 
-  placeBuffer = ([['Place', 'Name'],
+  placeBuffer = ([['Final Place', 'Name'],
                   ['1', ''],
                   ['2', ''],
                   ['3', '']])
   placeTable = body.appendTable(placeBuffer)
-  placeTable.setColumnWidth(0, 50)
+  placeTable.setColumnWidth(0, 70)
   placeTable.setColumnWidth(1, 200)
   placeTable.getRow(0).setAttributes(boldAttr)
 

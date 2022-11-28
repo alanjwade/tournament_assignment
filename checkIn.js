@@ -7,7 +7,7 @@ function printCheckinSheet(levelName = "Beginner") {
   peopleArr.sort(sortLastFirst)
 
   // 2-d array to store text in before printing it to the sheet
-  var headBuffer = ["First Name", "Last Name", "School", "Ring"]
+  var headBuffer = ["First Name", "Last Name", "School", "Forms?", "Sparring?", "Ring"]
 
   //  targetDoc = createDocFile(targetSheetName)
   var targetDoc = openOrCreateFileInFolder(
@@ -21,10 +21,7 @@ function printCheckinSheet(levelName = "Beginner") {
     footer.removeFromParent()
   }
   footer = targetDoc.addFooter()
-  var imgs = footer.getImages()
-  for (var i=0; i<imgs.length; i++) {
-    imgs[i].removeFromParent()
-  }
+ 
   footer.appendImage(getImageBlob('logo.png'))
   footer.appendParagraph(createTimeStamp())
 
@@ -61,6 +58,8 @@ function printCheckinSheet(levelName = "Beginner") {
       peopleArr[i].sfn,
       peopleArr[i].sln,
       peopleArr[i].school.toString(),
+      peopleArr[i].form,
+      peopleArr[i].sparring,
       virtToPhysMap[peopleArr[i].vRing].toString(),
     ])
     if (
@@ -79,21 +78,23 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable = body.appendTable(buffer)
       checkinTable.setAttributes(unboldAttr)
       checkinTable.setAttributes(tableSize)
-      checkinTable.setColumnWidth(0, 80)
-      checkinTable.setColumnWidth(1, 100)
-      checkinTable.setColumnWidth(2, 150)
-      checkinTable.setColumnWidth(3, 50)
+      checkinTable.setColumnWidth(0, 90)
+      checkinTable.setColumnWidth(1, 140)
+      checkinTable.setColumnWidth(2, 80)
+      checkinTable.setColumnWidth(3, 65)
+      checkinTable.setColumnWidth(4, 80)
+      checkinTable.setColumnWidth(5, 50)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
 
       // set the padding to 0 all around for all the cells
       for (var r=0; r<checkinTable.getNumRows(); r++) {
-        for (var c=0; c<4; c++) {
+        for (var c=0; c<6; c++) {
           var cell = checkinTable.getCell(r,c).setPaddingTop(0).setPaddingBottom(0)
           if (r==0) {
             cell.editAsText().setBackgroundColor("#cccccc")
           }
-          if (r>0 && c==3) {
+          if (r>0 && c==5) {
               var [fg, bg] = getRingBackgroundColors(cell.getText())
               cell.editAsText().setForegroundColor(fg).setBackgroundColor(bg)
           }
