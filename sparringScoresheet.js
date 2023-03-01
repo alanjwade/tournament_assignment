@@ -247,46 +247,46 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   // Generate one bracket
   generateOneSparringBracket(targetSheet, startRow + 3, startCol + 0, 5)
   // Highlight Semifinal A and B
-  highlightOneMatch(
-    targetSheet,
-    startRow + 3,
-    startCol + 0,
-    3,
-    0,
-    "#b7e1cd",
-    "Semifinal Match A"
-  )
-  highlightOneMatch(
-    targetSheet,
-    startRow + 3,
-    startCol + 0,
-    3,
-    2,
-    "#f9cb9c",
-    "Semifinal Match B"
-  )
+  // highlightOneMatch(
+  //   targetSheet,
+  //   startRow + 3,
+  //   startCol + 0,
+  //   3,
+  //   0,
+  //   "#b7e1cd",
+  //   "Semifinal Match A"
+  // )
+  // highlightOneMatch(
+  //   targetSheet,
+  //   startRow + 3,
+  //   startCol + 0,
+  //   3,
+  //   2,
+  //   "#f9cb9c",
+  //   "Semifinal Match B"
+  // )
 
   // Highlight semi winners
   var [rowA, colA] = getCoordinatesFromRoundPosition(4, 0)
   var [rowB, colB] = getCoordinatesFromRoundPosition(4, 1)
 
-  targetSheet
-    .getRange(startRow + 3 + rowA + 1, startCol + colA + 1)
-    .setBackground("#b7e1cd")
-  targetSheet
-    .getRange(startRow + 3 + rowB + 1, startCol + colB + 1)
-    .setBackground("#f9cb9c")
+  // targetSheet
+  //   .getRange(startRow + 3 + rowA + 1, startCol + colA + 1)
+  //   .setBackground("#b7e1cd")
+  // targetSheet
+  //   .getRange(startRow + 3 + rowB + 1, startCol + colB + 1)
+  //   .setBackground("#f9cb9c")
 
-  targetSheet
-    .getRange(startRow + 3 + rowA + 2, startCol + colA + 1)
-    .setValue("Semifinal Match A Winner")
-    .setFontWeight('bold')
-    .setFontSize(11)
-  targetSheet
-    .getRange(startRow + 3 + rowB + 2, startCol + colB + 1)
-    .setValue("Semifinal Match B Winner")
-    .setFontWeight('bold')
-    .setFontSize(11)
+  // targetSheet
+  //   .getRange(startRow + 3 + rowA + 2, startCol + colA + 1)
+  //   .setValue("Semifinal Match A Winner")
+  //   .setFontWeight('bold')
+  //   .setFontSize(11)
+  // targetSheet
+  //   .getRange(startRow + 3 + rowB + 2, startCol + colB + 1)
+  //   .setValue("Semifinal Match B Winner")
+  //   .setFontWeight('bold')
+  //   .setFontSize(11)
 
   var [row, col] = getCoordinatesFromRoundPosition(5, 0)
   targetSheet
@@ -302,23 +302,23 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   var [rowA, colA] = getCoordinatesFromRoundPosition(1, 0)
   var [rowB, colB] = getCoordinatesFromRoundPosition(1, 1)
 
-  targetSheet
-    .getRange(startRow + 32 + rowA + 1, startCol + 3 + colA + 1)
-    .setBackground("#b7e1cd")
-  targetSheet
-    .getRange(startRow + 32 + rowB + 1, startCol + 3 + colB + 1)
-    .setBackground("#f9cb9c")
+  // targetSheet
+  //   .getRange(startRow + 32 + rowA + 1, startCol + 3 + colA + 1)
+  //   .setBackground("#b7e1cd")
+  // targetSheet
+  //   .getRange(startRow + 32 + rowB + 1, startCol + 3 + colB + 1)
+  //   .setBackground("#f9cb9c")
 
-  targetSheet
-    .getRange(startRow + 32 + rowA + 2, startCol + 3 + colA + 1)
-    .setValue("Semifinal Match A Loser")
-    .setFontWeight('bold')
-    .setFontSize(11)
-  targetSheet
-    .getRange(startRow + 32 + rowB + 2, startCol + 3 + colB + 1)
-    .setValue("Semifinal Match B Loser")
-    .setFontWeight('bold')
-    .setFontSize(11)
+  // targetSheet
+  //   .getRange(startRow + 32 + rowA + 2, startCol + 3 + colA + 1)
+  //   .setValue("Semifinal Match A Loser")
+  //   .setFontWeight('bold')
+  //   .setFontSize(11)
+  // targetSheet
+  //   .getRange(startRow + 32 + rowB + 2, startCol + 3 + colB + 1)
+  //   .setValue("Semifinal Match B Loser")
+  //   .setFontWeight('bold')
+  //   .setFontSize(11)
   var [row, col] = getCoordinatesFromRoundPosition(2, 0)
   targetSheet
     .getRange(startRow + 32 + row + 2, startCol + 3 + col + 1)
@@ -350,7 +350,10 @@ function highlightOneMatch(
   round,
   startPosition,
   color,
-  text
+  text, 
+  thirdPlaceMatch = false,
+  optUpperTxt = '',
+  optLowerTxt = ''
 ) {
   // Highlight one match. round is starting at 1, startPosition is the first fighter.
 
@@ -360,16 +363,39 @@ function highlightOneMatch(
 
   var absTopRow = topRow + startRow
   var absCol = col + startCol
+  var middleRow
+
+  var topShadeRow
+  var numRowsToShade
+
+  if (thirdPlaceMatch) {
+    topShadeRow = absTopRow + 23
+    numRowsToShade = 2
+    middleRow = topShadeRow -1
+  }
+  else {
+    topShadeRow = absTopRow + 1
+    numRowsToShade = Math.pow(2, round)
+    middleRow = absTopRow + (Math.pow(2, round)) / 2 -1
+  }
 
   targetSheet
-    .getRange(absTopRow + 1, absCol + 1, Math.pow(2, round) + 1, 1)
+    .getRange(topShadeRow, absCol + 1, numRowsToShade, 1)
     .setBackground(color)
-
-  var middleRow = absTopRow + Math.pow(2, round) / 2
+    
 
   targetSheet.getRange(middleRow + 1, absCol + 1).setValue(text)
   .setFontWeight('bold')
   .setFontSize(14)
+
+  if (optUpperTxt != '') {
+    targetSheet
+    .getRange(topShadeRow - 1, absCol + 1).setValue(optUpperTxt)
+  }
+  if (optLowerTxt != '') {
+    targetSheet
+    .getRange(topShadeRow + numRowsToShade - 1, absCol + 1).setValue(optLowerTxt)
+  }
 
   return true
 }
@@ -494,7 +520,6 @@ function placePeopleInBracket(
   }
 
   // we put numStartRound in round 'startRound' and numStart2Round in 'start2Round'
-
   for (var personIndex = 0; personIndex < totalPeople; personIndex++) {
     var thisRound
     var thisPosition
@@ -513,7 +538,67 @@ function placePeopleInBracket(
       .setValue(
         peopleArr[personIndex]["sfn"] + " " + peopleArr[personIndex]["sln"]
       )
+
+    // set background color for match
+//  
   }
+
+  // Set the background colors and add 'Match #x' to each match
+  var matchIdx = 1
+  for (var round=startRound; round<rounds; round++) {
+    var slotsInThisRound = Math.pow(2, rounds - round)
+    var startPosition
+    if (round == startRound) {
+      startPosition = slotsInThisRound - numStartRound
+    }
+    else {
+      startPosition = 0
+    }
+
+    for (var position = startPosition; position <slotsInThisRound; position += 2) {
+      var thisMatch
+      var semiTopTxt
+      var semiBotTxt
+      if (round == rounds - 1) {
+        // final round, make it the last match
+        thisMatch = matchIdx + 1
+        semiTopTxt = 'Winner Match #' + (matchIdx - 2)
+        semiBotTxt = 'Winner Match #' + (matchIdx - 1)
+      }
+      else {
+        thisMatch = matchIdx++
+        semiTopTxt = ''
+        semiBotTxt = ''
+       }
+      var sizeOfBackground = Math.pow(2, thisRound)
+      highlightOneMatch(
+        targetSheet,
+        startRow + 1,
+        startCol + 0,
+        round,
+        position,
+        getMatchBackgroundColor(round, position/2),
+        'Match #' + thisMatch,
+        thirdPlaceMatch = false,
+        semiTopTxt,
+        semiBotTxt
+      )
+    }
+  }
+
+  // Highlight the 3rd place match
+  highlightOneMatch(
+    targetSheet,
+    startRow + 1,
+    startCol + 0,
+    rounds - 1,
+    0,
+    getMatchBackgroundColor(rounds - 1, 0),
+    'Match #' + matchIdx, //should be one before the final
+    thirdPlaceMatch = true,
+    optUpperTxt = 'Loser Match #' + (matchIdx - 2),
+    optLowerTxt = 'Loser Match #' + (matchIdx - 1)
+  )
 }
 
 function generateOneSparringBracket(
@@ -593,4 +678,19 @@ function finalPlaces(targetSheet, startRow, startCol) {
   targetSheet.getRange(startRow + 1, startCol + 1, 1, 1)
     .setFontSize(18)
     .setFontWeight('bold')
+}
+
+function getMatchBackgroundColor(round, boutZB) {
+  // Return a hex color for the round (1-5) and the match position number
+  // This should be consistent for all sizes
+
+  var colorMap = [
+    ['#e6f7ff', '#cceeff', '#b3e6ff', '#99ddff', '#80d4ff', '#66ccff', '#4dc3ff', '#33bbff'],
+    ['#e6fff2', '#ccffe6', '#b3ffd9', '#99ffcc'],
+    ['#fff5e6', '#ffcc80'],
+    ['#c2c2d6']
+  ]
+
+  return colorMap[round-1][boutZB]
+
 }
