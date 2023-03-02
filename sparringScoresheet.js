@@ -390,11 +390,17 @@ function highlightOneMatch(
 
   if (optUpperTxt != '') {
     targetSheet
-    .getRange(topShadeRow - 1, absCol + 1).setValue(optUpperTxt)
+    .getRange(topShadeRow - 1, absCol + 1)
+    .setValue(optUpperTxt)
+    .setFontSize(14)
+    .setFontColor('#b7b7b7')
   }
   if (optLowerTxt != '') {
     targetSheet
-    .getRange(topShadeRow + numRowsToShade - 1, absCol + 1).setValue(optLowerTxt)
+    .getRange(topShadeRow + numRowsToShade - 1, absCol + 1)
+    .setValue(optLowerTxt)
+    .setFontSize(14)
+    .setFontColor('#b7b7b7')
   }
 
   return true
@@ -560,10 +566,24 @@ function placePeopleInBracket(
       var semiTopTxt
       var semiBotTxt
       if (round == rounds - 1) {
-        // final round, make it the last match
-        thisMatch = matchIdx + 1
-        semiTopTxt = 'Winner Match #' + (matchIdx - 2)
-        semiBotTxt = 'Winner Match #' + (matchIdx - 1)
+        if (matchIdx == 1) {
+          // final round, but there were only 2 competitors
+          thisMatch = 1
+          semiTopTxt = ''
+          semiBotTxt = ''
+        }
+        else if (matchIdx == 2) {
+          // final round, but there were only 3 competitors
+          thisMatch = 2
+          semiTopTxt = ''
+          semiBotTxt = 'Winner Match #1'
+        }
+        else {
+           // final round, 4 or more competitors
+           thisMatch = matchIdx + 1
+           semiTopTxt = 'Winner Match #' + (matchIdx - 2)
+           semiBotTxt = 'Winner Match #' + (matchIdx - 1)
+        }
       }
       else {
         thisMatch = matchIdx++
@@ -587,18 +607,20 @@ function placePeopleInBracket(
   }
 
   // Highlight the 3rd place match
-  highlightOneMatch(
-    targetSheet,
-    startRow + 1,
-    startCol + 0,
-    rounds - 1,
-    0,
-    getMatchBackgroundColor(rounds - 1, 0),
-    'Match #' + matchIdx, //should be one before the final
-    thirdPlaceMatch = true,
-    optUpperTxt = 'Loser Match #' + (matchIdx - 2),
-    optLowerTxt = 'Loser Match #' + (matchIdx - 1)
-  )
+  if (matchIdx > 2) {
+    highlightOneMatch(
+      targetSheet,
+      startRow + 1,
+      startCol + 0,
+      rounds - 1,
+      0,
+      getMatchBackgroundColor(rounds - 1, 0),
+      'Match #' + matchIdx, //should be one before the final
+      thirdPlaceMatch = true,
+      optUpperTxt = 'Loser Match #' + (matchIdx - 2),
+      optLowerTxt = 'Loser Match #' + (matchIdx - 1)
+    )
+  }
 }
 
 function generateOneSparringBracket(
@@ -688,7 +710,7 @@ function getMatchBackgroundColor(round, boutZB) {
     ['#e6f7ff', '#cceeff', '#b3e6ff', '#99ddff', '#80d4ff', '#66ccff', '#4dc3ff', '#33bbff'],
     ['#e6fff2', '#ccffe6', '#b3ffd9', '#99ffcc'],
     ['#fff5e6', '#ffcc80'],
-    ['#c2c2d6']
+    ['#feeaea']
   ]
 
   return colorMap[round-1][boutZB]
