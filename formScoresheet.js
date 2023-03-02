@@ -241,7 +241,11 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     formTable.getCell(i, 4).setBackgroundColor('#cccccc')
     formTable.getCell(i, 5).setBackgroundColor('#cccccc')
     formTable.getCell(i, 6).setBackgroundColor('#efefef')
-  }
+    
+    var row = formTable.getRow(i)
+    for (var c = 0; c < row.getNumCells(); c++) {
+      row.getCell(c).setPaddingTop(2).setPaddingBottom(0);
+    }}
 
   var bottomParagraph = body.appendParagraph("")
 
