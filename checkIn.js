@@ -366,6 +366,8 @@ function physRingToNumber(physRingStr) {
   if (physArr.length == 2) {
     if (physArr[1] == "b") {
       ringNumber += 0.5
+    } else if (physArr[1] == "c") {
+      ringNumber += 0.6
     } else {
       ringNumber += 0.0
     }

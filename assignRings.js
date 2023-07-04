@@ -36,7 +36,7 @@ function assignVRings(sourceSheetName = "Beginner") {
 
     var vRingHashTmp = divideOneGroupingIntoVRings(
       groupingsSortedByAgeRank[grouping],
-      startRing,
+      grouping,
       numRingsThisGroup
     )
 
@@ -144,14 +144,14 @@ function sortByHeight(a, b) {
 //        numVRings, the number of rings to divide into
 function divideOneGroupingIntoVRings(
   oneGroupingPeopleArr,
-  startVRing,
+  grouping,
   numVRings
 ) {
   groupDistArr = divideUpGroups(oneGroupingPeopleArr.length, numVRings)
   var vRingHash = {}
   var peopleArrIndex = 0
   for (i = 0; i < numVRings; i++) {
-    vRing = i + startVRing
+    vRing = grouping.toString() + '-' + String.fromCharCode(i + 97); 
     var numPeopleInThisVRing = groupDistArr[i]
     for (j = 0; j < numPeopleInThisVRing; j++) {
       if (!(vRing in vRingHash)) {
