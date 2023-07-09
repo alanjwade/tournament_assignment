@@ -1,89 +1,5 @@
-// Create a doc with all the forms sheets
 
-function generateSparringSheet(sourceSheetName = "Beginner") {
-  var targetDocName = sourceSheetName + " Sparring Brackets"
-  var targetSheetName = sourceSheetName + " Sparring Brackets"
 
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
-
-  var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
-  targetSheet.clear()
-
-  var physToVirtMap = physToVirtMapInv(virtToPhysMap)
-
-  targetDoc = createDocFile(targetDocName)
-
-  // Iterate through the list of sorted physical rings
-  for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
-    var virtRing = physToVirtMap[physRingStr]
-
-    var virtRingPeople = peopleArr
-      .filter(
-        (person) =>
-          person.vRing == virtRing && person.sparring.toLowerCase() != "no"
-      )
-      .sort(sortBySparringOrder)
-
-          // If there's no one in this virtual ring, skip
-    if (virtRingPeople.length == 0) {
-      continue
-    }
-
-    generateOneSparringBracketSheet(
-      targetSheet,
-      virtRingPeople,
-      0,
-      0,
-      physRingStr,
-      virtRing,
-      sourceSheetName
-    )
-
-    // Now, virtRingPeople has all the people in one virt ring AND is doing forms
-    var body = targetDoc.getBody()
-    var style = {}
-
-    throw new Error()
-  }
-  // Figure out what virtual rings there are.
-
-  targetDoc.saveAndClose()
-
-  // Get the target doc.
-}
-function appendSheetRangeToDocBody(
-  sheet,
-  startRow,
-  startCol,
-  numRows,
-  numCols,
-  targetBody
-) {
-  // Get Google Sheet data
-  var range = sheet
-    .getRange(startRow + 1, startCol + 1, numRows, numCols)
-    .getDataRegion(SpreadsheetApp.Dimension.ROWS)
-  var values = range.getValues()
-  var backgroundColors = range.getBackgrounds()
-  var styles = range.getTextStyles()
-
-  // Position to paste data in Google Docs
-  var body = targetBody
-  var table = body.appendTable(values)
-  table.setBorderWidth(0)
-  for (var i = 0; i < table.getNumRows(); i++) {
-    for (var j = 0; j < table.getRow(i).getNumCells(); j++) {
-      var obj = {}
-      obj[DocumentApp.Attribute.BACKGROUND_COLOR] = backgroundColors[i][j]
-      obj[DocumentApp.Attribute.FONT_SIZE] = styles[i][j].getFontSize()
-      if (styles[i][j].isBold()) {
-        obj[DocumentApp.Attribute.BOLD] = true
-      }
-      table.getRow(i).getCell(j).setAttributes(obj)
-    }
-  }
-}
 /**
  * Creates a PDF for the customer given sheet.
  * @param {string} ssId - Id of the Google Spreadsheet
@@ -341,6 +257,8 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
   // insert watermark
   var blob = getImageBlob()
   targetSheet.insertImage(blob, 1, 5, 0, 0)
+  .setWidth(900)
+  .setHeight(900)
 }
 
 function highlightOneMatch(

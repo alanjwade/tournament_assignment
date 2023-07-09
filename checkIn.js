@@ -22,7 +22,7 @@ function printCheckinSheet(levelName = "Beginner") {
   }
   footer = targetDoc.addFooter()
  
-  footer.appendImage(getImageBlob('logo.png'))
+//  footer.appendImage(getImageBlob('logo.png'))
   footer.appendParagraph(createTimeStamp())
 
   var tableSize = {}

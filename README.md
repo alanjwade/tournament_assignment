@@ -45,3 +45,12 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
 
 # Oddball notes on development
 To move the script to another spreadsheet, I had to do 'clasp logout', then change the script id in clasp.json, then re-login. Then I could 'clasp push' into the new script.
+
+# Logos
+To 'brand' the forms and sparring score sheets, put two png files in the same directory as the spreadsheet: logo.png and watermark.png.
+logo.png should be just a straight logo and will appear at the bottom of the form scoresheet.
+watermark.png will appear across the sparring score sheets. I would suggest having this one at a 45 degree angle and at 10% transparency to not interfere with the brackets below.
+
+Suggested ImageMagick commands:
+magick convert CMAA_logo2.png -resize 650x300 logo.png
+magick convert -background 'rgba(0,0,0,0)' -rotate -45 -alpha set -background none -channel A -evaluate multiply 0.10 +channel -resize 1000x1000 'CMAA_logo2.png' watermark.png

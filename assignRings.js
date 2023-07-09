@@ -10,7 +10,7 @@ function assignVRings(sourceSheetName = "Beginner") {
   var targetSheetName = sourceSheetName + " forms"
   var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  var [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
 
   var separatedByGroup = separateIntoGroups(peopleArr)
 
@@ -31,8 +31,8 @@ function assignVRings(sourceSheetName = "Beginner") {
   for (var grouping in groupingsSortedByAgeRank) {
     // choose the number of rings to use
     var numRingsThisGroup = Math.ceil(
-      groupingsSortedByAgeRank[grouping].length / 12
-    ) // max 10 per ring
+      groupingsSortedByAgeRank[grouping].length / maxPeoplePerRing
+    )
 
     var vRingHashTmp = divideOneGroupingIntoVRings(
       groupingsSortedByAgeRank[grouping],
@@ -55,6 +55,26 @@ function assignVRings(sourceSheetName = "Beginner") {
       sourceSheet.getRange(row, col).setValue(vRing)
     }
   }
+
+  // Create a proposed vring to phys ring mapping
+  var physRingNum = 1
+  var vRingToPRingMap = {}
+  for (const vRing of Object.keys(vRingHash)) {
+    vRingToPRingMap[vRing] = physRingNum++
+  }
+
+  // Populate that in the spreadsheet
+  var buffer = []
+  const sortedVRings = Object.keys(vRingToPRingMap).sort()
+  for (const vRing of sortedVRings) {
+    buffer.push([vRing, vRingToPRingMap[vRing]])
+  }
+  // Add some blank padding to avoid double entries
+  for (var i=0; i<10; i++) {
+    buffer.push(["", ""])
+  }
+  // Find 'Ring Mapping Virtual to Physical", put the proposal under it
+  sourceSheet.getRange(mapHeaderRow + 2, 1, buffer.length, 2).setValues(buffer)
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {

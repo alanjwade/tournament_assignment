@@ -20,7 +20,11 @@ function printScoresheets(level = "Beginner") {
   }
   footer = targetDoc.addFooter()
   
-  footer.appendImage(getImageBlob('logo.png'))
+  var centerStyle = {}
+  centerStyle[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT] =
+    DocumentApp.HorizontalAlignment.RIGHT;
+
+  //footer.appendImage(getImageBlob('logo.png')).setAttributes(centerStyle)
   footer.appendParagraph(createTimeStamp())
 
   var targetBody = targetDoc.getBody()
@@ -117,16 +121,16 @@ function printScoresheets(level = "Beginner") {
   console.log('Num paragraphs: ' + paragraphs.length)
 
 
-// This will put the watermark on every page
-//  var blob = getImageBlob()
-//  for (var i=0; i<paragraphsForWatermark.length; i++) {
-//    paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
-//      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-//      .setLeftOffset(0)
-//      .setTopOffset(0)
-//      .setWidth(600)
-//      .setHeight(600)
-//  }
+ //This will put the watermark on every page
+  var blob = getImageBlob()
+  for (var i=0; i<paragraphsForWatermark.length; i++) {
+    paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
+      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+      .setLeftOffset(0)
+      .setTopOffset(50)
+      .setWidth(700)
+      .setHeight(700)
+  }
  
   targetDoc.saveAndClose()
 }

@@ -246,15 +246,30 @@ function makeAllRingsCalculated() {
 }
 
 
-function ajwgetname() {
-  var sheet = SpreadsheetApp.getActive().getName()
-  console.log(sheet)
-  return sheet
-}
 function getId() {
   Browser.msgBox(
     "Spreadsheet key: " + SpreadsheetApp.getActiveSpreadsheet().getId()
   )
+}
+
+// Hardcoded abbreviation table, if there is an abbreviation.
+function getAbbreviation(schoolName) {
+  
+  var abbreviation = schoolName
+  
+  const namesToAbbreviations = new Map()
+
+  namesToAbbreviations.set("5280 Karate Academy", "5280")
+  namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
+  namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
+  namesToAbbreviations.set("Ripple Effect Martial Arts", "REMA")
+  namesToAbbreviations.set("Success Martial Arts", "SMA")
+
+  if (namesToAbbreviations.has(schoolName)) {
+    abbreviation = namesToAbbreviations.get(schoolName)
+  }
+
+  return abbreviation
 }
 
 // Read table for the purpose of calculating rings.
@@ -283,10 +298,12 @@ function readTableIntoArr(sheet) {
   //  [{sfn: "jim", sln: "bob", age: 5}, {sfn:"george", sln: "smith", age: 6}, ... ]
 
   var peopleArr = []
+  var endPeopleRow=0
 
   // start at 1 to avoid header row
   for (let i = 1; i < values.length; i++) {
     if (values[i][0] == "") {
+      endPeopleRow = i
       break
     }
     peopleArr.push({
@@ -297,7 +314,7 @@ function readTableIntoArr(sheet) {
       height: values[i][feetCol] + "'" + values[i][inchesCol] + '"',
       heightDec:
         parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
-      school: values[i][schoolCol],
+      school: getAbbreviation(values[i][schoolCol]),
       form: values[i][formCol],
       sparring: values[i][sparringCol],
       vRing: values[i][vRingCol],
@@ -309,6 +326,17 @@ function readTableIntoArr(sheet) {
       formOrderCol: formOrderCol,
       sparringOrderCol: sparringOrderCol,
     }) // values is 0 based
+  }
+
+  // After reading in the people rows, look for the words
+  // "maxPeoplePerRing" in a cell in the first column.
+  // If found, read the value in the next cell to the right.
+  // Put that in maxPeoplePerRing.
+  var maxPeoplePerRing = 10
+  for (let i=endPeopleRow; i< values.length; i++) {
+    if (values[i][0] == "maxPeoplePerRing") {
+      maxPeoplePerRing = values[i][1]
+    }
   }
 
   // Find the grouping table and read it in.
@@ -362,7 +390,7 @@ function readTableIntoArr(sheet) {
       virtToPhysMap[virt] = phys
     }
   }
-  return [peopleArr, virtToPhysMap, groupingTable]
+  return [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow]
 }
 
 // Get the counts of each scool from an array of people hashes.
