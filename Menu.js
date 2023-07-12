@@ -320,6 +320,9 @@ function readTableIntoArr(sheet) {
       altSparRingVal = null
     } else {
       altSparRingVal = values[i][altSparRingCol]
+      if (altSparRingVal == "") {
+        altSparRingVal = null
+      }
     }
     peopleArr.push({
       sfn: values[i][firstNameCol],

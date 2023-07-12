@@ -185,18 +185,39 @@ function generateOverviewOneRing(
   }
 
   // If hasAltSparRing, then we'll have to do this a couple times
+  var sparrerSectionDepth = 0
   
+  if (altSparRingsArr.length > 0) {
 
-  sparrerArr = sparrerArr.sort(sortBySparringOrder)
+    for (var altRing = 0; altRing < altSparRingsArr.length; altRing++) {
+      var thisSparrerArr = sparrerArr.filter(
+        (person) => person.altSparRing == altSparRingsArr[altRing]
+      )
 
-  var sparrerSectionDepth = generateGenericSubsection(targetSheet, 
-    sparrerArr, 
-    "Sparring (" + sparrerArr.length + ")", 
-    curRow, 
-    startCol, 
-    "sparringOrder",
-    numCols)
+      var tmpSparrerSectionDepth = generateGenericSubsection(targetSheet, 
+        thisSparrerArr, 
+        "Sparring alt ring " + altSparRingsArr[altRing] + " (" + sparrerArr.length + ")", 
+        curRow, 
+        startCol, 
+        "sparringOrder",
+        numCols)
+        curRow += tmpSparrerSectionDepth
+        sparrerSectionDepth += tmpSparrerSectionDepth
+    }
 
+
+  }
+  else {
+    sparrerArr = sparrerArr.sort(sortBySparringOrder)
+
+    sparrerSectionDepth = generateGenericSubsection(targetSheet, 
+      sparrerArr, 
+      "Sparring (" + sparrerArr.length + ")", 
+      curRow, 
+      startCol, 
+      "sparringOrder",
+      numCols)
+  }
   
   // Border all the way around
   var cells = targetSheet.getRange(
@@ -215,19 +236,6 @@ function generateOverviewOneRing(
     null, 
     SpreadsheetApp.BorderStyle.SOLID_THICK
   )
-  
-  // // Before the 'Forms' or 'Sparring' header
-  // targetSheet.getRange(formHeaderRow, startCol, 1, numCols)
-  // .setBorder(
-  //   true,
-  //   null,
-  //   null,
-  //   null,
-  //   null,
-  //   null,
-  //   null,
-  //   SpreadsheetApp.BorderStyle.SOLID_THICK
-  // )
 
 }
   

@@ -98,6 +98,7 @@ function appendOneSparringScoresheet(
   templateSheet,
   ringPeople,
   virtRing,
+  altRingStrAdder,
   physRing,
   level
 ) {
@@ -106,7 +107,7 @@ function appendOneSparringScoresheet(
   // new sheet
   var targetSheet = templateSheet
     .copyTo(targetSpreadsheet)
-    .setName("Ring " + physRing)
+    .setName("Ring " + physRing + altRingStrAdder)
 
   // assumes the template is already made
   finishOneSparringBracketSheet(

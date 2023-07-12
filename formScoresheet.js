@@ -101,14 +101,60 @@ function printScoresheets(level = "Beginner") {
       .filter((person) => person.sparring.toLowerCase() != "no")
       .sort(sortBySparringOrder)
 
-    appendOneSparringScoresheet(
-      targetSpreadsheet,
-      templateSheet,
-      sparringPeople,
-      virtRing,
-      physRingStr,
-      level
+    var altRingStrAdder = ""
+
+    var altSparringPeople = sparringPeople
+    .filter(
+      (person) => person.altSparRing != null
     )
+
+    if (altSparringPeople.length == 0) {
+
+      appendOneSparringScoresheet(
+        targetSpreadsheet,
+        templateSheet,
+        sparringPeople,
+        virtRing,
+        altRingStrAdder,
+        physRingStr,
+        level
+      )
+    }
+    else {
+      var altSparRings = []
+      for (var i = 0; i < sparringPeople.length; i++) {
+        if (sparringPeople[i].sparring.toLowerCase() != "no") {
+          if (sparringPeople[i].altSparRing) {
+            // If there is an altSparRing, add the key to a hash
+            altSparRings[sparringPeople[i].altSparRing] = 1
+          }
+        }
+      }
+    
+      // turn hash keys into array
+      var altSparRingsArr = []
+      for (var key in altSparRings) {
+        altSparRingsArr.push(key)
+      }
+
+      for (var altRing = 0; altRing < altSparRingsArr.length; altRing++) {
+        var thisSparrerArr = sparringPeople.filter(
+          (person) => person.altSparRing == altSparRingsArr[altRing]
+        )
+
+        appendOneSparringScoresheet(
+          targetSpreadsheet,
+          templateSheet,
+          thisSparrerArr,
+          virtRing,
+          " alt " + altSparRingsArr[altRing],
+          physRingStr,
+          level
+        )
+      }
+   
+        
+    }
 
     console.log("Finished with sparring ring " + physRingStr)
   }
