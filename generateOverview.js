@@ -155,74 +155,54 @@ function generateOverviewOneRing(
   }
   formerArr = formerArr.sort(sortByFormOrder)
 
-  // **********************************
-  // form header
-  // **********************************
-  var formHeaderRows = printFormsHeader(
-    targetSheet,
-    curRow,
-    startCol,
-    formerArr.length,
-    numCols
-  )
-
-  var formHeaderRow = curRow
-
-  curRow += formHeaderRows
-
-  curRow += printGeneralHeader(targetSheet, curRow, startCol)
-
-
-  // *********************************
-  // Array of form people
-  // *********************************
-  var formRows = printPeopleArr(targetSheet, formerArr, curRow, startCol, "formOrder")
+  var formRows = generateGenericSubsection(targetSheet, 
+    formerArr, 
+    "Forms (" + formerArr.length + ")", 
+    curRow, 
+    startCol, 
+    "formOrder",
+    numCols)
 
   curRow += formRows
 
   // Get an array of sparrers
   var sparrerArr = []
+  var altSparRings = {}
   for (var i = 0; i < peopleArr.length; i++) {
     if (peopleArr[i].sparring.toLowerCase() != "no") {
       sparrerArr.push(peopleArr[i])
+      if (peopleArr[i].altSparRing) {
+        // If there is an altSparRing, add the key to a hash
+        altSparRings[peopleArr[i].altSparRing] = 1
+      }
     }
   }
+
+  // turn hash keys into array
+  var altSparRingsArr = []
+  for (var key in altSparRings) {
+    altSparRingsArr.push(key)
+  }
+
+  // If hasAltSparRing, then we'll have to do this a couple times
+  
+
   sparrerArr = sparrerArr.sort(sortBySparringOrder)
-  var numSparrers = sparrerArr.length
 
-  // *********************************
-  // Sparring header
-  // *********************************
-  var sparHeaderRows = printSparHeader(
-    targetSheet,
-    curRow,
-    startCol,
-    numSparrers,
-    numCols
-  )
+  var sparrerSectionDepth = generateGenericSubsection(targetSheet, 
+    sparrerArr, 
+    "Sparring (" + sparrerArr.length + ")", 
+    curRow, 
+    startCol, 
+    "sparringOrder",
+    numCols)
 
-  var sparHeaderRow = curRow
-  curRow += sparHeaderRows
-  curRow += printGeneralHeader(targetSheet, curRow, startCol)
-
-  // *******************************
-  // Sparring array
-  // *******************************
-  var numSparrers = printPeopleArr(
-    targetSheet,
-    sparrerArr,
-    curRow,
-    startCol,
-    "sparringOrder"
-  )
-
-  curRow += numSparrers
-
+  
   // Border all the way around
   var cells = targetSheet.getRange(
     startRow,
     startCol,
-    2 + formerArr.length + numSparrers + 3,
+    2 + formerArr.length + sparrerSectionDepth + 1,
     numCols
   )
   cells.setBorder(
@@ -232,62 +212,96 @@ function generateOverviewOneRing(
     true,
     null,
     null,
-    null,
-    SpreadsheetApp.BorderStyle.SOLID_THICK
-  )
-
-  // Before the 'Forms' or 'Sparring' header
-  targetSheet.getRange(formHeaderRow, startCol, 1, numCols)
-  .setBorder(
-    true,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    SpreadsheetApp.BorderStyle.SOLID_THICK
-  )
-  targetSheet.getRange(sparHeaderRow, startCol, 1, numCols)
-  .setBorder(
-    true,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
+    null, 
     SpreadsheetApp.BorderStyle.SOLID_THICK
   )
   
-  // After the 'Name' row
-  targetSheet.getRange(formHeaderRow + 1, startCol, 1, numCols)
-  .setBorder(
-    null,
-    null,
-    true,
-    null,
-    null,
-    null,
-    null,
-    SpreadsheetApp.BorderStyle.SOLID
-  )
-  targetSheet.getRange(sparHeaderRow + 1, startCol, 1, numCols)
-  .setBorder(
-    null,
-    null,
-    true,
-    null,
-    null,
-    null,
-    null,
-    SpreadsheetApp.BorderStyle.SOLID
-  )
- 
-  targetSheet.setColumnWidth(startCol, 50)
-  targetSheet.autoResizeColumns(startCol+1, numCols-1)
-}
+  // // Before the 'Forms' or 'Sparring' header
+  // targetSheet.getRange(formHeaderRow, startCol, 1, numCols)
+  // .setBorder(
+  //   true,
+  //   null,
+  //   null,
+  //   null,
+  //   null,
+  //   null,
+  //   null,
+  //   SpreadsheetApp.BorderStyle.SOLID_THICK
+  // )
 
+}
+  
+  
+function generateGenericSubsection(
+  targetSheet,
+  peopleArr,
+  headerText,
+  startRow,
+  startCol,
+  orderKey,
+  numCols
+) {
+  var numPeople = peopleArr.length
+  var curRow = startRow
+  // ************************
+  // Header (ie 'forms')
+  targetSheet
+  .getRange(curRow, startCol)
+  .setValue(headerText)
+  .mergeAcross()
+  .setFontSize(16)
+  .setFontWeight("bold")
+  .setNumberFormat("@")
+  .setBackgroundColor("#d9d9d9")
+
+  targetSheet
+  .getRange(curRow, startCol, 1, numCols)
+  .mergeAcross()
+  .setBorder(
+    true,
+    true,
+    true,
+    true,
+    null,
+    null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID
+  )
+
+  curRow += 1
+
+  // ********************
+  // general header, ie the 'order/first/last' column headings
+  var generalHeaderRows = printGeneralHeader(targetSheet, curRow, startCol, orderKey)
+  
+  targetSheet
+  .getRange(curRow, startCol, 1, numCols)
+  .setBorder(
+    true,
+    true,
+    true,
+    true,
+    null,
+    null,
+    null,
+    SpreadsheetApp.BorderStyle.SOLID
+    )
+    
+  curRow += generalHeaderRows
+
+  // ******************
+  // array of people
+  peopleArrRows = printPeopleArr(
+    targetSheet,
+    peopleArr,
+    curRow,
+    startCol,
+    orderKey
+  )
+
+
+  return peopleArrRows + 2
+}
 
 function printMainHeader(
   targetSheet,

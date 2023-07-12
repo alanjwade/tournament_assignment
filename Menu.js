@@ -294,6 +294,14 @@ function readTableIntoArr(sheet) {
   let formOrderCol = headerRowValues.indexOf("Form Order")
   let sparringOrderCol = headerRowValues.indexOf("Sparring Order")
 
+  // If there's an 'Alt Spar Ring' in the headers, then we'll read it.
+  // Otherwise, we'll note that there isn't one.
+
+  let altSparRingCol = null
+  if (headerRowValues.includes("Alt Spar Ring")) {
+    altSparRingCol = headerRowValues.indexOf("Alt Spar Ring")
+  }
+
   // data format:
   //  [{sfn: "jim", sln: "bob", age: 5}, {sfn:"george", sln: "smith", age: 6}, ... ]
 
@@ -305,6 +313,13 @@ function readTableIntoArr(sheet) {
     if (values[i][0] == "") {
       endPeopleRow = i
       break
+    }
+    // Take care of alt spar ring seperately
+    var altSparRingVal
+    if (altSparRingCol === null) {
+      altSparRingVal = null
+    } else {
+      altSparRingVal = values[i][altSparRingCol]
     }
     peopleArr.push({
       sfn: values[i][firstNameCol],
@@ -325,6 +340,7 @@ function readTableIntoArr(sheet) {
       sparringOrder: values[i][sparringOrderCol],
       formOrderCol: formOrderCol,
       sparringOrderCol: sparringOrderCol,
+      altSparRing: altSparRingVal
     }) // values is 0 based
   }
 
