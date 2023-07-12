@@ -111,6 +111,17 @@ function printCheckinSheet(levelName = "Beginner") {
       buffer = []
     }
   }
+  //This will put the watermark on every page
+  var blob = getImageBlob()
+  for (var j=0; j<headerParagraphs.length; j++) {
+    headerParagraphs[j].asParagraph().addPositionedImage(blob)
+      .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+      .setLeftOffset(0)
+      .setTopOffset(150)
+      .setWidth(650)
+      .setHeight(650)
+
+  }
 targetDoc.saveAndClose()
 }
 

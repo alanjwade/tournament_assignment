@@ -256,7 +256,7 @@ function makeOneSparringBracketSheetTemplate(targetSheet, startRow, startCol) {
 
   // insert watermark
   var blob = getImageBlob()
-  targetSheet.insertImage(blob, 1, 5, 0, 0)
+  targetSheet.insertImage(blob, 1, 11, 0, 0)
   .setWidth(900)
   .setHeight(900)
 }

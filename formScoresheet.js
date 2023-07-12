@@ -127,9 +127,9 @@ function printScoresheets(level = "Beginner") {
     paragraphsForWatermark[i].asParagraph().addPositionedImage(blob)
       .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
       .setLeftOffset(0)
-      .setTopOffset(50)
-      .setWidth(700)
-      .setHeight(700)
+      .setTopOffset(150)
+      .setWidth(650)
+      .setHeight(650)
   }
  
   targetDoc.saveAndClose()
