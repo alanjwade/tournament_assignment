@@ -31,6 +31,7 @@ function onOpen() {
     .addToUi()
   ui.createMenu("Generate Collateral")
     .addItem("generate collateral for all rings", "generateCollateralAll")
+    .addSeparator()
     .addItem("generate collateral for beginner rings", "generateCollateralB")
     .addItem("generate collateral for level 1 rings", "generateCollateralL1")
     .addItem("generate collateral for level 2 rings", "generateCollateralL2")
@@ -39,6 +40,7 @@ function onOpen() {
     .addToUi()
   ui.createMenu("Generate Overview")
     .addItem("generate overview for all rings", "generateOverview")
+    .addSeparator()
     .addItem("generate overview for beginner rings", "generateOverviewBRings")
     .addItem("generate overview for level 1 rings", "generateOverviewL1Rings")
     .addItem("generate overview for level 2 rings", "generateOverviewL2Rings")
@@ -51,6 +53,7 @@ function onOpen() {
     .addToUi()
   ui.createMenu("Generate Checkin Sheets")
     .addItem("generate checkin sheet for all rings", "generateCheckinAll")
+    .addSeparator()
     .addItem(
       "generate checkin sheet for beginner rings",
       "generateCheckinBRings"
@@ -75,6 +78,7 @@ function onOpen() {
     .addToUi()
   ui.createMenu("Generate Score Sheets")
     .addItem("generate score sheet for all rings", "generateScoreAll")
+    .addSeparator()
     .addItem("generate score sheet for beginner rings", "generateScoreBRings")
     .addItem("generate score sheet for level 1 rings", "generateScoreL1Rings")
     .addItem("generate score sheet for level 2 rings", "generateScoreL2Rings")
