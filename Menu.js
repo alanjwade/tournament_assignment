@@ -351,10 +351,27 @@ function readTableIntoArr(sheet) {
   // "maxPeoplePerRing" in a cell in the first column.
   // If found, read the value in the next cell to the right.
   // Put that in maxPeoplePerRing.
-  var maxPeoplePerRing = 10
+  var maxPeoplePerRing = new Map()
+  var foundMaxPerRing = false
+  var maxPerRingRow
+
   for (let i=endPeopleRow; i< values.length; i++) {
     if (values[i][0] == "maxPeoplePerRing") {
-      maxPeoplePerRing = values[i][1]
+      maxPeoplePerRing.set('default', values[i][1])
+      foundMaxPerRing = true
+      maxPerRingRow = i
+      break
+    }
+  }
+
+  if (foundMaxPerRing) {
+    for (var i=maxPerRingRow+1; i<values.length; i++) {
+      if (values[i][0] == "") {
+        break
+      }
+      else {
+        maxPeoplePerRing.set(values[i][0].toString(), values[i][1])
+      }
     }
   }
 

@@ -30,8 +30,14 @@ function assignVRings(sourceSheetName = "Beginner") {
   var vRingHash = {} // hash of (vring, list of people)
   for (var grouping in groupingsSortedByAgeRank) {
     // choose the number of rings to use
+    var thisMaxPeoplePerRing
+    if (maxPeoplePerRing.has(grouping)) {
+      thisMaxPeoplePerRing = maxPeoplePerRing.get(grouping)
+    } else {
+      thisMaxPeoplePerRing = maxPeoplePerRing.get('default')
+    }
     var numRingsThisGroup = Math.ceil(
-      groupingsSortedByAgeRank[grouping].length / maxPeoplePerRing
+      groupingsSortedByAgeRank[grouping].length / thisMaxPeoplePerRing
     )
 
     var vRingHashTmp = divideOneGroupingIntoVRings(
