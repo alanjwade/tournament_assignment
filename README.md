@@ -43,6 +43,8 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
 ## How sparring order is determined
   * Inside a particular ring, the people are ordered by height.
 
+# Alternate Sparring Ring
+
 # Oddball notes on development
 To move the script to another spreadsheet, I had to do 'clasp logout', then change the script id in clasp.json, then re-login. Then I could 'clasp push' into the new script.
 
