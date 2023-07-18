@@ -196,7 +196,7 @@ function generateOverviewOneRing(
 
       var tmpSparrerSectionDepth = generateGenericSubsection(targetSheet, 
         thisSparrerArr, 
-        "Sparring alt ring " + altSparRingsArr[altRing] + " (" + sparrerArr.length + ")", 
+        "Sparring alt ring " + altSparRingsArr[altRing] + " (" + thisSparrerArr.length + ")", 
         curRow, 
         startCol, 
         "sparringOrder",
