@@ -44,6 +44,10 @@ Steps 2 and 3 can be run multiple times. Step 1, after the initial time, should 
   * Inside a particular ring, the people are ordered by height.
 
 # Alternate Sparring Ring
+If you want to have a mixed male/female forms ring, but then break them out for sparring,
+you can do that by defining a new column in the source sheet called 'Alt Spar Ring'.
+Everyone in that ring should then be assigned a number corresponding to the sub-ring they
+will be sparring in, probably 1 and 2.
 
 # Oddball notes on development
 To move the script to another spreadsheet, I had to do 'clasp logout', then change the script id in clasp.json, then re-login. Then I could 'clasp push' into the new script.
