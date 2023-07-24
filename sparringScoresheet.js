@@ -462,6 +462,7 @@ function placePeopleInBracket(
       .getRange(startRow + row + 1, startCol + col + 1)
       .setValue(
         peopleArr[personIndex]["sfn"] + " " + peopleArr[personIndex]["sln"]
+        + " (" + peopleArr[personIndex]["school"] + ")"
       )
 
     // set background color for match
