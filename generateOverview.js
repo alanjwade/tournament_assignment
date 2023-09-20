@@ -80,23 +80,34 @@ function generateOverviewOneLevel(
 
   var x
   var y
+
+  var startRow = 1
+
   for (var vRing of Object.keys(virtToPhysMap)) {
     // convert virtual to physical
     var physRingStr = virtToPhysMap[vRing].toString()
     var physArr = physRingStr.match(/\d+|\D+/g)
 
-    x = parseInt(physArr[0]) - 1
-    if (physArr[1] == "b") {
-      y = 1
-    } else if (physArr[1] == "c") {
-      y = 2
-    } else {
-      y = 0
-    }
-    // x and y are 0-based indices into the table
-    var numCols = 9
-    var startCol = 1 + numCols * x
-    var startRow = 1 + 25 * y
+    // This would be for a horizontal display
+    // x = parseInt(physArr[0]) - 1
+    // if (physArr[1] == "b") {
+    //   y = 1
+    // } else if (physArr[1] == "c") {
+    //   y = 2
+    // } else {
+    //   y = 0
+    // }
+        // x and y are 0-based indices into the table
+    // var numColsUsedPerRing = 9
+    // var startCol = 1 + numColsUsedPerRing * x
+    // var startRow = 1 + 25 * y
+
+    // this is for a vertical display
+    x = 0
+
+    var numColsUsedPerRing = 9
+    var startCol = 1 + numColsUsedPerRing * x
+    
 
     var peopleInThisVRing = peopleArr.filter((person) => person.vRing == vRing)
 
@@ -104,14 +115,14 @@ function generateOverviewOneLevel(
     if (peopleInThisVRing.length == 0) {
       continue
     }
-    generateOverviewOneRing(
+    startRow += generateOverviewOneRing(
       targetSheet,
       startCol,
       startRow,
       vRing,
       peopleInThisVRing,
       physRingStr,
-      numCols
+      numColsUsedPerRing
     )
 
     // Generate a timestamp
@@ -127,7 +138,7 @@ function generateOverviewOneRing(
   ringId,
   peopleArr,
   physRing,
-  numCols
+  numColsUsedPerRing
 ) {
   
 
@@ -140,7 +151,7 @@ function generateOverviewOneRing(
     startCol,
     ringId,
     physRing,
-    numCols
+    numColsUsedPerRing
   )
 
   var mainHeaderRow = startRow
@@ -161,7 +172,7 @@ function generateOverviewOneRing(
     curRow, 
     startCol, 
     "formOrder",
-    numCols)
+    numColsUsedPerRing)
 
   curRow += formRows
 
@@ -200,7 +211,7 @@ function generateOverviewOneRing(
         curRow, 
         startCol, 
         "sparringOrder",
-        numCols)
+        numColsUsedPerRing)
         curRow += tmpSparrerSectionDepth
         sparrerSectionDepth += tmpSparrerSectionDepth
     }
@@ -216,7 +227,7 @@ function generateOverviewOneRing(
       curRow, 
       startCol, 
       "sparringOrder",
-      numCols)
+      numColsUsedPerRing)
   }
   
   // Border all the way around
@@ -224,7 +235,7 @@ function generateOverviewOneRing(
     startRow,
     startCol,
     2 + formerArr.length + sparrerSectionDepth + 1,
-    numCols
+    numColsUsedPerRing
   )
   cells.setBorder(
     true,
@@ -237,6 +248,8 @@ function generateOverviewOneRing(
     SpreadsheetApp.BorderStyle.SOLID_THICK
   )
 
+  return mainHeaderRows + formRows + sparrerSectionDepth
+
 }
   
   
@@ -247,7 +260,7 @@ function generateGenericSubsection(
   startRow,
   startCol,
   orderKey,
-  numCols
+  numColsUsedPerRing
 ) {
   var numPeople = peopleArr.length
   var curRow = startRow
@@ -263,7 +276,7 @@ function generateGenericSubsection(
   .setBackgroundColor("#d9d9d9")
 
   targetSheet
-  .getRange(curRow, startCol, 1, numCols)
+  .getRange(curRow, startCol, 1, numColsUsedPerRing)
   .mergeAcross()
   .setBorder(
     true,
@@ -283,7 +296,7 @@ function generateGenericSubsection(
   var generalHeaderRows = printGeneralHeader(targetSheet, curRow, startCol, orderKey)
   
   targetSheet
-  .getRange(curRow, startCol, 1, numCols)
+  .getRange(curRow, startCol, 1, numColsUsedPerRing)
   .setBorder(
     true,
     true,
@@ -317,7 +330,7 @@ function printMainHeader(
   startCol,
   ring,
   physRing,
-  numCols
+  numColsUsedPerRing
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
   cells
@@ -327,7 +340,7 @@ function printMainHeader(
 
   // set background color
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
-  cells = targetSheet.getRange(startRow, startCol, 1, numCols)
+  cells = targetSheet.getRange(startRow, startCol, 1, numColsUsedPerRing)
   cells.setBackgroundColor(backgroundColor).setFontColor(foregroundcolor).mergeAcross()
 
   return 1 // the number of rows printed
