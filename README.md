@@ -58,5 +58,7 @@ logo.png should be just a straight logo and will appear at the bottom of the for
 watermark.png will appear across the sparring score sheets. I would suggest having this one at a 45 degree angle and at 10% transparency to not interfere with the brackets below.
 
 Suggested ImageMagick commands:
+```
 magick convert CMAA_logo2.png -resize 650x300 logo.png
 magick convert -background 'rgba(0,0,0,0)' -rotate -45 -alpha set -background none -channel A -evaluate multiply 0.10 +channel -resize 1000x1000 'CMAA_logo2.png' watermark.png
+```
