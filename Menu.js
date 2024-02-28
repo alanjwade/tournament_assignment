@@ -91,6 +91,19 @@ function onOpen() {
     )
     .addSeparator()
     .addToUi()
+  ui.createMenu("Generate Name Tags")
+    .addItem("generate name tags for all rings", "generateNameTagsAll")
+    .addSeparator()
+    .addItem("generate name tags for beginner rings", "generateNameTagsBRings")
+    .addItem("generate name tags for level 1 rings", "generateNameTagsL1Rings")
+    .addItem("generate name tags for level 2 rings", "generateNameTagsL2Rings")
+    .addItem("generate name tags for level 3 rings", "generateNameTagsL3Rings")
+    .addItem(
+      "generate name tags for black belt rings",
+      "generateNameTagsBBRings"
+    )
+    .addToUi()
+ 
 }
 
 function globalVariables() {
@@ -251,6 +264,25 @@ function makeAllRingsCalculated() {
   generateOverview(false, true)
 }
 
+function generateNameTagsAll() {
+  var levels = globalVariables().levels
+  levels.forEach((level) => printNameTagSheet(level))
+}
+function generateNameTagsBRings() {
+  printNameTagSheet("Beginner")
+}
+function generateNameTagsL1Rings() {
+  printNameTagSheet("Level 1")
+}
+function generateNameTagsL2Rings() {
+  printNameTagSheet("Level 2")
+}
+function generateNameTagsL3Rings() {
+  printNameTagSheet("Level 3")
+}
+function generateNameTagsBBRings() {
+  printNameTagSheet("Black Belt")
+}
 
 function getId() {
   Browser.msgBox(
