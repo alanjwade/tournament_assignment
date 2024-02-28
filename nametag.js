@@ -17,43 +17,15 @@ function printNameTagSheet(levelName = "Beginner") {
 
   var buffer = []
   var body = targetDoc.getBody()
-  body.clear()
+  body.clear().setMarginLeft(18)
 
   var paragraph = body.getParagraphs()[0]
-
-  var row = 0
-  var col = 0
+  var blob = getImageBlob('logo_orig_dark_letters.png')
 
   for (var i = 0; i < peopleArr.length; i = i + 1) {
-    // Do 2 at a time and special case an odd one at the end
 
-
-    // Each cell is one name tag
-//    thisRow = [
-//      peopleArr[i].sfn +
-//        " " +
-//        peopleArr[i].sln +
-//        "\n" +
-//        peopleArr[i].school.toString() +
-//        "\n" +
-//        virtToPhysMap[peopleArr[i].vRing].toString(),
-//    ]
     buffer.push(peopleArr[i])
 
-    // if (i + 1 < peopleArr.length) {
-    //   thisRow.push(
-    //     peopleArr[i + 1].sfn +
-    //       " " +
-    //       peopleArr[i + 1].sln +
-    //       "\n" +
-    //       peopleArr[i + 1].school.toString() +
-    //       "\n" +
-    //       "ring " +
-    //       virtToPhysMap[peopleArr[i + 1].vRing].toString()
-    //   )
-    // }
-
-    row = row + 1
 
     if ((buffer.length >= numColsPerPage*numRowsPerPage) || (i == peopleArr.length - 1)) {
       var tagTable = body.appendTable()
@@ -62,15 +34,19 @@ function printNameTagSheet(levelName = "Beginner") {
       for (j=0; j<buffer.length; j++) {
         if (j%2 == 0) {
 
-
-          lastTagTableRow = tagTable.appendTableRow()
+          // Add a row, set the row height in points
+          lastTagTableRow = tagTable.appendTableRow().setMinimumHeight(2 * 72)
         }
 
-        var thisParagraph = lastTagTableRow.appendTableCell().appendParagraph("")
+        // Add cells, set the row width in points
+        var thisCell = lastTagTableRow.appendTableCell().setWidth(4 * 72)
+        var thisParagraph = thisCell.appendParagraph("")
 
-        makeNameTagCell(buffer[j], virtToPhysMap, thisParagraph)
+        // Fill in the details of one name tag, including logo
+        makeNameTagCell(buffer[j], virtToPhysMap, thisParagraph, blob)
 
       }
+
       var bottomParagraph = body.appendParagraph("")
       bottomParagraph.appendPageBreak()
 
@@ -79,14 +55,13 @@ function printNameTagSheet(levelName = "Beginner") {
       }
 
       buffer = []
-      row = 0
     }
   }
   targetDoc.saveAndClose()
 }
 
 // Return a paragraph with the right formatting
-function makeNameTagCell(person, virtToPhysMap, paragraph) {
+function makeNameTagCell(person, virtToPhysMap, paragraph, blob) {
   var thisParagraph = paragraph
 
   thisParagraph.appendText(person.sfn + " ")
@@ -97,5 +72,10 @@ function makeNameTagCell(person, virtToPhysMap, paragraph) {
   thisParagraph.appendText("Ring " + physRing)
                .setForegroundColor(fg).setBackgroundColor(bg)
 
-
+  thisParagraph.addPositionedImage(blob)
+  .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
+  .setLeftOffset(2.5*72)
+  .setTopOffset(0)
+  .setWidth(1.75*72)
+  .setHeight(1.5*72)
 }
