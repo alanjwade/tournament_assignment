@@ -54,13 +54,22 @@ function printCheckinSheet(levelName = "Beginner") {
   var headerParagraphs = []
   for (var i = 0; i < peopleArr.length; i++) {
     // After 25 or the end, put in a new page
+
+    // Calculate the ring/section name that we'll print
+    var ringStr = virtToPhysMap[peopleArr[i].vRing].toString() // default
+    if (globalVariables().displayStyle == "sections") {
+      var [physRingNum, sectionLetter] = splitPhysRing(ringStr)
+      var sectionNumber = convertLetterToNumber(sectionLetter)
+      ringStr = physRingNum + " sec " + sectionNumber
+    }
+
     buffer.push([
       peopleArr[i].sfn,
       peopleArr[i].sln,
       peopleArr[i].school.toString(),
       peopleArr[i].form,
       peopleArr[i].sparring,
-      virtToPhysMap[peopleArr[i].vRing].toString(),
+      ringStr,
     ])
     if (
       i % numPeoplePerPage == numPeoplePerPage - 1 ||
@@ -82,8 +91,8 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable.setColumnWidth(1, 140)
       checkinTable.setColumnWidth(2, 80)
       checkinTable.setColumnWidth(3, 65)
-      checkinTable.setColumnWidth(4, 80)
-      checkinTable.setColumnWidth(5, 50)
+      checkinTable.setColumnWidth(4, 78)
+      checkinTable.setColumnWidth(5, 52)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
 

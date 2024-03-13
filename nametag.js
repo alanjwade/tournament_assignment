@@ -15,12 +15,33 @@ function printNameTagSheet(levelName = "Beginner") {
   var numRowsPerPage = 4
   var numColsPerPage = 2
 
+  const pointsPerInch = 72
+
+  var labelInfo = {}
+  labelInfo["heightIn"] = 2+1/3
+  labelInfo["widthIn"] = 3.375
+  labelInfo["leftMarginIn"] = (8.5 - 2*3.375) / 2
+  labelInfo["topMarginIn"] = (11 - 4 * labelInfo["heightIn"]) / 2
+
+  var heightPoints = labelInfo["heightIn"] * pointsPerInch
+  var widthPoints = labelInfo["widthIn"] * pointsPerInch
+  var leftMarginPoints = labelInfo["leftMarginIn"] * pointsPerInch
+  var topMarginPoints = labelInfo["topMarginIn"] * pointsPerInch
+  
+  tinyStyle = {}
+  tinyStyle[DocumentApp.Attribute.FONT_SIZE] = 1
+
   var buffer = []
   var body = targetDoc.getBody()
-  body.clear().setMarginLeft(18).setMarginBottom(0)
+  body.clear().setMarginLeft(leftMarginPoints)
+              .setMarginBottom(0)
+              .setMarginTop(topMarginPoints)
+              .setAttributes(tinyStyle)
 
-  var paragraph = body.getParagraphs()[0]
-  var blob = getImageBlob('logo_orig_dark_letters.png')
+//   footer = targetDoc.addFooter()
+//  footer.appendParagraph(createTimeStamp())
+
+ var blob = getImageBlob('logo_orig_dark_letters.png')
   
   var style = {};
   style[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT] =
@@ -28,6 +49,7 @@ function printNameTagSheet(levelName = "Beginner") {
   style[DocumentApp.Attribute.FONT_FAMILY] = 'Calibri';
   style[DocumentApp.Attribute.FONT_SIZE] = 18;
   style[DocumentApp.Attribute.BOLD] = true;
+
   
 
   var tableSize = {}
@@ -53,19 +75,14 @@ function printNameTagSheet(levelName = "Beginner") {
 
     if ((buffer.length >= numColsPerPage*numRowsPerPage) || (i == peopleArr.length - 1)) {
 
-      // Convert buffer into an array of arrays to put into the table
-      
-      // for (var tableRow=0; tableRow<numRowsPerPage; tableRow++) {
-      //   for (var tableCol=0; tableCol<numColsPerPage; tableCol++) {
-      //     if (tableCol + tableRow * numColsPerPage < buffer.length) {
-      //       // Here, we have a valid place to put it
-      //       pushTable[tableCol][tableRow] = buffer[tableCol + tableRow*numColsPerPage]
-      //     }
-      //   }
-      // }
+      var tmpParagraphs = body.getParagraphs()
+      var lastParagraph = tmpParagraphs[tmpParagraphs.length - 1]
+      lastParagraph.setAttributes(tinyStyle)
+      var lastParagraphIndex = body.getChildIndex(lastParagraph)
 
 
-      var tagTable = body.appendTable()
+      var tagTable = body.insertTable(lastParagraphIndex)
+                         .setBorderColor("#080808")
       //  = body.appendTable([["", ""],["", ""]])
       var lastTagTableRow
 
@@ -73,11 +90,11 @@ function printNameTagSheet(levelName = "Beginner") {
         if (j%2 == 0) {
 
           // Add a row, set the row height in points
-          lastTagTableRow = tagTable.appendTableRow().setMinimumHeight(2 * 72)
+          lastTagTableRow = tagTable.appendTableRow().setMinimumHeight(heightPoints)
         }
 
         // Add cells, set the row width in points
-        var thisCell = lastTagTableRow.appendTableCell().setWidth(4 * 72)
+        var thisCell = lastTagTableRow.appendTableCell().setWidth(widthPoints)
                     .setVerticalAlignment(DocumentApp.VerticalAlignment.CENTER)
 
         // The cell was created by default with an existing paragraph. Get that
@@ -88,6 +105,7 @@ function printNameTagSheet(levelName = "Beginner") {
         // done another way (maybe append a paragraph) but this works.
         thisParagraph.appendText(buffer[j].sfn + " " + buffer[j].sln + "\r")
         thisParagraph.appendText(buffer[j].school.toString() + "\r")
+        thisParagraph.appendText(levelName + "\r")
         var physRing = virtToPhysMap[buffer[j].vRing].toString()
         var [fg, bg] = getRingBackgroundColors(physRing)
         thisParagraph.appendText("Ring " + physRing)
@@ -95,10 +113,10 @@ function printNameTagSheet(levelName = "Beginner") {
       
         thisParagraph.addPositionedImage(blob)
         .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-        .setLeftOffset(2.5*72)
-        .setTopOffset(0)
-        .setWidth(1.75*72)
-        .setHeight(1.5*72)
+        .setLeftOffset(.75 * widthPoints)
+        .setTopOffset(heightPoints - .45 * widthPoints) // guess at vert position
+        .setWidth(.25 * widthPoints)
+        .setHeight(.25 * widthPoints)
 
       }
 

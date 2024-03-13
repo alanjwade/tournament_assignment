@@ -124,7 +124,9 @@ function globalVariables() {
       12: "#6fa8dc",
       13: "#b6d7a8",
       14: "#b4a7d6",
-    }
+    },
+    displayStyle: "sections" // physical rings (1,2,3... or 1a, 1b, 2a, 2b, ...)
+                             // sections (ring 1 section 1, ring 1 section 2, etc.)
   }
   return variables
 }
@@ -540,4 +542,31 @@ function compareByAgeRank(a, b) {
     return 1
   }
   return 0
+}
+
+function convertLetterToNumber(letter) {
+  // Convert the letter to lowercase for case-insensitive conversion
+  letter = letter.toLowerCase();
+
+  // Get the character code of the letter
+  const charCode = letter.charCodeAt(0);
+
+  // Adjust the character code based on the starting position of 'a' (97)
+  // This makes 'a' = 1, 'b' = 2, etc.
+  const number = charCode - 96;
+
+  // Check if the input is a valid letter
+  if (number < 1 || number > 26) {
+    return NaN; // Return NaN for non-letters
+  }
+
+  return number;
+}
+
+function splitPhysRing(inStr) {
+
+  var regex = new RegExp('([0-9]+)|([a-zA-Z]+)','g')
+  var splittedArray = inStr.match(regex)
+
+  return splittedArray
 }

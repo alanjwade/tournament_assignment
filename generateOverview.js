@@ -333,8 +333,16 @@ function printMainHeader(
   numColsUsedPerRing
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
+  var cellStr = "Ring " + physRing + ' (virtual ring ' + ring + ')'
+  if (globalVariables().displayStyle == "sections") {
+
+    var [physRingNum, sectionLetter] = splitPhysRing(physRing)
+    var sectionNumber = convertLetterToNumber(sectionLetter)
+
+    cellStr = "Ring " + physRingNum + " Section " + sectionNumber + ' (virtual ring ' + ring + ')'
+  }
   cells
-    .setValue("Ring " + physRing + ' (virtual ring ' + ring + ')')
+    .setValue(cellStr)
     .setFontSize(20)
     .setFontWeight("bold")
 

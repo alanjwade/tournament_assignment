@@ -249,8 +249,15 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
   for (var i=0; i<0; i++) {
     buffer.push(["","","","","","","",""])
   }
+
   var formTitle =
     level +  " Ring " + physRing
+
+  if (globalVariables().displayStyle == "sections") {
+    var [physRingNum, sectionLetter] = splitPhysRing(physRing)
+    var sectionNumber = convertLetterToNumber(sectionLetter)
+    formTitle = level + "Ring " + phyRingNum + " Section " + sectionNumber
+  }
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
   
   var titleText = topParagraph.appendText(formTitle)
