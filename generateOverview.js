@@ -336,8 +336,7 @@ function printMainHeader(
   var cellStr = "Ring " + physRing + ' (virtual ring ' + ring + ')'
   if (globalVariables().displayStyle == "sections") {
 
-    var [physRingNum, sectionLetter] = splitPhysRing(physRing)
-    var sectionNumber = convertLetterToNumber(sectionLetter)
+    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
 
     cellStr = "Ring " + physRingNum + " Section " + sectionNumber + ' (virtual ring ' + ring + ')'
   }

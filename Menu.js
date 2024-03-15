@@ -546,6 +546,9 @@ function compareByAgeRank(a, b) {
 
 function convertLetterToNumber(letter) {
   // Convert the letter to lowercase for case-insensitive conversion
+  if (typeof(letter) != "string") {
+    return 0
+  }
   letter = letter.toLowerCase();
 
   // Get the character code of the letter
@@ -567,6 +570,7 @@ function splitPhysRing(inStr) {
 
   var regex = new RegExp('([0-9]+)|([a-zA-Z]+)','g')
   var splittedArray = inStr.match(regex)
+  var sectionNumber = convertLetterToNumber(splittedArray[1])
 
-  return splittedArray
+  return [splittedArray[0], splittedArray[1], sectionNumber]
 }

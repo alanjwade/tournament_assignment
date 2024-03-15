@@ -67,8 +67,13 @@ function printScoresheets(level = "Beginner") {
     targetSpreadsheet.deleteSheet(allSheets[i])
   }
 
+  var curSortedPhysRings = sortedPhysRings(virtToPhysMap)
+  if (globalVariables().displayStyle == "sections") {
+    curSortedPhysRings = sortedPhysRingsBySection(virtToPhysMap)
+  }
+
   var paragraphsForWatermark = []
-  for (var physRingStr of sortedPhysRings(virtToPhysMap)) {
+  for (var physRingStr of curSortedPhysRings) {
     var virtRing = physToVirtMap[physRingStr]
 
     // Get all the people in one virtRing, whether forms, sparring, or both
@@ -254,9 +259,8 @@ function appendOneFormsScoresheet(body, ringPeople, virtRing, physRing, level) {
     level +  " Ring " + physRing
 
   if (globalVariables().displayStyle == "sections") {
-    var [physRingNum, sectionLetter] = splitPhysRing(physRing)
-    var sectionNumber = convertLetterToNumber(sectionLetter)
-    formTitle = level + "Ring " + phyRingNum + " Section " + sectionNumber
+    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
+    formTitle = level + " Ring " + physRingNum + " Section " + sectionNumber
   }
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(physRing)
   

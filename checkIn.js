@@ -58,8 +58,7 @@ function printCheckinSheet(levelName = "Beginner") {
     // Calculate the ring/section name that we'll print
     var ringStr = virtToPhysMap[peopleArr[i].vRing].toString() // default
     if (globalVariables().displayStyle == "sections") {
-      var [physRingNum, sectionLetter] = splitPhysRing(ringStr)
-      var sectionNumber = convertLetterToNumber(sectionLetter)
+      var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(ringStr)
       ringStr = physRingNum + " sec " + sectionNumber
     }
 
@@ -161,6 +160,15 @@ function sortedPhysRings(virtToPhysMap) {
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 
   var sortedPhysRingsRet = Object.keys(physToVirtMap).sort(comparePhysRings)
+  return sortedPhysRingsRet
+}
+
+// Given the virt to phys ring map, return the
+// sorted physical rings
+function sortedPhysRingsBySection(virtToPhysMap) {
+  var physToVirtMap = physToVirtMapInv(virtToPhysMap)
+
+  var sortedPhysRingsRet = Object.keys(physToVirtMap).sort(comparePhysRingsBySection)
   return sortedPhysRingsRet
 }
 
@@ -380,6 +388,29 @@ function comparePhysRings(a, b) {
   }
 }
 
+function comparePhysRingsBySection(a, b) {
+  var [physRingNumA, sectionLetterA, sectionNumberA] = splitPhysRing(a)
+  var [physRingNumB, sectionLetterB, sectionNumberB] = splitPhysRing(b)
+ 
+  if (sectionNumberA < sectionNumberB) {
+    return -1
+  } else if (sectionNumberA == sectionNumberB) {
+    if (physRingNumA < physRingNumB) {
+      return -1
+    }
+    else if (physRingNumA == physRingNumB) {
+      return 0
+    }
+    else if (physRingNumA > physRingNumB) {
+      return 1
+    }
+  }
+  else if (sectionNumberA > sectionNumberB) {
+    return 1
+  }
+}
+
+
 function physRingToNumber(physRingStr) {
   var physArr = physRingStr.match(/\d+|\D+/g)
   var ringNumber = parseInt(physArr[0])
@@ -393,4 +424,10 @@ function physRingToNumber(physRingStr) {
     }
   }
   return ringNumber
+}
+
+function physRingToSectionFirstOrder(physRingStr) {
+  var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRingStr)
+
+
 }

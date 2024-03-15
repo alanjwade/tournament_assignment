@@ -105,9 +105,14 @@ function appendOneSparringScoresheet(
   // make a new sheet in targetSpreadsheet and populate
 
   // new sheet
+  sheetName = "Ring " + physRing + altRingStrAdder
+  if (globalVariables().displayStyle == "sections") {
+    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
+    sheetName = "Ring " + physRingNum + " sec " + sectionNumber + altRingStrAdder
+  }
   var targetSheet = templateSheet
     .copyTo(targetSpreadsheet)
-    .setName("Ring " + physRing + altRingStrAdder)
+    .setName(sheetName)
 
   // assumes the template is already made
   finishOneSparringBracketSheet(
@@ -144,14 +149,18 @@ function finishOneSparringBracketSheet(
   // Put people in a sheet that already had a template applied.
   placePeopleInBracket(targetSheet, ringPeople, startRow + 3, startCol + 0, 5)
 
+  var text = level + " Sparring Bracket Ring " + physRing
+  if (globalVariables().displayStyle == "sections") {
+    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
+    text = level + " Sparring Bracket Ring " + physRingNum + " sec " + sectionNumber
+  }
   // Place header
   generateSparringHeader(
     targetSheet,
     startRow,
     startCol + 0,
-    level,
-    physRing,
-    virtRing
+    text,
+    physRing
   )
 
   // place timestamp
@@ -330,8 +339,7 @@ function generateSparringHeader(
   startRow,
   startCol,
   text,
-  pRing,
-  vRing
+  pRing
 ) {
   var [foregroundcolor, backgroundColor] = getRingBackgroundColors(pRing)
   targetSheet.getRange(startRow + 1, startCol + 1, 1, 5).mergeAcross()
@@ -339,7 +347,7 @@ function generateSparringHeader(
   // Set the header and the colors
   targetSheet
     .getRange(startRow + 1, startCol + 1)
-    .setValue(text + " Sparring Bracket Ring " + pRing)
+    .setValue(text)
     .setFontSize(16)
     .setFontWeight("bold")
     .setBackgroundColor(backgroundColor)
