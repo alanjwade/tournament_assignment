@@ -31,6 +31,15 @@ function onOpen() {
       .addItem("Auto Assign black belt rings", "assignVRingsBB")
       .addToUi()
   }
+  ui.createMenu("Reorder rings")
+    .addItem("reorder rings for all rings", "reorderRingsAll")
+    .addSeparator()
+    .addItem("reorder rings for beginner rings", "reorderRingsB")
+    .addItem("reorder rings for level 1 rings", "reorderRingsL1")
+    .addItem("reorder rings for level 2 rings", "reorderRingsL2")
+    .addItem("reorder rings for level 3 rings", "reorderRingsL3")
+    .addItem("reorder rings for black belt rings", "reorderRingsBB")
+    .addToUi()
   ui.createMenu("Generate Collateral")
     .addItem("generate collateral for all rings", "generateCollateralAll")
     .addSeparator()
@@ -144,6 +153,29 @@ function getRingBackgroundColors(physRingStr) {
     foregroundColor = "#000000" // black
   }
   return [foregroundColor, backgroundColor]
+}
+
+function reorderRingsAll() {
+  reorderRingsB()
+  reorderRingsL1()
+  reorderRingsL2()
+  reorderRingsL3()
+  reorderRingsBB()
+}
+function reorderRingsB() {
+  reorderRings("Beginner")
+}
+function reorderRingsL1() {
+  reorderRings("Level 1")
+}
+function reorderRingsL2() {
+  reorderRings("Level 2")
+}
+function reorderRingsL3() {
+  reorderRings("Level 3")
+}
+function reorderRingsBB() {
+  reorderRings("Black Belt")
 }
 
 
@@ -299,10 +331,13 @@ function getAbbreviation(schoolName) {
   
   const namesToAbbreviations = new Map()
 
-  namesToAbbreviations.set("5280 Karate Academy", "5280")
+  namesToAbbreviations.set("5280 Karate", "5280")
   namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
   namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
-  namesToAbbreviations.set("Ripple Effect Martial Arts", "REMA")
+  namesToAbbreviations.set("Longmont",     "REMA LM")
+  namesToAbbreviations.set("Broomfield",   "REMA BF")
+  namesToAbbreviations.set("Fort Collins", "REMA FC")
+  namesToAbbreviations.set("Johnstown",    "REMA JT")
   namesToAbbreviations.set("Success Martial Arts", "SMA")
 
   if (namesToAbbreviations.has(schoolName)) {
@@ -312,6 +347,28 @@ function getAbbreviation(schoolName) {
   return abbreviation
 }
 
+// This is to make the branches of a school look like the same school
+function getCommonSchoolAbbreviation(schoolName) {
+  
+  var abbreviation = schoolName
+  
+  const namesToAbbreviations = new Map()
+
+  namesToAbbreviations.set("5280 Karate", "5280")
+  namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
+  namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
+  namesToAbbreviations.set("Longmont",     "REMA")
+  namesToAbbreviations.set("Broomfield",   "REMA")
+  namesToAbbreviations.set("Fort Collins", "REMA")
+  namesToAbbreviations.set("Johnstown",    "REMA")
+  namesToAbbreviations.set("Success Martial Arts", "SMA")
+
+  if (namesToAbbreviations.has(schoolName)) {
+    abbreviation = namesToAbbreviations.get(schoolName)
+  }
+
+  return abbreviation
+}
 // Read table for the purpose of calculating rings.
 // Return an array of hashes.
 function readTableIntoArr(sheet) {
@@ -371,8 +428,9 @@ function readTableIntoArr(sheet) {
       grouping: values[i][groupingCol],
       height: values[i][feetCol] + "'" + values[i][inchesCol] + '"',
       heightDec:
-        parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
+      parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
       school: getAbbreviation(values[i][schoolCol]),
+      commonSchool: getCommonSchoolAbbreviation(values[i][schoolCol]),
       form: values[i][formCol],
       sparring: values[i][sparringCol],
       vRing: values[i][vRingCol],
@@ -392,6 +450,7 @@ function readTableIntoArr(sheet) {
   // If found, read the value in the next cell to the right.
   // Put that in maxPeoplePerRing.
   var maxPeoplePerRing = new Map()
+  maxPeoplePerRing.set('default', 10)
   var foundMaxPerRing = false
   var maxPerRingRow
 
@@ -466,6 +525,18 @@ function readTableIntoArr(sheet) {
       virtToPhysMap[virt] = phys
     }
   }
+
+  // check
+  for (var person of peopleArr) {
+    if (!(person['vRing'] in virtToPhysMap)) {
+      console.log("Problem with mapping for " + person['sfn'] + ":" + person['sln'])
+      var ui = SpreadsheetApp.getUi()
+      ui.alert('Alert', "Problem with mapping for " + person['sfn'] + ":" + person['sln'],
+                 ui.ButtonSet.OK)
+    }
+  }
+
+
   return [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow]
 }
 
@@ -573,4 +644,17 @@ function splitPhysRing(inStr) {
   var sectionNumber = convertLetterToNumber(splittedArray[1])
 
   return [splittedArray[0], splittedArray[1], sectionNumber]
+}
+
+function ringDesignator(physRing) {
+
+  var retStr = "Ring " + physRing
+
+  if (globalVariables().displayStyle == "sections") {
+    var [physRingNum, groupLetter, groupNumber] = splitPhysRing(physRing)
+
+    retStr = "Ring " + physRingNum + " Group " + groupLetter.toUpperCase()
+  }
+
+  return retStr
 }

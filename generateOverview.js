@@ -81,7 +81,7 @@ function generateOverviewOneLevel(
   var x
   var y
 
-  var startRow = 1
+  var startRow = 2
 
   for (var vRing of Object.keys(virtToPhysMap)) {
     // convert virtual to physical
@@ -126,8 +126,8 @@ function generateOverviewOneLevel(
     )
 
     // Generate a timestamp
-    targetSheet.getRange(53, 1).setValue(createTimeStamp())
-    targetSheet.getRange(53, 1, 1, 5).mergeAcross()
+    targetSheet.getRange(1, 1).setValue(createTimeStamp())
+    targetSheet.getRange(1, 1, 1, 5).mergeAcross()
   }
 }
 
@@ -333,13 +333,9 @@ function printMainHeader(
   numColsUsedPerRing
 ) {
   var cells = targetSheet.getRange(startRow, startCol)
-  var cellStr = "Ring " + physRing + ' (virtual ring ' + ring + ')'
-  if (globalVariables().displayStyle == "sections") {
 
-    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
+  var cellStr = ringDesignator(physRing) + ' (virtual ring ' + ring + ')'
 
-    cellStr = "Ring " + physRingNum + " Section " + sectionNumber + ' (virtual ring ' + ring + ')'
-  }
   cells
     .setValue(cellStr)
     .setFontSize(20)

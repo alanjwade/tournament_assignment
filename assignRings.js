@@ -227,6 +227,20 @@ function divideBySchool(peopleArr) {
   return sortedBySchool
 }
 
+function divideByCommonSchool(peopleArr) {
+  var sortedBySchool = {}
+  for (var i = 0; i < peopleArr.length; i++) {
+    // check for the school key
+    if (!(peopleArr[i].commonSchool in sortedBySchool)) {
+      sortedBySchool[peopleArr[i].commonSchool] = []
+    }
+    // now the school key is present
+    sortedBySchool[peopleArr[i].commonSchool].push(peopleArr[i])
+  }
+
+  return sortedBySchool
+}
+
 // Given the peopleArrOneGroup, order the people.
 // Output is a peopleArr that is order based on the criteria.
 function rankOneGroup(peopleArrOneGroup) {
@@ -399,10 +413,14 @@ function applySortOrder(peopleArr, sortFunction, sortKey, divideBySchoolFirst) {
 // Output: another people array, with the 'Form Order' key filled in with the form order
 function applyFormOrder(peopleArr) {
   // Get the list split into schools
-  var dividedBySchool = divideBySchool(peopleArr)
+  // Here's where we can treat diffent 'schools' as the same
+  // (ie, different branches of the same school)
+  var dividedBySchool = divideByCommonSchool(peopleArr)
 
   var unsortedPeopleWithRank = []
-  // Sort each school by
+  // Sort each school by hash of first name, last name
+
+
   for (const [school, schoolArr] of Object.entries(dividedBySchool)) {
     var sortedSchoolArr = schoolArr.sort(function (a, b) {
       return hashCode(a.sfn + a.sln) - hashCode(b.sfn + b.sln)
@@ -502,4 +520,61 @@ function physicalRing(ring, totalRings, numPhysicalRings) {
   }
 
   return [retPhysRing, x, y]
+}
+
+
+function reorderRings(sourceSheetName = "Beginner") {
+  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
+  var [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
+
+
+  vRingHash = {}
+  // find all the vRings in the peopleArr
+  for (var i = 0; i < peopleArr.length; i++) {
+    thisVRing = peopleArr[i].vRing
+
+    if (!(thisVRing in vRingHash)) {
+      vRingHash[thisVRing] = []
+    }
+
+    vRingHash[thisVRing].push(peopleArr[i])
+  }
+
+  // vRingHash['1-a'] = [p0, p1, p2...]
+  //          ['1-b'] = [p4, p5, p6...]
+
+  // Figure out and assign the order for forms.
+  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+    var formPeople = vRingPeopleArr.filter(
+      (person) => person.form.toLowerCase() != "no"
+    )
+    //var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
+    var inFormOrder = applyFormOrder(formPeople)
+    for (var index = 0; index < inFormOrder.length; index++) {
+      sourceSheet
+        .getRange(
+          inFormOrder[index]["originalRow"],
+          inFormOrder[index]["formOrderCol"] + 1
+        )
+        .setValue((index + 1) * 10)
+    }
+  }
+
+  // Figure out and assign the order for sparring.
+  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+    var sparPeople = vRingPeopleArr.filter(
+      (person) => person.sparring.toLowerCase() != "no"
+    )
+    var inSparOrder = applySortOrder(sparPeople, sortByHeight, "sparRank")
+    for (var index = 0; index < inSparOrder.length; index++) {
+      sourceSheet
+        .getRange(
+          inSparOrder[index]["originalRow"],
+          inSparOrder[index]["sparringOrderCol"] + 1
+        )
+        .setValue((index + 1) * 10)
+    }
+  }
+
+
 }

@@ -40,7 +40,7 @@ function printCheckinSheet(levelName = "Beginner") {
   unboldAttr[DocumentApp.Attribute.BOLD] = false
 
   // Put 25 people on a page
-  const numPeoplePerPage = 25
+  const numPeoplePerPage = 34
   const totalPages = Math.ceil(peopleArr.length / numPeoplePerPage)
   var curPage = 1
   var timeStamp = createTimeStamp()
@@ -59,7 +59,7 @@ function printCheckinSheet(levelName = "Beginner") {
     var ringStr = virtToPhysMap[peopleArr[i].vRing].toString() // default
     if (globalVariables().displayStyle == "sections") {
       var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(ringStr)
-      ringStr = physRingNum + " sec " + sectionNumber
+      ringStr = physRingNum + " GRP " + sectionLetter.toUpperCase()
     }
 
     buffer.push([
@@ -88,10 +88,10 @@ function printCheckinSheet(levelName = "Beginner") {
       checkinTable.setAttributes(tableSize)
       checkinTable.setColumnWidth(0, 90)
       checkinTable.setColumnWidth(1, 140)
-      checkinTable.setColumnWidth(2, 80)
+      checkinTable.setColumnWidth(2, 70)
       checkinTable.setColumnWidth(3, 65)
       checkinTable.setColumnWidth(4, 78)
-      checkinTable.setColumnWidth(5, 52)
+      checkinTable.setColumnWidth(5, 60)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
 

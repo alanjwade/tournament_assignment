@@ -18,9 +18,9 @@ function printNameTagSheet(levelName = "Beginner") {
   const pointsPerInch = 72
 
   var labelInfo = {}
-  labelInfo["heightIn"] = 2+1/3
-  labelInfo["widthIn"] = 3.375
-  labelInfo["leftMarginIn"] = (8.5 - 2*3.375) / 2
+  labelInfo["heightIn"] = 2+ 1/3 + 0.25
+  labelInfo["widthIn"] = 3.375 + 3/8
+  labelInfo["leftMarginIn"] = (8.5 - 2*3.375 - (3/8)) / 2
   labelInfo["topMarginIn"] = (11 - 4 * labelInfo["heightIn"]) / 2
 
   var heightPoints = labelInfo["heightIn"] * pointsPerInch
@@ -82,8 +82,9 @@ function printNameTagSheet(levelName = "Beginner") {
 
 
       var tagTable = body.insertTable(lastParagraphIndex)
-                         .setBorderColor("#080808")
-      //  = body.appendTable([["", ""],["", ""]])
+//                         .setBorderColor("#c0bfbc")
+                           .setBorderColor("#ffffff")
+//  = body.appendTable([["", ""],["", ""]])
       var lastTagTableRow
 
       for (j=0; j<buffer.length; j++) {
@@ -108,13 +109,13 @@ function printNameTagSheet(levelName = "Beginner") {
         thisParagraph.appendText(levelName + "\r")
         var physRing = virtToPhysMap[buffer[j].vRing].toString()
         var [fg, bg] = getRingBackgroundColors(physRing)
-        thisParagraph.appendText("Ring " + physRing)
+        thisParagraph.appendText(ringDesignator(physRing))
                     .setForegroundColor(fg).setBackgroundColor(bg)
       
         thisParagraph.addPositionedImage(blob)
         .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)
-        .setLeftOffset(.75 * widthPoints)
-        .setTopOffset(heightPoints - .45 * widthPoints) // guess at vert position
+        .setLeftOffset(.65 * widthPoints)
+        .setTopOffset(heightPoints - .50 * widthPoints) // guess at vert position
         .setWidth(.25 * widthPoints)
         .setHeight(.25 * widthPoints)
 

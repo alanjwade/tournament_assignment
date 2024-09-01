@@ -107,9 +107,11 @@ function appendOneSparringScoresheet(
   // new sheet
   sheetName = "Ring " + physRing + altRingStrAdder
   if (globalVariables().displayStyle == "sections") {
-    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
-    sheetName = "Ring " + physRingNum + " sec " + sectionNumber + altRingStrAdder
+    var [physRingNum, groupLetter, groupNumber] = splitPhysRing(physRing)
+    sheetName = "Ring " + physRingNum + " grp " + groupLetter + altRingStrAdder
   }
+
+
   var targetSheet = templateSheet
     .copyTo(targetSpreadsheet)
     .setName(sheetName)
@@ -149,11 +151,8 @@ function finishOneSparringBracketSheet(
   // Put people in a sheet that already had a template applied.
   placePeopleInBracket(targetSheet, ringPeople, startRow + 3, startCol + 0, 5)
 
-  var text = level + " Sparring Bracket Ring " + physRing
-  if (globalVariables().displayStyle == "sections") {
-    var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(physRing)
-    text = level + " Sparring Bracket Ring " + physRingNum + " sec " + sectionNumber
-  }
+  var text = level + " Sparring Bracket " + ringDesignator(physRing)
+
   // Place header
   generateSparringHeader(
     targetSheet,
