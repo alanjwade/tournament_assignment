@@ -20,7 +20,7 @@
 function onOpen() {
   var ui = SpreadsheetApp.getUi()
   // Or DocumentApp or FormApp.
-  if (0) {
+  if (1) {
     ui.createMenu("Assign Virtual Rings")
       .addItem("Auto Assign all rings", "assignVRingsAll")
       .addSeparator()
@@ -331,15 +331,23 @@ function getAbbreviation(schoolName) {
   
   const namesToAbbreviations = new Map()
 
-  namesToAbbreviations.set("5280 Karate", "5280")
-  namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
-  namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
-  namesToAbbreviations.set("Longmont",     "REMA LM")
-  namesToAbbreviations.set("Broomfield",   "REMA BF")
-  namesToAbbreviations.set("Fort Collins", "REMA FC")
-  namesToAbbreviations.set("Johnstown",    "REMA JT")
-  namesToAbbreviations.set("Success Martial Arts", "SMA")
+  // namesToAbbreviations.set("5280 Karate", "5280")
+  // namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
+  // namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
+  // namesToAbbreviations.set("Longmont",     "REMA LM")
+  // namesToAbbreviations.set("Broomfield",   "REMA BF")
+  // namesToAbbreviations.set("Fort Collins", "REMA FC")
+  // namesToAbbreviations.set("Johnstown",    "REMA JT")
+  // namesToAbbreviations.set("Success Martial Arts", "SMA")
 
+  namesToAbbreviations.set("exclusive-littleton"      , "EMA LT")
+  namesToAbbreviations.set("exclusive-lakewood"       , "EMA LW")
+  namesToAbbreviations.set("personal-achievement"     , "PAMA")
+  namesToAbbreviations.set("ripple-effect-longmont"   , "REMA LM")
+  namesToAbbreviations.set("ripple-effect-broomfield" , "REMA BF")
+  namesToAbbreviations.set("ripple-effect-ft-collins" , "REMA FC")
+  namesToAbbreviations.set("ripple-effect-johnstown"  , "REMA JT")
+  namesToAbbreviations.set("success"                  , "SMA")
   if (namesToAbbreviations.has(schoolName)) {
     abbreviation = namesToAbbreviations.get(schoolName)
   }
@@ -354,14 +362,14 @@ function getCommonSchoolAbbreviation(schoolName) {
   
   const namesToAbbreviations = new Map()
 
-  namesToAbbreviations.set("5280 Karate", "5280")
-  namesToAbbreviations.set("Exclusive Martial Arts", "EMA")
-  namesToAbbreviations.set("Personal Achievement Martial Arts", "PAMA")
-  namesToAbbreviations.set("Longmont",     "REMA")
-  namesToAbbreviations.set("Broomfield",   "REMA")
-  namesToAbbreviations.set("Fort Collins", "REMA")
-  namesToAbbreviations.set("Johnstown",    "REMA")
-  namesToAbbreviations.set("Success Martial Arts", "SMA")
+  namesToAbbreviations.set("exclusive-littleton"      , "EMA")
+  namesToAbbreviations.set("exclusive-lakewood"       , "EMA")
+  namesToAbbreviations.set("personal-achievement"     , "PAMA")
+  namesToAbbreviations.set("ripple-effect-longmont"   , "REMA")
+  namesToAbbreviations.set("ripple-effect-broomfield" , "REMA")
+  namesToAbbreviations.set("ripple-effect-ft-collins" , "REMA")
+  namesToAbbreviations.set("ripple-effect-johnstown"  , "REMA")
+  namesToAbbreviations.set("success"                  , "SMA") 
 
   if (namesToAbbreviations.has(schoolName)) {
     abbreviation = namesToAbbreviations.get(schoolName)
