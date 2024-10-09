@@ -394,7 +394,7 @@ function readTableIntoArr(sheet) {
   let schoolCol = headerRowValues.indexOf("School").toString()
   let formCol = headerRowValues.indexOf("Form")
   let sparringCol = headerRowValues.indexOf("Sparring")
-  let genderCol = headerRowValues.indexOf("Gender")
+  let genderCol = headerRowValues.indexOf("Student Gender")
   let vRingCol = headerRowValues.indexOf("Virtual Ring")
   let formOrderCol = headerRowValues.indexOf("Form Order")
   let sparringOrderCol = headerRowValues.indexOf("Sparring Order")
@@ -535,14 +535,14 @@ function readTableIntoArr(sheet) {
   }
 
   // check
-  for (var person of peopleArr) {
-    if (!(person['vRing'] in virtToPhysMap)) {
-      console.log("Problem with mapping for " + person['sfn'] + ":" + person['sln'])
-      var ui = SpreadsheetApp.getUi()
-      ui.alert('Alert', "Problem with mapping for " + person['sfn'] + ":" + person['sln'],
-                 ui.ButtonSet.OK)
-    }
-  }
+  // for (var person of peopleArr) {
+  //   if (!(person['vRing'] in virtToPhysMap)) {
+  //     console.log("Problem with mapping for " + person['sfn'] + ":" + person['sln'])
+  //     var ui = SpreadsheetApp.getUi()
+  //     ui.alert('Alert', "Problem with mapping for " + person['sfn'] + ":" + person['sln'],
+  //                ui.ButtonSet.OK)
+  //   }
+  // }
 
 
   return [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow]
