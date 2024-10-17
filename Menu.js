@@ -379,11 +379,17 @@ function getCommonSchoolAbbreviation(schoolName) {
 }
 // Read table for the purpose of calculating rings.
 // Return an array of hashes.
-function readTableIntoArr(sheet) {
+function readTableIntoArr(level) {
   // Gets sheets data.
-  let values = sheet.getDataRange().getValues()
 
-  // Gets the first row of the sheet which is the header row.
+
+  var peopleSheet = SpreadsheetApp.getActive().getSheetByName("Working")
+  var paramSheet = SpreadsheetApp.getActive().getSheetByName("Parameters")
+
+  // Get all the people, then sort
+  let values = peopleSheet.getDataRange().getValues()
+
+  // Gets the first row of the peopleSheet which is the header row.
   let headerRowValues = values[0]
   let feetCol = headerRowValues.indexOf("Feet")
   let firstNameCol = headerRowValues.indexOf("Student First Name")
@@ -398,6 +404,8 @@ function readTableIntoArr(sheet) {
   let vRingCol = headerRowValues.indexOf("Virtual Ring")
   let formOrderCol = headerRowValues.indexOf("Form Order")
   let sparringOrderCol = headerRowValues.indexOf("Sparring Order")
+  let divisionCol = headerRowValues.indexOf("Division")
+  let physRingCol = headerRowValues.indexOf("PhysRing")
 
   // If there's an 'Alt Spar Ring' in the headers, then we'll read it.
   // Otherwise, we'll note that there isn't one.
@@ -429,109 +437,107 @@ function readTableIntoArr(sheet) {
         altSparRingVal = null
       }
     }
-    peopleArr.push({
-      sfn: values[i][firstNameCol],
-      sln: values[i][lastNameCol],
-      age: values[i][ageCol],
-      grouping: values[i][groupingCol],
-      height: values[i][feetCol] + "'" + values[i][inchesCol] + '"',
-      heightDec:
-      parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
-      school: getAbbreviation(values[i][schoolCol]),
-      commonSchool: getCommonSchoolAbbreviation(values[i][schoolCol]),
-      form: values[i][formCol],
-      sparring: values[i][sparringCol],
-      vRing: values[i][vRingCol],
-      vRingCol: vRingCol,
-      gender: values[i][genderCol],
-      originalRow: i + 1,
-      formOrder: values[i][formOrderCol],
-      sparringOrder: values[i][sparringOrderCol],
-      formOrderCol: formOrderCol,
-      sparringOrderCol: sparringOrderCol,
-      altSparRing: altSparRingVal
-    }) // values is 0 based
+
+    if (values[i][divisionCol] == level) {
+      peopleArr.push({
+        sfn: values[i][firstNameCol],
+        sln: values[i][lastNameCol],
+        age: values[i][ageCol],
+        grouping: values[i][groupingCol],
+        height: values[i][feetCol] + "'" + values[i][inchesCol] + '"',
+        heightDec:
+        parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
+        school: getAbbreviation(values[i][schoolCol]),
+        commonSchool: getCommonSchoolAbbreviation(values[i][schoolCol]),
+        form: values[i][formCol],
+        sparring: values[i][sparringCol],
+        vRing: values[i][vRingCol],
+        vRingCol: vRingCol,
+        gender: values[i][genderCol],
+        originalRow: i + 1,
+        formOrder: values[i][formOrderCol],
+        sparringOrder: values[i][sparringOrderCol],
+        formOrderCol: formOrderCol,
+        sparringOrderCol: sparringOrderCol,
+        altSparRing: altSparRingVal,
+        division: values[i][divisionCol],
+        physRing: values[i][physRingCol]
+      })
+    } // values is 0 based
   }
 
-  // After reading in the people rows, look for the words
-  // "maxPeoplePerRing" in a cell in the first column.
-  // If found, read the value in the next cell to the right.
-  // Put that in maxPeoplePerRing.
-  var maxPeoplePerRing = new Map()
-  maxPeoplePerRing.set('default', 10)
-  var foundMaxPerRing = false
-  var maxPerRingRow
 
-  for (let i=endPeopleRow; i< values.length; i++) {
-    if (values[i][0] == "maxPeoplePerRing") {
-      maxPeoplePerRing.set('default', values[i][1])
-      foundMaxPerRing = true
-      maxPerRingRow = i
-      break
-    }
-  }
+  // Get parameters
 
-  if (foundMaxPerRing) {
-    for (var i=maxPerRingRow+1; i<values.length; i++) {
-      if (values[i][0] == "") {
-        break
+  let paramValues = paramSheet.getDataRange().getValues()
+
+  let levels = globalVariables().levels
+
+  var parameters = new Map()
+
+
+
+  for (let i=0; i<paramValues.length; i++) {
+    // find the level columns
+
+    // i is a row
+
+    for (let j=0; j<paramValues[i].length; j++) {
+      if (levels.includes(paramValues[i][j])) {
+        var thisLevel = paramValues[i][j]
+
+        parameters.set(thisLevel, new Map())
+        var levelMap = parameters.get(thisLevel)
+
+        levelMap.set("virtToRingStartRow",  i+3)
+        levelMap.set("maxPeoplePerRingStartRow", i+3)
+        levelMap.set("virtToRingStartCol", j)
+        levelMap.set("maxPeoplePerRingStartCol", j+2)
+
+        levelMap.set("virtToPhysMap", new Map())
+        levelMap.set("maxPeoplePerRing", new Map())
+
+        var levelVRMap = levelMap.get("virtToPhysMap")
+        var levelMPMap = levelMap.get("maxPeoplePerRing")
+
+        // virt to phys map
+        var foundEnd = false
+
+
+        var row = levelMap.get("virtToRingStartRow")
+        var col = levelMap.get("virtToRingStartCol")
+
+
+        while (!foundEnd && (row < paramValues.length)) {
+          if (paramValues[row][col] != "") {
+            levelVRMap.set(paramValues[row][col], paramValues[row][col+1])
+            row += 1
+          }
+          else {
+            foundEnd = true
+          }
+        }
+
+        var row = levelMap.get("maxPeoplePerRingStartRow")
+        var col = levelMap.get("maxPeoplePerRingStartCol")
+
+
+        while (!foundEnd && (row < paramValues.length)) {
+          if (paramValues[row][col] != "") {
+            levelMPMap.set(paramValues[row][col], paramValues[row][col+1])
+            row += 1
+          }
+          else {
+            foundEnd = true
+          }
+        }
+
+        parameters.get(thisLevel).set("virtToPhysMap", levelVRMap)
+        parameters.get(thisLevel).set("maxPeoplePerRingMap", levelMPMap)
       }
-      else {
-        maxPeoplePerRing.set(values[i][0].toString(), values[i][1])
-      }
     }
-  }
 
-  // Find the grouping table and read it in.
-  var groupingTable = []
 
-  var groupingHeaderRow
-  var foundHeader = false
-  for (
-    groupingHeaderRow = 0;
-    groupingHeaderRow < values.length;
-    groupingHeaderRow++
-  ) {
-    if (values[groupingHeaderRow][0] == "Grouping Breakdown:") {
-      // found the header
-      foundHeader = true
-      break
-    }
-  }
-
-  // now read the header if found
-  if (foundHeader) {
-    for (var mapRow = groupingHeaderRow; mapRow < values.length; mapRow++) {
-      if (values[mapRow][0] == "") {
-        break
-      }
-      groupingTable.push([values[mapRow][0], values[mapRow][1]])
-    }
-  }
-
-  // Find the remapping table and read it in.
-  var virtToPhysMap = {}
-
-  var mapHeaderRow
-  var foundHeader = false
-  for (mapHeaderRow = 0; mapHeaderRow < values.length; mapHeaderRow++) {
-    if (values[mapHeaderRow][0] == "Ring Mapping Virtual to Physical") {
-      // found the header
-      foundHeader = true
-      break
-    }
-  }
-
-  // now read the header if found
-  if (foundHeader) {
-    for (mapRow = mapHeaderRow + 1; mapRow < values.length; mapRow++) {
-      if (values[mapRow][0] == "") {
-        break
-      }
-      virt = values[mapRow][0]
-      phys = values[mapRow][1]
-      virtToPhysMap[virt] = phys
-    }
   }
 
   // check
@@ -545,7 +551,9 @@ function readTableIntoArr(sheet) {
   // }
 
 
-  return [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow]
+  return [peopleArr, 
+    parameters.get(level),
+    peopleSheet, paramSheet]
 }
 
 // Get the counts of each scool from an array of people hashes.

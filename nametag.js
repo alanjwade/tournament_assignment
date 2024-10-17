@@ -2,7 +2,7 @@ function printNameTagSheet(levelName = "Beginner") {
   var targetDocName = levelName + " Name Tags"
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
-  var [peopleArr, virtToPhysMap, groupingTable] = readTableIntoArr(sourceSheet)
+  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
 
   peopleArr.sort(sortLastFirst)
 

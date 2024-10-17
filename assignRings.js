@@ -6,11 +6,8 @@ function dummyDontRun() {
   pass
 }
 
-function assignVRings(sourceSheetName = "Beginner") {
-  var targetSheetName = sourceSheetName + " forms"
-  var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
+function assignVRings(level = "Beginner") {
+  var [peopleArr, levelMap, sourceSheet, paramSheet] = readTableIntoArr(level)
 
   var separatedByGroup = separateIntoGroups(peopleArr)
 
@@ -27,7 +24,7 @@ function assignVRings(sourceSheetName = "Beginner") {
   // Now, divide each grouping up into the number of rings they will need.
 
   var startRing = 1
-  var vRingHash = {} // hash of (vring, list of people)
+  var vRingMap = new Map() // hash of (vring, list of people)
   for (var grouping in groupingsSortedByAgeRank) {
     // choose the number of rings to use
     var thisMaxPeoplePerRing
@@ -47,14 +44,14 @@ function assignVRings(sourceSheetName = "Beginner") {
     )
 
     for (const [key, value] of Object.entries(vRingHashTmp)) {
-      vRingHash[key] = value
+      vRingMap.set(key, value)
     }
 
     startRing = startRing + numRingsThisGroup
   }
 
   // Finally, populate the spreadsheet
-  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+  for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {
     for (var i = 0; i < vRingPeopleArr.length; i++) {
       var row = vRingPeopleArr[i].originalRow
       var col = vRingPeopleArr[i].vRingCol + 1
@@ -64,16 +61,16 @@ function assignVRings(sourceSheetName = "Beginner") {
 
   // Create a proposed vring to phys ring mapping
   var physRingNum = 1
-  var vRingToPRingMap = {}
-  for (const vRing of Object.keys(vRingHash)) {
-    vRingToPRingMap[vRing] = physRingNum++
+  var vRingToPRingMap = new Map()
+  for (const vRing of vRingMap.keys()) {
+    vRingToPRingMap.set(vRing, physRingNum++)
   }
 
   // Populate that in the spreadsheet
   var buffer = []
-  const sortedVRings = Object.keys(vRingToPRingMap).sort()
+  const sortedVRings = vRingToPRingMap.keys().sort()
   for (const vRing of sortedVRings) {
-    buffer.push([vRing, vRingToPRingMap[vRing]])
+    buffer.push([vRing, vRingToPRingMap.get(vRing)])
   }
   // Add some blank padding to avoid double entries
   for (var i=0; i<10; i++) {
@@ -83,7 +80,7 @@ function assignVRings(sourceSheetName = "Beginner") {
   sourceSheet.getRange(mapHeaderRow + 2, 1, buffer.length, 2).setValues(buffer)
 
   // Figure out and assign the order for forms.
-  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+  for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {
     var formPeople = vRingPeopleArr.filter(
       (person) => person.form.toLowerCase() != "no"
     )
@@ -100,7 +97,7 @@ function assignVRings(sourceSheetName = "Beginner") {
   }
 
   // Figure out and assign the order for sparring.
-  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+  for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {
     var sparPeople = vRingPeopleArr.filter(
       (person) => person.sparring.toLowerCase() != "no"
     )
@@ -115,7 +112,7 @@ function assignVRings(sourceSheetName = "Beginner") {
     }
   }
 
-  return vRingHash
+  return vRingMap
 }
 
 // Calculate the ring based on grouping and school.
@@ -174,19 +171,19 @@ function divideOneGroupingIntoVRings(
   numVRings
 ) {
   groupDistArr = divideUpGroups(oneGroupingPeopleArr.length, numVRings)
-  var vRingHash = {}
+  var vRingMap = {}
   var peopleArrIndex = 0
   for (i = 0; i < numVRings; i++) {
     vRing = grouping.toString() + '-' + String.fromCharCode(i + 97); 
     var numPeopleInThisVRing = groupDistArr[i]
     for (j = 0; j < numPeopleInThisVRing; j++) {
-      if (!(vRing in vRingHash)) {
-        vRingHash[vRing] = []
+      if (!(vRing in vRingMap)) {
+        vRingMap[vRing] = []
       }
-      vRingHash[vRing].push(oneGroupingPeopleArr[peopleArrIndex++])
+      vRingMap[vRing].push(oneGroupingPeopleArr[peopleArrIndex++])
     }
   }
-  return vRingHash
+  return vRingMap
 }
 
 // Given a peopleArr, divide into different Groups
@@ -525,26 +522,26 @@ function physicalRing(ring, totalRings, numPhysicalRings) {
 
 function reorderRings(sourceSheetName = "Beginner") {
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap, groupingTable, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
+  var [peopleArr, virtToPhysMap, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
 
 
-  vRingHash = {}
+  vRingMap = {}
   // find all the vRings in the peopleArr
   for (var i = 0; i < peopleArr.length; i++) {
     thisVRing = peopleArr[i].vRing
 
-    if (!(thisVRing in vRingHash)) {
-      vRingHash[thisVRing] = []
+    if (!(thisVRing in vRingMap)) {
+      vRingMap[thisVRing] = []
     }
 
-    vRingHash[thisVRing].push(peopleArr[i])
+    vRingMap[thisVRing].push(peopleArr[i])
   }
 
-  // vRingHash['1-a'] = [p0, p1, p2...]
+  // vRingMap['1-a'] = [p0, p1, p2...]
   //          ['1-b'] = [p4, p5, p6...]
 
   // Figure out and assign the order for forms.
-  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+  for (const [vRing, vRingPeopleArr] of Object.entries(vRingMap)) {
     var formPeople = vRingPeopleArr.filter(
       (person) => person.form.toLowerCase() != "no"
     )
@@ -561,7 +558,7 @@ function reorderRings(sourceSheetName = "Beginner") {
   }
 
   // Figure out and assign the order for sparring.
-  for (const [vRing, vRingPeopleArr] of Object.entries(vRingHash)) {
+  for (const [vRing, vRingPeopleArr] of Object.entries(vRingMap)) {
     var sparPeople = vRingPeopleArr.filter(
       (person) => person.sparring.toLowerCase() != "no"
     )

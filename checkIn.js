@@ -2,7 +2,7 @@ function printCheckinSheet(levelName = "Beginner") {
   var targetDocName = levelName + " Checkin"
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
-  var [peopleArr, virtToPhysMap, groupingTable] = readTableIntoArr(sourceSheet)
+  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
 
   peopleArr.sort(sortLastFirst)
 
@@ -139,7 +139,7 @@ function printFormsSheets(levelName = "Beginner") {
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
   // Get the virtToPhysMap, then invert it. We will do this in order of physical ring.
-  var [peopleArr, virtToPhysMap, groupingTable] = readTableIntoArr(sourceSheet)
+  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
 
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 
