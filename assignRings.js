@@ -28,10 +28,10 @@ function assignVRings(level = "Beginner") {
   for (var grouping in groupingsSortedByAgeRank) {
     // choose the number of rings to use
     var thisMaxPeoplePerRing
-    if (maxPeoplePerRing.has(grouping)) {
-      thisMaxPeoplePerRing = maxPeoplePerRing.get(grouping)
+    if (levelMap.get("maxPeoplePerRingMap").has(grouping)) {
+      thisMaxPeoplePerRing = levelMap.get("maxPeoplePerRingMap").get(grouping)
     } else {
-      thisMaxPeoplePerRing = maxPeoplePerRing.get('default')
+      thisMaxPeoplePerRing = 10
     }
     var numRingsThisGroup = Math.ceil(
       groupingsSortedByAgeRank[grouping].length / thisMaxPeoplePerRing
@@ -68,7 +68,7 @@ function assignVRings(level = "Beginner") {
 
   // Populate that in the spreadsheet
   var buffer = []
-  const sortedVRings = vRingToPRingMap.keys().sort()
+  const sortedVRings = Array.from(vRingToPRingMap.keys()).sort()
   for (const vRing of sortedVRings) {
     buffer.push([vRing, vRingToPRingMap.get(vRing)])
   }
@@ -76,8 +76,11 @@ function assignVRings(level = "Beginner") {
   for (var i=0; i<10; i++) {
     buffer.push(["", ""])
   }
+  
   // Find 'Ring Mapping Virtual to Physical", put the proposal under it
-  sourceSheet.getRange(mapHeaderRow + 2, 1, buffer.length, 2).setValues(buffer)
+  var startRow = levelMap.get("virtToPhysStartRow")
+  var startCol = levelMap.get("virtToPhysStartCol")
+  paramSheet.getRange(startRow, startCol, buffer.length, 2).setValues(buffer)
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {

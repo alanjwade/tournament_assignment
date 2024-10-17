@@ -489,23 +489,23 @@ function readTableIntoArr(level) {
         parameters.set(thisLevel, new Map())
         var levelMap = parameters.get(thisLevel)
 
-        levelMap.set("virtToRingStartRow",  i+3)
-        levelMap.set("maxPeoplePerRingStartRow", i+3)
-        levelMap.set("virtToRingStartCol", j)
-        levelMap.set("maxPeoplePerRingStartCol", j+2)
+        levelMap.set("virtToPhysStartRow",  i+4)
+        levelMap.set("maxPeoplePerRingStartRow", i+4)
+        levelMap.set("virtToPhysStartCol", j+1)
+        levelMap.set("maxPeoplePerRingStartCol", j+3)
 
         levelMap.set("virtToPhysMap", new Map())
-        levelMap.set("maxPeoplePerRing", new Map())
+        levelMap.set("maxPeoplePerRingMap", new Map())
 
         var levelVRMap = levelMap.get("virtToPhysMap")
-        var levelMPMap = levelMap.get("maxPeoplePerRing")
+        var levelMPMap = levelMap.get("maxPeoplePerRingMap")
 
         // virt to phys map
         var foundEnd = false
 
 
-        var row = levelMap.get("virtToRingStartRow")
-        var col = levelMap.get("virtToRingStartCol")
+        var row = levelMap.get("virtToPhysStartRow")
+        var col = levelMap.get("virtToPhysStartCol")
 
 
         while (!foundEnd && (row < paramValues.length)) {
