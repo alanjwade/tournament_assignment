@@ -50,25 +50,16 @@ function assignVRings(level = "Beginner") {
     startRing = startRing + numRingsThisGroup
   }
 
-  // Finally, populate the spreadsheet
-  for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {
-    for (var i = 0; i < vRingPeopleArr.length; i++) {
-      var row = vRingPeopleArr[i].originalRow
-      var col = vRingPeopleArr[i].vRingCol + 1
-      sourceSheet.getRange(row, col).setValue(vRing)
-    }
-  }
-
   // Create a proposed vring to phys ring mapping
   var physRingNum = 1
   var vRingToPRingMap = new Map()
   for (const vRing of vRingMap.keys()) {
     vRingToPRingMap.set(vRing, physRingNum++)
   }
-
-  // Populate that in the spreadsheet
+  
+  // Populate that in the mapping part of the parameters spreadsheet
   var buffer = []
-  const sortedVRings = Array.from(vRingToPRingMap.keys()).sort()
+  const sortedVRings = Array.from(vRingToPRingMap.keys()).sort(sortStringsByNumericPrefix)
   for (const vRing of sortedVRings) {
     buffer.push([vRing, vRingToPRingMap.get(vRing)])
   }
@@ -81,6 +72,21 @@ function assignVRings(level = "Beginner") {
   var startRow = levelMap.get("virtToPhysStartRow")
   var startCol = levelMap.get("virtToPhysStartCol")
   paramSheet.getRange(startRow, startCol, buffer.length, 2).setValues(buffer)
+
+
+  // Finally, populate the spreadsheet
+  for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {
+    for (var i = 0; i < vRingPeopleArr.length; i++) {
+      var row = vRingPeopleArr[i].originalRow
+      var col = vRingPeopleArr[i].vRingCol + 1
+      sourceSheet.getRange(row, col).setValue(vRing)
+
+      // now add the physical ring
+      col = vRingPeopleArr[i].physRingCol + 1
+      sourceSheet.getRange(row, col).setValue(vRingToPRingMap.get(vRing))
+    }
+  }
+
 
   // Figure out and assign the order for forms.
   for (const [vRing, vRingPeopleArr] of vRingMap.entries()) {

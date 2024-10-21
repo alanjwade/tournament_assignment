@@ -461,6 +461,7 @@ function readTableIntoArr(level) {
         sparringOrderCol: sparringOrderCol,
         altSparRing: altSparRingVal,
         division: values[i][divisionCol],
+        physRingCol: physRingCol,
         physRing: values[i][physRingCol]
       })
     } // values is 0 based
@@ -673,4 +674,19 @@ function ringDesignator(physRing) {
   }
 
   return retStr
+}
+
+function sortStringsByNumericPrefix(a, b) {
+  const aNumberMatch = a.match(/^\d+/);
+  const bNumberMatch = b.match(/^\d+/);
+
+  const aNumber = aNumberMatch ? parseInt(aNumberMatch[0]) : 0;
+  const bNumber = bNumberMatch ? parseInt(bNumberMatch[0]) : 0;
+
+  if (isNaN(aNumber) || isNaN(bNumber)) {
+    // If either number is NaN, sort alphabetically
+    return a.localeCompare(b);
+  }
+
+  return aNumber - bNumber;
 }
