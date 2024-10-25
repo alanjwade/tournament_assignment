@@ -7,9 +7,9 @@ function dummyDontRun() {
 }
 
 function assignVRings(level = "Beginner") {
-  var [peopleArr, levelMap, sourceSheet, paramSheet] = readTableIntoArr(level)
+  var parameters = readTableIntoArr(level)
 
-  var separatedByGroup = separateIntoGroups(peopleArr)
+  var separatedByGroup = separateIntoGroups(parameters.get("levelData").get(level).get("peopleArr"))
 
   var groupingsSortedByAgeRank = {}
 
@@ -18,6 +18,10 @@ function assignVRings(level = "Beginner") {
       separatedByGroup[grouping]
     )
   }
+
+  var peopleSheet = parameters.get("peopleSheet")
+  var paramSheet = parameters.get("paramSheet")
+  var levelMap = parameters.get("levelData").get(level)
 
   // Now groupingsSortedByAgeRank is all the groupings separated out in a hash,
   // with the list sorted by age ranks.
@@ -79,11 +83,11 @@ function assignVRings(level = "Beginner") {
     for (var i = 0; i < vRingPeopleArr.length; i++) {
       var row = vRingPeopleArr[i].originalRow
       var col = vRingPeopleArr[i].vRingCol + 1
-      sourceSheet.getRange(row, col).setValue(vRing)
+      peopleSheet.getRange(row, col).setValue(vRing)
 
       // now add the physical ring
       col = vRingPeopleArr[i].physRingCol + 1
-      sourceSheet.getRange(row, col).setValue(vRingToPRingMap.get(vRing))
+      peopleSheet.getRange(row, col).setValue(vRingToPRingMap.get(vRing))
     }
   }
 
@@ -96,7 +100,7 @@ function assignVRings(level = "Beginner") {
     //var inFormOrder = applySortOrder(formPeople, sortByNameHashcode, "formRank")
     var inFormOrder = applyFormOrder(formPeople)
     for (var index = 0; index < inFormOrder.length; index++) {
-      sourceSheet
+      peopleSheet
         .getRange(
           inFormOrder[index]["originalRow"],
           inFormOrder[index]["formOrderCol"] + 1
@@ -112,7 +116,7 @@ function assignVRings(level = "Beginner") {
     )
     var inSparOrder = applySortOrder(sparPeople, sortByHeight, "sparRank")
     for (var index = 0; index < inSparOrder.length; index++) {
-      sourceSheet
+      peopleSheet
         .getRange(
           inSparOrder[index]["originalRow"],
           inSparOrder[index]["sparringOrderCol"] + 1

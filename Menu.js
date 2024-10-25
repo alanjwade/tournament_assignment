@@ -379,13 +379,30 @@ function getCommonSchoolAbbreviation(schoolName) {
 }
 // Read table for the purpose of calculating rings.
 // Return an array of hashes.
-function readTableIntoArr(level) {
+function readTableIntoArr() {
   // Gets sheets data.
-
-
+  
+  
   var peopleSheet = SpreadsheetApp.getActive().getSheetByName("Working")
   var paramSheet = SpreadsheetApp.getActive().getSheetByName("Parameters")
+  var parameters = new Map()
+  
+  // return structure:
+  // {peopleSheet, <peopleSheet>}
+  // {paramSheet, <paramSheet>}
+  // {levelData, {"beginner", {peopleArr, [person0, person1, ...]},
+  //                          {virtToPhysMap, <>},
+  //                          {maxPeoplePerRingMap, <>}
+  //                          {virtToPhysStartRow, <>}
+  //                          {maxPeoplePerRingStartRow, <>}
+  //                          {virtToPHysStartCol, <>}
+  //                          {maxPeoplePerRingStartCol, <>}
 
+
+  parameters.set("peopleSheet", peopleSheet)
+  parameters.set("paramSheet", paramSheet)
+  parameters.set("levelData", new Map())
+  
   // Get all the people, then sort
   let values = peopleSheet.getDataRange().getValues()
 
@@ -420,6 +437,8 @@ function readTableIntoArr(level) {
 
   var peopleArr = []
   var endPeopleRow=0
+  let levels = globalVariables().levels
+
 
   // start at 1 to avoid header row
   for (let i = 1; i < values.length; i++) {
@@ -437,9 +456,16 @@ function readTableIntoArr(level) {
         altSparRingVal = null
       }
     }
+    
 
-    if (values[i][divisionCol] == level) {
-      peopleArr.push({
+    // If divisionCol has one of the levels we're expecting, then add it
+    var thisRowDiv = values[i][divisionCol]
+    if (levels.includes(thisRowDiv)) {
+      if (! parameters.get("levelData").has(thisRowDiv)) {
+        parameters.get("levelData").set(thisRowDiv, new Map())
+        parameters.get("levelData").get(thisRowDiv).set("peopleArr", new Array())
+      }
+      parameters.get("levelData").get(thisRowDiv).get("peopleArr").push({
         sfn: values[i][firstNameCol],
         sln: values[i][lastNameCol],
         age: values[i][ageCol],
@@ -466,29 +492,22 @@ function readTableIntoArr(level) {
       })
     } // values is 0 based
   }
-
+  
 
   // Get parameters
 
   let paramValues = paramSheet.getDataRange().getValues()
 
-  let levels = globalVariables().levels
-
-  var parameters = new Map()
-
-
-
   for (let i=0; i<paramValues.length; i++) {
     // find the level columns
 
-    // i is a row
+    // i is a row, j is a column
 
     for (let j=0; j<paramValues[i].length; j++) {
       if (levels.includes(paramValues[i][j])) {
         var thisLevel = paramValues[i][j]
 
-        parameters.set(thisLevel, new Map())
-        var levelMap = parameters.get(thisLevel)
+        var levelMap = parameters.get("levelData").get(thisLevel)
 
         levelMap.set("virtToPhysStartRow",  i+4)
         levelMap.set("maxPeoplePerRingStartRow", i+4)
@@ -504,9 +523,10 @@ function readTableIntoArr(level) {
         // virt to phys map
         var foundEnd = false
 
-
-        var row = levelMap.get("virtToPhysStartRow")
-        var col = levelMap.get("virtToPhysStartCol")
+        
+        // adjust for going back to the paramValues array
+        var row = levelMap.get("virtToPhysStartRow") - 1
+        var col = levelMap.get("virtToPhysStartCol") - 1
 
 
         while (!foundEnd && (row < paramValues.length)) {
@@ -519,8 +539,9 @@ function readTableIntoArr(level) {
           }
         }
 
-        var row = levelMap.get("maxPeoplePerRingStartRow")
-        var col = levelMap.get("maxPeoplePerRingStartCol")
+        // adjust for going back to the paramValues array
+        var row = levelMap.get("maxPeoplePerRingStartRow") - 1
+        var col = levelMap.get("maxPeoplePerRingStartCol") - 1
 
 
         while (!foundEnd && (row < paramValues.length)) {
@@ -533,8 +554,8 @@ function readTableIntoArr(level) {
           }
         }
 
-        parameters.get(thisLevel).set("virtToPhysMap", levelVRMap)
-        parameters.get(thisLevel).set("maxPeoplePerRingMap", levelMPMap)
+        parameters.get("levelData").get(thisLevel).set("virtToPhysMap", levelVRMap)
+        parameters.get("levelData").get(thisLevel).set("maxPeoplePerRingMap", levelMPMap)
       }
     }
 
@@ -552,9 +573,7 @@ function readTableIntoArr(level) {
   // }
 
 
-  return [peopleArr, 
-    parameters.get(level),
-    peopleSheet, paramSheet]
+  return parameters
 }
 
 // Get the counts of each scool from an array of people hashes.

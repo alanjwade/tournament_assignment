@@ -34,7 +34,7 @@ function getPhysRingNumber(physRingStr) {
 
 // Create the ring sheet for one level.
 function generateOverviewOneLevel(
-  level,
+  level = "Beginner",
   readFromCalcRings = false,
   useRemapping = false
 ) {
@@ -70,11 +70,10 @@ function generateOverviewOneLevel(
   targetSheet.clear()
   targetSheet.clearFormats()
 
-  // peopleArr is going to be the student data read into an hash of array of hashes.
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(
-    sourceSheet,
-    readFromCalcRings
-  )
+
+  var parameters = readTableIntoArr()
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
+  var levelMap = parameters.get("levelData").get(level)
 
   // Need to get all the vrings here
 
@@ -83,9 +82,9 @@ function generateOverviewOneLevel(
 
   var startRow = 2
 
-  for (var vRing of Object.keys(virtToPhysMap)) {
+  for (const [vRing, physRing] of levelMap.get("virtToPhysMap")) {
     // convert virtual to physical
-    var physRingStr = virtToPhysMap[vRing].toString()
+    var physRingStr = physRing.toString()
     var physArr = physRingStr.match(/\d+|\D+/g)
 
     // This would be for a horizontal display
