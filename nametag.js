@@ -1,8 +1,11 @@
-function printNameTagSheet(levelName = "Beginner") {
-  var targetDocName = levelName + " Name Tags"
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
+function printNameTagSheet(level = "Beginner") {
+  var targetDocName = level + " Name Tags"
 
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  //var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  var parameters = readTableIntoArr()
+
+  var virtToPhysMap = parameters.get("levelData").get(level).get("virtToPhysMap")
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
 
   peopleArr.sort(sortLastFirst)
 
@@ -87,7 +90,7 @@ function printNameTagSheet(levelName = "Beginner") {
 //  = body.appendTable([["", ""],["", ""]])
       var lastTagTableRow
 
-      for (j=0; j<buffer.length; j++) {
+      for (var j=0; j<buffer.length; j++) {
         if (j%2 == 0) {
 
           // Add a row, set the row height in points
@@ -104,13 +107,13 @@ function printNameTagSheet(levelName = "Beginner") {
 
         // Add in the text. The '\r' is a carriage return. This might have been
         // done another way (maybe append a paragraph) but this works.
-        thisParagraph.appendText(buffer[j].sfn + " " + buffer[j].sln + "\r")
-        thisParagraph.appendText(buffer[j].school.toString() + "\r")
-        thisParagraph.appendText(levelName + "\r")
-        var physRing = virtToPhysMap[buffer[j].vRing].toString()
+        var physRing = virtToPhysMap.get(buffer[j].vRing).toString()
         var [fg, bg] = getRingBackgroundColors(physRing)
+        thisParagraph.appendText(buffer[j].sfn + " " + buffer[j].sln + "\r")
+                     .appendText(buffer[j].school.toString() + "\r")
+                     .appendText(level + "\r")
         thisParagraph.appendText(ringDesignator(physRing))
-                    .setForegroundColor(fg).setBackgroundColor(bg)
+                     .setForegroundColor(fg).setBackgroundColor(bg)
       
         thisParagraph.addPositionedImage(blob)
         .setLayout(DocumentApp.PositionedLayout.ABOVE_TEXT)

@@ -58,7 +58,21 @@ function assignVRings(level = "Beginner") {
   var physRingNum = 1
   var vRingToPRingMap = new Map()
   for (const vRing of vRingMap.keys()) {
-    vRingToPRingMap.set(vRing, physRingNum++)
+    if (globalVariables().displayStyle == "sections") {
+      // Make a reasonable attempt to divide into a and b groups
+      var physRingStr 
+      if (physRingNum <= ((vRingMap.size+1) / 2)) {
+        physRingStr = physRingNum.toString() + "-" + "a"
+      }
+      else {
+        physRingStr = physRingNum.toString() + "-" + "b"
+      }
+      vRingToPRingMap.set(vRing, physRingStr)
+    }
+    else {
+     vRingToPRingMap.set(vRing, physRingNum.toString())
+    }
+    physRingNum++
   }
   
   // Populate that in the mapping part of the parameters spreadsheet
@@ -105,7 +119,7 @@ function assignVRings(level = "Beginner") {
           inFormOrder[index]["originalRow"],
           inFormOrder[index]["formOrderCol"] + 1
         )
-        .setValue(index + 1)
+        .setValue((index + 1) * 10)
     }
   }
 
@@ -121,7 +135,7 @@ function assignVRings(level = "Beginner") {
           inSparOrder[index]["originalRow"],
           inSparOrder[index]["sparringOrderCol"] + 1
         )
-        .setValue(index + 1)
+        .setValue((index + 1) * 10)
     }
   }
 
@@ -446,7 +460,7 @@ function applyFormOrder(peopleArr) {
     return a.formRank - b.formRank
   })
   for (var i in sortedByFormRank) {
-    sortedByFormRank["formOrder"] = i
+    sortedByFormRank["formOrder"] = i * 10
   }
 
   return sortedByFormRank

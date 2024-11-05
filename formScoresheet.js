@@ -28,7 +28,11 @@ function printScoresheets(level = "Beginner") {
   footer.appendParagraph(createTimeStamp())
 
   var targetBody = targetDoc.getBody()
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+//  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  var parameters = readTableIntoArr()
+
+  var virtToPhysMap = parameters.get("levelData").get(level).get("virtToPhysMap")
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
 
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 

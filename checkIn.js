@@ -1,9 +1,12 @@
-function printCheckinSheet(levelName = "Beginner") {
-  var targetDocName = levelName + " Checkin"
-  var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
+function printCheckinSheet(level = "Beginner") {
+  var targetDocName = level + " Checkin"
 
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
 
+  
+  var parameters = readTableIntoArr()
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
+  var virtToPhysMap = parameters.get("levelData").get(level).get("virtToPhysMap")
+  
   peopleArr.sort(sortLastFirst)
 
   // 2-d array to store text in before printing it to the sheet
@@ -29,7 +32,7 @@ function printCheckinSheet(levelName = "Beginner") {
   tableSize[DocumentApp.Attribute.FONT_SIZE] = 12
   var headerSize = {}
   headerSize[DocumentApp.Attribute.FONT_SIZE] = 14
-  var checkTitle = levelName + " Checkin Sheet"
+  var checkTitle = level + " Checkin Sheet"
 
   var style = {}
   style[DocumentApp.Attribute.FONT_SIZE] = 8
@@ -56,7 +59,7 @@ function printCheckinSheet(levelName = "Beginner") {
     // After 25 or the end, put in a new page
 
     // Calculate the ring/section name that we'll print
-    var ringStr = virtToPhysMap[peopleArr[i].vRing].toString() // default
+    var ringStr = virtToPhysMap.get(peopleArr[i].vRing).toString() // default
     if (globalVariables().displayStyle == "sections") {
       var [physRingNum, sectionLetter, sectionNumber] = splitPhysRing(ringStr)
       ringStr = physRingNum + " GRP " + sectionLetter.toUpperCase()
@@ -366,7 +369,7 @@ function physToVirtMapInv(virtToPhysMap) {
   var retPhysToVirt = {}
 
   try {
-    for (const [virtRing, physRing] of Object.entries(virtToPhysMap)) {
+    for (const [virtRing, physRing] of virtToPhysMap) {
       retPhysToVirt[physRing] = virtRing
     }
   } catch (error) {
