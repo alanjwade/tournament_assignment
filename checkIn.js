@@ -141,8 +141,10 @@ function printFormsSheets(levelName = "Beginner") {
   var targetSheet = SpreadsheetApp.getActive().getSheetByName(targetSheetName)
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(levelName)
 
-  // Get the virtToPhysMap, then invert it. We will do this in order of physical ring.
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  level = sourceSheetName
+  var parameters = readTableIntoArr()
+  var peopleArr = parameters.get("peopleSheet")
+  var virtToPhysMap = parameters.get("levelData").get(level).get("virtToPhysMap")
 
   var physToVirtMap = physToVirtMapInv(virtToPhysMap)
 

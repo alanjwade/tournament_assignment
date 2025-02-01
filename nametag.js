@@ -1,7 +1,6 @@
 function printNameTagSheet(level = "Beginner") {
   var targetDocName = level + " Name Tags"
 
-  //var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
   var parameters = readTableIntoArr()
 
   var virtToPhysMap = parameters.get("levelData").get(level).get("virtToPhysMap")

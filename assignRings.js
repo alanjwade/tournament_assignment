@@ -146,7 +146,7 @@ function assignVRings(level = "Beginner") {
 // Put the results back in the original page in calculated ring col.
 function assignVRingAgeSchool(sourceSheetName) {
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var peopleArr = readTableIntoArr(sourceSheet)
+  var peopleArr = readTableIntoArr()
 
   // Put this in a table like this:
   // sortedAgeBySchool = {"Success": [p1, p2, p3...],
@@ -549,8 +549,13 @@ function physicalRing(ring, totalRings, numPhysicalRings) {
 
 function reorderRings(sourceSheetName = "Beginner") {
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName(sourceSheetName)
-  var [peopleArr, virtToPhysMap, maxPeoplePerRing, mapHeaderRow] = readTableIntoArr(sourceSheet)
 
+  level = sourceSheetName
+
+  var parameters = readTableIntoArr(level)
+  var peopleArr = parameters.get("peopleSheet")
+  var paramSheet = parameters.get("paramSheet")
+  var levelMap = parameters.get("levelData").get(level)
 
   vRingMap = {}
   // find all the vRings in the peopleArr

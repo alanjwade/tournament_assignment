@@ -602,7 +602,8 @@ function testSchoolCount() {
   var thisSpreadSheet = currentSpreadsheet()
   const catArr = ["Beginner", "Level 1", "Level 2", "Level 3", "Black Belt"]
   var sourceSheet = SpreadsheetApp.getActive().getSheetByName("Beginner")
-  var [peopleArr, virtToPhysMap] = readTableIntoArr(sourceSheet)
+  var parameters = readTableIntoArr()
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
   var schoolCountHash = schoolCounts(peopleArr)
   var peopleArrSorted = peopleArr.sort(compareByAge)
 }
