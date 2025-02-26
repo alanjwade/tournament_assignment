@@ -7,7 +7,7 @@ function dummyDontRun() {
 }
 
 function assignVRings(level = "Beginner") {
-  var parameters = readTableIntoArr(level)
+  var parameters = readTableIntoArr()
 
   var separatedByGroup = separateIntoGroups(parameters.get("levelData").get(level).get("peopleArr"))
 
@@ -57,22 +57,20 @@ function assignVRings(level = "Beginner") {
   // Create a proposed vring to phys ring mapping
   var physRingNum = 1
   var vRingToPRingMap = new Map()
-  for (const vRing of vRingMap.keys()) {
+  for (const vRing of Array.from(vRingMap.keys()).sort(sortStringsByNumericPrefix)) {
     if (globalVariables().displayStyle == "sections") {
       // Make a reasonable attempt to divide into a and b groups
-      var physRingStr 
-      if (physRingNum <= ((vRingMap.size+1) / 2)) {
-        physRingStr = physRingNum.toString() + "-" + "a"
+      var physRingStr;
+      if (physRingNum <= ((vRingMap.size + 1) / 2)) {
+        physRingStr = physRingNum.toString() + "-" + "a";
+      } else {
+        physRingStr = physRingNum.toString() + "-" + "b";
       }
-      else {
-        physRingStr = physRingNum.toString() + "-" + "b"
-      }
-      vRingToPRingMap.set(vRing, physRingStr)
+      vRingToPRingMap.set(vRing, physRingStr);
+    } else {
+      vRingToPRingMap.set(vRing, physRingNum.toString());
     }
-    else {
-     vRingToPRingMap.set(vRing, physRingNum.toString())
-    }
-    physRingNum++
+    physRingNum++;
   }
   
   // Populate that in the mapping part of the parameters spreadsheet

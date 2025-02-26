@@ -138,13 +138,11 @@ function printScoresheets(level = "Beginner") {
           }
         }
       }
-    
+
       // turn hash keys into array
       var altSparRingsArr = []
-      for (var key in altSparRings) {
-        altSparRingsArr.push(key)
-      }
-
+      altSparRingsArr = Object.keys(altSparRings).sort()
+    
       for (var altRing = 0; altRing < altSparRingsArr.length; altRing++) {
         var thisSparrerArr = sparringPeople.filter(
           (person) => person.altSparRing == altSparRingsArr[altRing]

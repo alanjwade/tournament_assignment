@@ -72,6 +72,7 @@ function generateOverviewOneLevel(
 
 
   var parameters = readTableIntoArr()
+  // checkLevelRings(parameters, level)
   var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
   var levelMap = parameters.get("levelData").get(level)
 
@@ -190,29 +191,27 @@ function generateOverviewOneRing(
 
   // turn hash keys into array
   var altSparRingsArr = []
-  for (var key in altSparRings) {
-    altSparRingsArr.push(key)
-  }
+  altSparRingsArr = Object.keys(altSparRings).sort()
 
   // If hasAltSparRing, then we'll have to do this a couple times
   var sparrerSectionDepth = 0
   
   if (altSparRingsArr.length > 0) {
 
-    for (var altRing = 0; altRing < altSparRingsArr.length; altRing++) {
-      var thisSparrerArr = sparrerArr.filter(
-        (person) => person.altSparRing == altSparRingsArr[altRing]
-      )
+    for (const altRing of altSparRingsArr) {
+      var thisSparrerArr = sparrerArr
+      .filter((person) => person.altSparRing == altRing)
+      .sort(sortBySparringOrder)
 
       var tmpSparrerSectionDepth = generateGenericSubsection(targetSheet, 
-        thisSparrerArr, 
-        "Sparring alt ring " + altSparRingsArr[altRing] + " (" + thisSparrerArr.length + ")", 
-        curRow, 
-        startCol, 
-        "sparringOrder",
-        numColsUsedPerRing)
-        curRow += tmpSparrerSectionDepth
-        sparrerSectionDepth += tmpSparrerSectionDepth
+      thisSparrerArr, 
+      "Sparring alt ring " + altRing + " (" + thisSparrerArr.length + ")", 
+      curRow, 
+      startCol, 
+      "sparringOrder",
+      numColsUsedPerRing)
+      curRow += tmpSparrerSectionDepth
+      sparrerSectionDepth += tmpSparrerSectionDepth
     }
 
 

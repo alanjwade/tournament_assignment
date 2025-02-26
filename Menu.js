@@ -20,8 +20,8 @@
 function onOpen() {
   var ui = SpreadsheetApp.getUi()
   // Or DocumentApp or FormApp.
-  if (1) {
-    ui.createMenu("Assign Virtual Rings")
+  if (0) {
+    ui.createMenu("Assign VRs")
       .addItem("Auto Assign all rings", "assignVRingsAll")
       .addSeparator()
       .addItem("Auto Assign beginner rings", "assignVRingsB")
@@ -30,8 +30,8 @@ function onOpen() {
       .addItem("Auto Assign level 3 rings", "assignVRingsL3")
       .addItem("Auto Assign black belt rings", "assignVRingsBB")
       .addToUi()
-  }
-  ui.createMenu("Reorder rings")
+    }
+    ui.createMenu("Reorder rings")
     .addItem("reorder rings for all rings", "reorderRingsAll")
     .addSeparator()
     .addItem("reorder rings for beginner rings", "reorderRingsB")
@@ -39,8 +39,10 @@ function onOpen() {
     .addItem("reorder rings for level 2 rings", "reorderRingsL2")
     .addItem("reorder rings for level 3 rings", "reorderRingsL3")
     .addItem("reorder rings for black belt rings", "reorderRingsBB")
+    .addSeparator()
+    .addItem("Reset physical rings", "resetPhysicalRings")
     .addToUi()
-  ui.createMenu("Gen Collateral")
+  ui.createMenu("Collateral")
     .addItem("generate collateral for all rings", "generateCollateralAll")
     .addSeparator()
     .addItem("generate collateral for beginner rings", "generateCollateralB")
@@ -49,7 +51,7 @@ function onOpen() {
     .addItem("generate collateral for level 3 rings", "generateCollateralL3")
     .addItem("generate collateral for black belt rings", "generateCollateralBB")
     .addToUi()
-  ui.createMenu("Gen Overview")
+  ui.createMenu("Overview")
     .addItem("generate overview for all rings", "generateOverview")
     .addSeparator()
     .addItem("generate overview for beginner rings", "generateOverviewBRings")
@@ -62,7 +64,7 @@ function onOpen() {
     )
     .addSeparator()
     .addToUi()
-  ui.createMenu("Gen Checkin Sheets")
+  ui.createMenu("Checkin")
     .addItem("generate checkin sheet for all rings", "generateCheckinAll")
     .addSeparator()
     .addItem(
@@ -87,7 +89,7 @@ function onOpen() {
     )
     .addSeparator()
     .addToUi()
-  ui.createMenu("Gen Score Sheets")
+  ui.createMenu("Score Sheets")
     .addItem("generate score sheet for all rings", "generateScoreAll")
     .addSeparator()
     .addItem("generate score sheet for beginner rings", "generateScoreBRings")
@@ -100,7 +102,7 @@ function onOpen() {
     )
     .addSeparator()
     .addToUi()
-  ui.createMenu("Gen Name Tags")
+  ui.createMenu("Name Tags")
     .addItem("generate name tags for all rings", "generateNameTagsAll")
     .addSeparator()
     .addItem("generate name tags for beginner rings", "generateNameTagsBRings")
@@ -112,7 +114,7 @@ function onOpen() {
       "generateNameTagsBBRings"
     )
     .addToUi()
- 
+
 }
 
 function globalVariables() {
@@ -135,7 +137,7 @@ function globalVariables() {
       14: "#b4a7d6",
     },
     displayStyle: "sections" // physical rings (1,2,3... or 1a, 1b, 2a, 2b, ...)
-                             // sections (ring 1 section 1, ring 1 section 2, etc.)
+    // sections (ring 1 section 1, ring 1 section 2, etc.)
   }
   return variables
 }
@@ -278,6 +280,10 @@ function assignVRingsBB() {
   assignVRings("Black Belt")
 }
 
+function resetPhysicalRings() {
+  setPhysRingColumn()
+}
+
 function generateOverviewBRings() {
   generateOverview("Beginner")
 }
@@ -326,9 +332,9 @@ function getId() {
 
 // Hardcoded abbreviation table, if there is an abbreviation.
 function getAbbreviation(schoolName) {
-  
+
   var abbreviation = schoolName
-  
+
   const namesToAbbreviations = new Map()
 
   // namesToAbbreviations.set("5280 Karate", "5280")
@@ -340,14 +346,14 @@ function getAbbreviation(schoolName) {
   // namesToAbbreviations.set("Johnstown",    "REMA JT")
   // namesToAbbreviations.set("Success Martial Arts", "SMA")
 
-  namesToAbbreviations.set("exclusive-littleton"      , "EMA LT")
-  namesToAbbreviations.set("exclusive-lakewood"       , "EMA LW")
-  namesToAbbreviations.set("personal-achievement"     , "PAMA")
-  namesToAbbreviations.set("ripple-effect-longmont"   , "REMA LM")
-  namesToAbbreviations.set("ripple-effect-broomfield" , "REMA BF")
-  namesToAbbreviations.set("ripple-effect-ft-collins" , "REMA FC")
-  namesToAbbreviations.set("ripple-effect-johnstown"  , "REMA JT")
-  namesToAbbreviations.set("success"                  , "SMA")
+  namesToAbbreviations.set("exclusive-littleton", "EMA LT")
+  namesToAbbreviations.set("exclusive-lakewood", "EMA LW")
+  namesToAbbreviations.set("personal-achievement", "PAMA")
+  namesToAbbreviations.set("ripple-effect-longmont", "REMA LM")
+  namesToAbbreviations.set("ripple-effect-broomfield", "REMA BF")
+  namesToAbbreviations.set("ripple-effect-ft-collins", "REMA FC")
+  namesToAbbreviations.set("ripple-effect-johnstown", "REMA JT")
+  namesToAbbreviations.set("success", "SMA")
   if (namesToAbbreviations.has(schoolName)) {
     abbreviation = namesToAbbreviations.get(schoolName)
   }
@@ -357,19 +363,19 @@ function getAbbreviation(schoolName) {
 
 // This is to make the branches of a school look like the same school
 function getCommonSchoolAbbreviation(schoolName) {
-  
+
   var abbreviation = schoolName
-  
+
   const namesToAbbreviations = new Map()
 
-  namesToAbbreviations.set("exclusive-littleton"      , "EMA")
-  namesToAbbreviations.set("exclusive-lakewood"       , "EMA")
-  namesToAbbreviations.set("personal-achievement"     , "PAMA")
-  namesToAbbreviations.set("ripple-effect-longmont"   , "REMA")
-  namesToAbbreviations.set("ripple-effect-broomfield" , "REMA")
-  namesToAbbreviations.set("ripple-effect-ft-collins" , "REMA")
-  namesToAbbreviations.set("ripple-effect-johnstown"  , "REMA")
-  namesToAbbreviations.set("success"                  , "SMA") 
+  namesToAbbreviations.set("exclusive-littleton", "EMA")
+  namesToAbbreviations.set("exclusive-lakewood", "EMA")
+  namesToAbbreviations.set("personal-achievement", "PAMA")
+  namesToAbbreviations.set("ripple-effect-longmont", "REMA")
+  namesToAbbreviations.set("ripple-effect-broomfield", "REMA")
+  namesToAbbreviations.set("ripple-effect-ft-collins", "REMA")
+  namesToAbbreviations.set("ripple-effect-johnstown", "REMA")
+  namesToAbbreviations.set("success", "SMA")
 
   if (namesToAbbreviations.has(schoolName)) {
     abbreviation = namesToAbbreviations.get(schoolName)
@@ -381,12 +387,12 @@ function getCommonSchoolAbbreviation(schoolName) {
 // Return an array of hashes.
 function readTableIntoArr() {
   // Gets sheets data.
-  
-  
+
+
   var peopleSheet = SpreadsheetApp.getActive().getSheetByName("Working")
   var paramSheet = SpreadsheetApp.getActive().getSheetByName("Parameters")
   var parameters = new Map()
-  
+
   // return structure:
   // {peopleSheet, <peopleSheet>}
   // {paramSheet, <paramSheet>}
@@ -402,7 +408,7 @@ function readTableIntoArr() {
   parameters.set("peopleSheet", peopleSheet)
   parameters.set("paramSheet", paramSheet)
   parameters.set("levelData", new Map())
-  
+
   // Get all the people, then sort
   let values = peopleSheet.getDataRange().getValues()
 
@@ -436,7 +442,7 @@ function readTableIntoArr() {
   //  [{sfn: "jim", sln: "bob", age: 5}, {sfn:"george", sln: "smith", age: 6}, ... ]
 
   var peopleArr = []
-  var endPeopleRow=0
+  var endPeopleRow = 0
   let levels = globalVariables().levels
 
 
@@ -456,12 +462,12 @@ function readTableIntoArr() {
         altSparRingVal = null
       }
     }
-    
+
 
     // If divisionCol has one of the levels we're expecting, then add it
     var thisRowDiv = values[i][divisionCol]
     if (levels.includes(thisRowDiv)) {
-      if (! parameters.get("levelData").has(thisRowDiv)) {
+      if (!parameters.get("levelData").has(thisRowDiv)) {
         parameters.get("levelData").set(thisRowDiv, new Map())
         parameters.get("levelData").get(thisRowDiv).set("peopleArr", new Array())
       }
@@ -472,7 +478,7 @@ function readTableIntoArr() {
         grouping: values[i][groupingCol],
         height: values[i][feetCol] + "'" + values[i][inchesCol] + '"',
         heightDec:
-        parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
+          parseInt(values[i][feetCol]) + parseInt(values[i][inchesCol]) / 12.0,
         school: getAbbreviation(values[i][schoolCol]),
         commonSchool: getCommonSchoolAbbreviation(values[i][schoolCol]),
         form: values[i][formCol],
@@ -492,27 +498,27 @@ function readTableIntoArr() {
       })
     } // values is 0 based
   }
-  
+
 
   // Get parameters
 
   let paramValues = paramSheet.getDataRange().getValues()
 
-  for (let i=0; i<paramValues.length; i++) {
+  for (let i = 0; i < paramValues.length; i++) {
     // find the level columns
 
     // i is a row, j is a column
 
-    for (let j=0; j<paramValues[i].length; j++) {
+    for (let j = 0; j < paramValues[i].length; j++) {
       if (levels.includes(paramValues[i][j])) {
         var thisLevel = paramValues[i][j]
 
         var levelMap = parameters.get("levelData").get(thisLevel)
 
-        levelMap.set("virtToPhysStartRow",  i+4)
-        levelMap.set("maxPeoplePerRingStartRow", i+4)
-        levelMap.set("virtToPhysStartCol", j+1)
-        levelMap.set("maxPeoplePerRingStartCol", j+3)
+        levelMap.set("virtToPhysStartRow", i + 4)
+        levelMap.set("maxPeoplePerRingStartRow", i + 4)
+        levelMap.set("virtToPhysStartCol", j + 1)
+        levelMap.set("maxPeoplePerRingStartCol", j + 3)
 
         levelMap.set("virtToPhysMap", new Map())
         levelMap.set("maxPeoplePerRingMap", new Map())
@@ -523,7 +529,7 @@ function readTableIntoArr() {
         // virt to phys map
         var foundEnd = false
 
-        
+
         // adjust for going back to the paramValues array
         var row = levelMap.get("virtToPhysStartRow") - 1
         var col = levelMap.get("virtToPhysStartCol") - 1
@@ -531,7 +537,7 @@ function readTableIntoArr() {
 
         while (!foundEnd && (row < paramValues.length)) {
           if (paramValues[row][col] != "") {
-            levelVRMap.set(paramValues[row][col], paramValues[row][col+1])
+            levelVRMap.set(paramValues[row][col], paramValues[row][col + 1])
             row += 1
           }
           else {
@@ -546,7 +552,7 @@ function readTableIntoArr() {
 
         while (!foundEnd && (row < paramValues.length)) {
           if (paramValues[row][col] != "") {
-            levelMPMap.set(paramValues[row][col], paramValues[row][col+1])
+            levelMPMap.set(paramValues[row][col], paramValues[row][col + 1])
             row += 1
           }
           else {
@@ -574,6 +580,62 @@ function readTableIntoArr() {
 
 
   return parameters
+}
+
+function setPhysRingColumn() {
+  // Set the physical ring column based on the virtual ring column
+  // level is a string
+  // parameters is a map
+
+  var parameters = readTableIntoArr()
+  var peopleSheet = parameters.get("peopleSheet")
+  var paramSheet = parameters.get("paramSheet")
+
+  for (var level of globalVariables().levels) {
+  
+    var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
+    var v2rMap = parameters.get("levelData").get(level).get("virtToPhysMap")
+
+    for (var person of peopleArr) {
+      if (v2rMap.has(person.vRing)) {
+        person.physRing = v2rMap.get(person.vRing);
+      } else {
+        person.physRing = '---';
+      }
+      peopleSheet.getRange(person.originalRow, person.physRingCol + 1).setValue(person.physRing)
+    }
+  }
+}
+
+
+function checkLevelRings(parameters, level) {
+  // check that all the people have a consistent virtual ring/physical ring
+
+  var peopleArr = parameters.get("levelData").get(level).get("peopleArr")
+  var v2rMap = parameters.get("levelData").get(level).get("virtToPhysMap")
+
+  var allVRings = Array.from(v2rMap.keys());
+
+  
+  for (var person of peopleArr) {
+    // Check that the vring is in the map
+    if (!allVRings.includes(person.vRing)) {
+      console.log("Problem with mapping for " + person.sfn + ":" + person.sln)
+      var ui = SpreadsheetApp.getUi()
+      ui.alert('Alert', "Problem with mapping for " + person.sfn + ":" + person.sln
+        + " vRing not found: " + person.vRing, ui.ButtonSet.OK)
+
+    }
+
+    // Check that the phys ring is correct
+    if (person.physRing !== v2rMap.get(person.vRing)) {
+      console.log("Mismatch for " + person.sfn + ":" + person.sln)
+      var ui = SpreadsheetApp.getUi()
+      ui.alert('Alert', "Mismatch for " + person.sfn + ":" + person.sln
+      + " physRing: " + person.physRing + " expected: " + v2rMap.get(person.vRing), ui.ButtonSet.OK)
+    }
+  }
+
 }
 
 // Get the counts of each scool from an array of people hashes.
@@ -654,7 +716,7 @@ function compareByAgeRank(a, b) {
 
 function convertLetterToNumber(letter) {
   // Convert the letter to lowercase for case-insensitive conversion
-  if (typeof(letter) != "string") {
+  if (typeof (letter) != "string") {
     return 0
   }
   letter = letter.toLowerCase();
@@ -676,11 +738,11 @@ function convertLetterToNumber(letter) {
 
 function splitPhysRing(inStr) {
 
-  var regex = new RegExp('([0-9]+)|([a-zA-Z]+)','g')
+  var regex = new RegExp('([0-9]+)|([a-zA-Z]+)', 'g')
   var splittedArray = inStr.match(regex)
   var sectionNumber = convertLetterToNumber(splittedArray[1])
 
-  return [splittedArray[0], splittedArray[1], sectionNumber]
+  return [parseInt(splittedArray[0]), splittedArray[1], sectionNumber]
 }
 
 function ringDesignator(physRing) {

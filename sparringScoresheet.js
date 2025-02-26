@@ -124,7 +124,8 @@ function appendOneSparringScoresheet(
     0,
     virtRing,
     physRing,
-    level
+    level,
+    altRingStrAdder
   )
 
   // Save as pdf
@@ -146,12 +147,13 @@ function finishOneSparringBracketSheet(
   startCol,
   virtRing,
   physRing,
-  level
+  level,
+  altRingStrAdder
 ) {
   // Put people in a sheet that already had a template applied.
   placePeopleInBracket(targetSheet, ringPeople, startRow + 3, startCol + 0, 5)
 
-  var text = level + " Sparring Bracket " + ringDesignator(physRing)
+  var text = level + " Sparring Bracket " + ringDesignator(physRing) + altRingStrAdder
 
   // Place header
   generateSparringHeader(
