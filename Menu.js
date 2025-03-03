@@ -429,15 +429,25 @@ function readTableIntoArr() {
   let sparringOrderCol = headerRowValues.indexOf("Sparring Order")
   let divisionCol = headerRowValues.indexOf("Division")
   let physRingCol = headerRowValues.indexOf("PhysRing")
-
+  
   // If there's an 'Alt Spar Ring' in the headers, then we'll read it.
   // Otherwise, we'll note that there isn't one.
-
+  
   let altSparRingCol = null
   if (headerRowValues.includes("Alt Spar Ring")) {
     altSparRingCol = headerRowValues.indexOf("Alt Spar Ring")
   }
 
+  let altSparVirtRingCol = null
+  if (headerRowValues.includes("Alt Spar Virtual Ring")) {
+    altSparVirtRingCol = headerRowValues.indexOf("Alt Spar Virtual Ring")
+  }
+
+  let altSparDivisionCol = null
+  if (headerRowValues.includes("Alt Spar Division")) {
+    altSparDivisionCol = headerRowValues.indexOf("Alt Spar Division")
+  }
+  
   // data format:
   //  [{sfn: "jim", sln: "bob", age: 5}, {sfn:"george", sln: "smith", age: 6}, ... ]
 
@@ -460,6 +470,26 @@ function readTableIntoArr() {
       altSparRingVal = values[i][altSparRingCol]
       if (altSparRingVal == "") {
         altSparRingVal = null
+      }
+    }
+
+    var altSparVirtRingVal
+    if (altSparVirtRingCol === null) {
+      altSparVirtRingVal = null
+    } else {
+      altSparVirtRingVal = values[i][altSparVirtRingCol]
+      if (altSparVirtRingVal == "") {
+      altSparVirtRingVal = null
+      }
+    }
+
+    var altSparDivisionVal
+    if (altSparDivisionCol === null) {
+      altSparDivisionVal = null
+    } else {
+      altSparDivisionVal = values[i][altSparDivisionCol]
+      if (altSparDivisionVal == "") {
+      altSparDivisionVal = null
       }
     }
 

@@ -94,7 +94,7 @@ function printCheckinSheet(level = "Beginner") {
       checkinTable.setColumnWidth(2, 70)
       checkinTable.setColumnWidth(3, 65)
       checkinTable.setColumnWidth(4, 78)
-      checkinTable.setColumnWidth(5, 60)
+      checkinTable.setColumnWidth(5, 65)
       checkinTable.getRow(0).setAttributes(boldAttr)
       checkinTable.getRow(0).setAttributes(headerSize)
 
